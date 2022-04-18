@@ -18,10 +18,14 @@
       </label>
     </slot>
 
-    <div v-if="addonLeftIcon || $slots.addonLeft" class="input-group-prepend">
+    <div
+      v-if="addonLeftIcon || $slots.addonLeft || addonLeftText"
+      class="input-group-prepend"
+    >
       <span class="input-group-text">
         <slot name="addonLeft">
-          <i :class="addonLeftIcon"></i>
+          <i v-if="addonLeftIcon" :class="addonLeftIcon"></i>
+          <span v-if="addonLeftText">{{ addonLeftText }}</span>
         </slot>
       </span>
     </div>
@@ -31,6 +35,7 @@
         v-bind="$attrs"
         v-on="listeners"
         class="form-control"
+        :type="inputType"
         :class="[
           { 'is-valid': valid === true },
           { 'is-invalid': valid === false },
@@ -39,10 +44,14 @@
         aria-describedby="addon-right addon-left"
       />
     </slot>
-    <div v-if="addonRightIcon || $slots.addonRight" class="input-group-append">
+    <div
+      v-if="addonRightIcon || $slots.addonRight || addonRightText"
+      class="input-group-append"
+    >
       <span class="input-group-text">
         <slot name="addonRight">
-          <i :class="addonRightIcon"></i>
+          <i v-if="addonRightIcon" :class="addonRightIcon"></i>
+          <span v-if="addonRightText">{{ addonRightText }}</span>
         </slot>
       </span>
     </div>
@@ -93,6 +102,10 @@ export default {
       type: String,
       description: "Input css classes",
     },
+    inputType: {
+      type: String,
+      description: "Input type",
+    },
     modelValue: {
       type: [String, Number],
       description: "Input value",
@@ -104,6 +117,14 @@ export default {
     addonLeftIcon: {
       type: String,
       description: "Addont left icon",
+    },
+    addonLeftText: {
+      type: String,
+      description: "Addont left text",
+    },
+    addonRightText: {
+      type: String,
+      description: "Addont right text",
     },
   },
   data() {
@@ -125,7 +146,9 @@ export default {
         addonRight !== undefined ||
         addonLeft !== undefined ||
         this.addonRightIcon !== undefined ||
-        this.addonLeftIcon !== undefined
+        this.addonLeftIcon !== undefined ||
+        this.addonLeftText !== undefined ||
+        this.addonRightText !== undefined
       );
     },
   },
