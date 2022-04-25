@@ -6,7 +6,7 @@
     <!--Tables-->
     <div class="row mt-5">
       <div class="col-xl-12 mb-5 mb-xl-0">
-        <business-table></business-table>
+        <Employee-table></Employee-table>
       </div>
     </div>
     <!--End tables-->
@@ -15,10 +15,10 @@
 
 <script>
 // @ is an alias to /src
-import BusinessTable from "./Business/BusinessTable";
+import EmployeeTable from "./EmployeeTable";
 
 export default {
-  name: "business",
-  components: { BusinessTable },
+  name: "employee",
+  components: { EmployeeTable },
 };
 </script>

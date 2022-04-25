@@ -6,12 +6,12 @@
           <h2>Sign in</h2>
         </div>
         <div class="card-body">
-          <form>
+          <form @submit.prevent="handleLogin(user)">
             <base-input
               formClasses="input-group-alternative mb-3"
               placeholder="Email"
               addon-left-icon="ni ni-email-83"
-              v-model="login.email"
+              v-model="user.email"
             >
             </base-input>
 
@@ -20,7 +20,7 @@
               placeholder="Password"
               type="password"
               addon-left-icon="ni ni-lock-circle-open"
-              v-model="login.password"
+              v-model="user.password"
             >
             </base-input>
 
@@ -28,9 +28,9 @@
               <span class="text-muted">Remember me</span>
             </base-checkbox>
             <div class="text-center">
-              <base-button type="primary" class="my-4" @click="handleLogin"
-                >Sign in</base-button
-              >
+              <button type="submit" class="my-4 btn btn-primary">
+                Sign in
+              </button>
             </div>
           </form>
         </div>
@@ -53,7 +53,7 @@ export default {
   name: "Login",
   data() {
     return {
-      login: {
+      user: {
         email: "",
         password: "",
       },

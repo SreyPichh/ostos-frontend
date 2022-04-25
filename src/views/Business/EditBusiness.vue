@@ -2,7 +2,16 @@
   <base-header
     class="header pt-5 pt-lg-8 d-flex align-items-center"
   ></base-header>
-  <div class="container-fluid mt--5">
+
+  <div v-if="isLoading" class="d-flex justify-content-center mt-9">
+    <scaling-squares-spinner
+      :animation-duration="1250"
+      :size="65"
+      :color="'#ff1d5e'"
+    />
+  </div>
+
+  <div v-if="!isLoading" class="container-fluid mt--5">
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
         <card shadow type="secondary">
@@ -244,11 +253,11 @@
     </div>
     <div class="float-right mb-3">
       <button
-        @click="createNewBusiness()"
+        @click.prevent="updateBusiness"
         type="button"
         class="btn btn-default"
       >
-        Save
+        Update
       </button>
     </div>
   </div>
@@ -258,18 +267,26 @@
 import BusinessService from "../../services/business.service";
 export default {
   components: {},
-  name: "new-business",
+  name: "edit-business",
   data() {
     return {
-      value: null,
       business: {},
+      isLoading: true,
     };
   },
+  mounted() {
+    this.isLoading = true;
+    this.businessId = this.$route.params.Bid;
+    BusinessService.getBusinessById(this.businessId).then((item) => {
+      this.business = item.data.data;
+      this.isLoading = false;
+    });
+  },
   methods: {
-    createNewBusiness() {
-      BusinessService.postBusiness(this.business).then(
+    updateBusiness() {
+      BusinessService.updateBusiness(this.businessId, this.business).then(
         () => {
-          this.$router.push("/products");
+          this.$router.push("/businesses");
         },
         (error) => {
           alert("error to get data", error);

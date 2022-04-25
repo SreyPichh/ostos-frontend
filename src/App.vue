@@ -17,4 +17,9 @@ export default {};
   color: red;
   cursor: pointer;
 }
+
+.my-favourite:hover {
+  cursor: pointer;
+  transform: translateY(-1px);
+}
 </style>

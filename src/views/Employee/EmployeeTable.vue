@@ -10,12 +10,15 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h3 class="mb-0">Invoice List</h3>
+          <h3 class="mb-0">
+            All Employees :
+            <span class="text-muted">{{ items.length }}</span>
+          </h3>
         </div>
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-primary"
-            :to="{ name: 'new-invoice' }"
+            :to="{ name: 'new-employee' }"
           >
             Create New
           </router-link>
@@ -23,14 +26,12 @@
       </div>
     </div>
 
-    <div class="table-responsive" id="printMe">
-      <base-table thead-classes="thead-light" :data="items">
+    <div class="table-responsive">
+      <base-table class="table-sm" thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th>Invoice No</th>
-          <th>Customer</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Create Date</th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Created Date</th>
           <th>Updated Date</th>
           <th>Action</th>
         </template>
@@ -38,29 +39,12 @@
         <template v-slot:default="row">
           <th scope="row">
             <router-link
-              :to="{
-                name: 'edit-invoice',
-                params: { invoiceId: row.item.id },
-              }"
-              >{{ row.item.invoice_number }}</router-link
+              :to="{ name: 'edit-employee', params: { UserId: row.item.id } }"
+              >{{ row.item.id }}</router-link
             >
           </th>
           <td>
-            {{ row.item.customer }}
-          </td>
-          <td>${{ row.item.total }}.00</td>
-          <td>
-            <span
-              class="badge badge-pill badge-md"
-              :class="`badge-${
-                row.item.status === 'paid'
-                  ? 'success'
-                  : row.item.status === 'partial-billed'
-                  ? 'info'
-                  : 'danger'
-              }`"
-              >{{ row.item.status }}</span
-            >
+            {{ row.item.name }}
           </td>
           <td>
             {{
@@ -74,29 +58,32 @@
           </td>
           <td>
             <base-button
-              @click="onEditInvoice(row.item.id)"
+              @click="onEditEmployee(row.item.id)"
               type="default"
               size="sm"
-            >
-              <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button type="default" size="sm">
-              <router-link to="/invoices/preview" target="_blank">
-                <i style="color: #fff" class="fas fa-print"></i>
-              </router-link>
-            </base-button>
+              ><i class="fas fa-pencil-alt"></i
+            ></base-button>
             <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
+              @click="onDeleteClick(row.item.id)"
               type="danger"
               size="sm"
-            >
-              <i class="fas fa-trash"></i>
-            </base-button>
+              ><i class="fas fa-trash"></i
+            ></base-button>
           </td>
         </template>
       </base-table>
     </div>
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
+    <div v-if="isNopagination">
+      <base-pagination
+        :total="pagination.total"
+        :perPage="pagination.per_page"
+        :value="pagination.current_page"
+        @input="onPaginationClicked"
+        align="center"
+        size="sm"
+      ></base-pagination>
+    </div>
   </div>
 
   <modal
@@ -109,12 +96,11 @@
     </template>
     <div class="py-3 text-center">
       <i class="fas fa-trash fa-3x"></i>
-      <h4 class="heading mt-4">Are you sure, To delete this Invoice?</h4>
-      <p>Click OK to delete</p>
+      <h4 class="heading mt-4">Are you sure, To delete this Employee?</h4>
     </div>
 
     <template v-slot:footer>
-      <base-button @click="deleteInvoice" type="white">Ok, Got it</base-button>
+      <base-button @click="deleteProduct()" type="white">Delete</base-button>
       <base-button
         type="link"
         text-color="white"
@@ -126,54 +112,61 @@
     </template>
   </modal>
 </template>
+
 <script>
-import InvoiceService from "../../services/invoice.service";
+import UserService from "../../services/user.service";
 import moment from "moment";
 
 export default {
-  name: "invoice-table",
+  name: "employee-table",
+  components: {},
   data() {
     return {
       isLoading: true,
+      isPagination: true,
       deleteAlert: false,
     };
   },
+  created: function () {
+    this.moment = moment;
+  },
+  mounted() {
+    this.getAllUsers();
+  },
   methods: {
-    getAllInvoices(options) {
+    onPaginationClicked(value) {
+      console.log(value);
+      this.getAllUsers({ page: value });
+    },
+    getAllUsers(options) {
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      UserService.getUsers(options).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
           this.isLoading = false;
+          if (this.pagination.total_pages === 1) {
+            this.isPagination = false;
+          }
         },
         (error) => {
           alert("error to get data", error);
         }
       );
     },
-    onDeleteClick(invoiceId) {
+    onDeleteClick(productId) {
       this.deleteAlert = true;
-      this.isDeletingId = invoiceId;
+      this.isDeletingId = productId;
     },
-    deleteBusiness() {
-      InvoiceService.deleteInvoice(this.isDeletingId).then(() => {
+    deleteProduct() {
+      UserService.deleteUser(this.isDeletingId).then(() => {
         this.deleteAlert = false;
-        this.getAllInvoices();
+        this.getAllUsers();
       });
     },
-    onEditInvoice(invoiceId) {
-      this.$router.push({
-        name: "edit-invoice",
-        params: { invoiceId: invoiceId },
-      });
+    onEditEmployee(userId) {
+      this.$router.push({ name: "edit-employee", params: { UserId: userId } });
     },
-  },
-  created() {
-    this.moment = moment;
-  },
-  mounted() {
-    this.getAllInvoices();
   },
 };
 </script>

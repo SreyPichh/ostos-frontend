@@ -9,37 +9,57 @@
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: 'ni ni-tv-2 text-primary',
+            icon: 'ni ni-tv-2 text-red',
             path: '/dashboard',
           }"
         />
-
         <sidebar-item
           :link="{
-            name: 'Business',
-            icon: 'ni ni-planet text-blue',
-            path: '/business',
+            name: 'Businesses',
+            icon: 'ni ni-planet text-red',
+            path: '/businesses',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Invoice',
-            icon: 'ni ni-pin-3 text-orange',
-            path: '/invoice',
+            icon: 'fa fa-file-invoice-dollar text-red',
+            path: '/invoices',
           }"
         />
         <sidebar-item
           :link="{
-            name: 'Management',
-            icon: 'ni ni-single-02 text-yellow',
+            name: 'Quote',
+            icon: 'fa fa-file-invoice text-red',
+            path: '/quotes',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Reciept',
+            icon: 'fa fa-file-alt text-red',
+            path: '/reciepts',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Product',
+            icon: 'ni ni-archive-2 text-red',
+            path: '/products',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Employee',
+            icon: 'fa fa-users text-red',
+            path: '/employees',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Profile',
+            icon: 'ni ni-single-02 text-red',
             path: '/profile',
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Service',
-            icon: 'ni ni-bullet-list-67 text-red',
-            path: '/tables',
           }"
         />
       </template>
@@ -62,7 +82,7 @@ export default {
   },
   data() {
     return {
-      sidebarBackground: "vue", //vue|blue|orange|green|red|primary
+      sidebarBackground: "red", //vue|blue|orange|green|red|primary
     };
   },
   methods: {

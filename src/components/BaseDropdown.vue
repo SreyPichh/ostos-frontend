@@ -9,7 +9,7 @@
     ]"
     aria-haspopup="true"
     :aria-expanded="isOpen"
-    @click="toggleDropDown"
+    @click.prevent="toggleDropDown"
     v-click-outside="closeDropDown"
   >
     <slot name="title">
@@ -79,14 +79,19 @@ export default {
       isOpen: false,
     };
   },
+  mounted() {
+    document.addEventListener("click", this.closeDropDown);
+  },
   methods: {
     toggleDropDown() {
       this.isOpen = !this.isOpen;
       this.$emit("change", this.isOpen);
     },
-    closeDropDown() {
-      this.isOpen = false;
-      this.$emit("change", this.isOpen);
+    closeDropDown(e) {
+      if (!this.$el.contains(e.target)) {
+        this.isOpen = false;
+        this.$emit("change", this.isOpen);
+      }
     },
   },
 };

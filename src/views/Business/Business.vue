@@ -1,12 +1,13 @@
 <template>
   <base-header
+    type="gradient-success"
     class="header pt-5 pt-lg-8 d-flex align-items-center"
   ></base-header>
   <div class="container-fluid mt--7">
     <!--Tables-->
     <div class="row mt-5">
       <div class="col-xl-12 mb-5 mb-xl-0">
-        <invoice-table></invoice-table>
+        <business-table></business-table>
       </div>
     </div>
     <!--End tables-->
@@ -15,10 +16,10 @@
 
 <script>
 // @ is an alias to /src
-import InvoiceTable from "./Invoice/InvoiceTable";
+import BusinessTable from "./BusinessTable";
 
 export default {
-  name: "invoice",
-  components: { InvoiceTable },
+  name: "business",
+  components: { BusinessTable },
 };
 </script>

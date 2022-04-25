@@ -22,7 +22,6 @@ import ArgonDashboard from "./plugins/argon-dashboard";
 import "element-plus/lib/theme-chalk/index.css";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import { FontAwesomeIcon } from "./plugins/font-awesome";
 import store from "./store";
 
 const appInstance = createApp(App);
@@ -30,5 +29,4 @@ appInstance.use(router);
 appInstance.use(store);
 appInstance.use(ArgonDashboard);
 appInstance.use(VueAxios, axios);
-appInstance.component("font-awesome-icon", FontAwesomeIcon);
 appInstance.mount("#app");

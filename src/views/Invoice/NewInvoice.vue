@@ -2,65 +2,70 @@
   <base-header
     class="header pt-5 pt-lg-8 d-flex align-items-center"
   ></base-header>
-  <div class="container-fluid mt--5 mb-5">
-    <div class="row">
-      <div class="col-xl-12 mb-3">
+  <div v-if="isLoading" class="d-flex justify-content-center mt-9">
+    <scaling-squares-spinner
+      :animation-duration="1250"
+      :size="65"
+      :color="'#ff1d5e'"
+    />
+  </div>
+  <div class="container-fluid mt--5 mb-5" v-if="!isLoading">
+    <div class="row my-3">
+      <div class="col-xl-12">
         <card shadow type="secondary">
-          <form>
-            <div class="row">
-              <div class="col-lg-2">
-                <label class="form-control-label">Select Type</label>
-                <Multiselect
-                  v-model="model.invoiceType"
-                  :options="['Invoice', 'Reciept', 'Quote']"
-                />
-              </div>
-              <div class="col-lg-2">
-                <base-input
-                  addonLeftText="#INV"
-                  label="Invoice No"
-                  inputType="number"
-                  @keypress="isNumber($event)"
-                  label-classes="form-control-range"
-                  input-classes="form-control-alternative"
-                  v-model="model.invoiceNo"
-                />
-              </div>
-              <div class="col-lg-3">
-                <base-input label="Date" v-model="model.date">
-                  <input
-                    class="form-control"
-                    type="datetime-local"
-                    value="2018-11-23T10:30:00"
-                    id="example-datetime-local-input"
-                  />
-                </base-input>
-              </div>
-              <div class="col-lg-3">
-                <label class="form-control-label">Status</label>
-                <Multiselect
-                  v-model="model.status"
-                  :options="['Paid', 'Unpaid', 'Partial Billed']"
-                />
-              </div>
-              <div class="col-lg-2">
-                <base-input
-                  addonLeftText="$"
-                  addonRightText=".00"
-                  @keypress="isNumber($event)"
-                  label="Due Amount"
-                  label-classes="form-control-range"
-                  input-classes="form-control-alternative"
-                  v-model="model.dueAmount"
-                />
-              </div>
+          <div class="row">
+            <div class="col-lg-2">
+              <label class="form-control-label">Select Type</label>
+              <Multiselect
+                v-model="invoice.invoiceType"
+                mode="single"
+                :options="['Invoice', 'Reciept', 'Quote']"
+              />
             </div>
-          </form>
+            <div class="col-lg-2">
+              <base-input
+                addonLeftText="#INV"
+                label="Invoice No"
+                inputType="number"
+                @keypress="isNumber($event)"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.invoice_number"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input label="Date" v-model="invoice.date">
+                <input
+                  class="form-control"
+                  type="datetime-local"
+                  id="example-datetime-local-input"
+                />
+              </base-input>
+            </div>
+            <div class="col-lg-2">
+              <label class="form-control-label">Status</label>
+              <Multiselect
+                v-model="invoice.status"
+                :options="['Paid', 'Unpaid', 'Partial Billed']"
+              />
+            </div>
+            <div class="col-lg-2">
+              <base-input
+                addonLeftText="$"
+                addonRightText=".00"
+                @keypress="isNumber($event)"
+                label="Due Amount"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.dueAmount"
+              />
+            </div>
+          </div>
         </card>
       </div>
     </div>
 
-    <div class="row mb-3">
+    <div class="row">
       <div class="col-xl-6 order-xl-1">
         <card shadow type="secondary">
           <template v-slot:header>
@@ -69,65 +74,58 @@
                 <div class="col-7">
                   <h3 class="mb-0">Customer Information</h3>
                 </div>
-                <div class="col-5 text-right">
-                  <a href="#!" class="btn btn-sm btn-default"
-                    >Select Existing Customer</a
-                  >
-                </div>
               </div>
             </div>
           </template>
 
-          <form>
-            <div class="row">
-              <div class="col-lg-6">
-                <base-input
-                  alternative=""
-                  placeholder="Enter Name"
-                  input-classes="form-control-alternative"
-                  v-model="model.username"
-                />
-              </div>
-              <div class="col-lg-6">
-                <base-input
-                  addonLeftIcon="fa fa-envelope"
-                  placeholder="jesse@example.com"
-                  input-classes="form-control-alternative"
-                  v-model="model.email"
-                />
-              </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <base-input
+                alternative=""
+                placeholder="Enter Name"
+                input-classes="form-control-alternative"
+                v-model="invoice.cName"
+              />
             </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <base-input
-                  addonLeftIcon="fa fa-phone"
-                  placeholder="Phone Number"
-                  input-classes="form-control-alternative"
-                  v-model="model.phone"
-                />
-              </div>
+            <div class="col-lg-6">
+              <base-input
+                addonLeftIcon="fa fa-envelope"
+                placeholder="jesse@example.com"
+                input-classes="form-control-alternative"
+                v-model="invoice.cEmail"
+              />
             </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <base-input
-                  alternative=""
-                  placeholder="Address 1"
-                  input-classes="form-control-alternative"
-                  v-model="model.address1"
-                />
-              </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <base-input
+                addonLeftIcon="fa fa-phone"
+                placeholder="Phone Number"
+                input-classes="form-control-alternative"
+                v-model="invoice.cPhone"
+              />
             </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <base-input
-                  alternative=""
-                  placeholder="Address 2"
-                  input-classes="form-control-alternative"
-                  v-model="model.address2"
-                />
-              </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <base-input
+                alternative=""
+                placeholder="Address 1"
+                input-classes="form-control-alternative"
+                v-model="invoice.cAdd1"
+              />
             </div>
-          </form>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <base-input
+                alternative=""
+                placeholder="Address 2"
+                input-classes="form-control-alternative"
+                v-model="invoice.cAdd2"
+              />
+            </div>
+          </div>
         </card>
       </div>
 
@@ -143,72 +141,83 @@
             </div>
           </template>
 
-          <form>
-            <div class="row">
-              <div class="col-lg-12">
-                <Multiselect
-                  v-model="model.employee"
-                  mode="tags"
-                  placeholder="Choose employee"
-                  :searchable="true"
-                  :createTag="true"
-                  :options="employees"
-                >
-                </Multiselect>
-              </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <Multiselect
+                v-model="invoice.employee_id"
+                mode="tags"
+                placeholder="Choose employee"
+                :searchable="true"
+                :createTag="true"
+                :options="employees"
+              >
+              </Multiselect>
             </div>
-          </form>
+          </div>
         </card>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row my-3">
       <div class="col-xl-12 order-xl-2">
         <card shadow type="secondary">
           <template v-slot:header>
             <div class="bg-white border-0">
-              <div class="row align-items-center">
-                <div class="col-7">
+              <div class="row align-items-center justify-content-between">
+                <div class="col">
                   <h3 class="mb-0">Invoices Items</h3>
+                </div>
+                <div class="col-lg-3">
+                  <Multiselect
+                    v-model="invoice.business_id"
+                    placeholder="Business Type"
+                    @change="onChangeBusiness"
+                    :searchable="true"
+                    :options="businesses"
+                  />
                 </div>
               </div>
             </div>
           </template>
-
-          <form>
+          <div v-if="invoice.business_id">
             <div
               class="form-row mb--2"
               v-for="(product, index) in products"
               :key="index"
             >
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <Multiselect
-                  v-model="product.name"
+                  class="form-group"
+                  v-model="product.product_id"
                   :searchable="true"
                   placeholder="Choose Product"
+                  @change="onProductChange(index, $event)"
                   :options="productList"
                 />
               </div>
-              <div class="col-md-2">
+              <div class="col-md-1">
                 <base-input
-                  addonLeftText="ទទឹង"
+                  addonRightText="CM"
                   @keypress="isNumber($event)"
+                  @change="onProductCalculate(index, $event)"
                   input-classes="form-control-alternative"
-                  v-model="product.size_cm"
+                  v-model="product.width"
                 />
               </div>
-              <div class="col-md-2">
+              <div class="col-md-1">
                 <base-input
-                  addonLeftText="បណ្ដោយ"
+                  addonRightText="CM"
                   @keypress="isNumber($event)"
+                  @change="onProductCalculate(index, $event)"
                   input-classes="form-control-alternative"
-                  v-model="product.size_cm"
+                  v-model="product.length"
                 />
               </div>
-              <div class="col-md-2">
+              <div class="col-md-1">
                 <base-input
                   addonLeftText="Qty"
                   @keypress="isNumber($event)"
+                  @change="onProductCalculate(index, $event)"
                   :name="`products[${index}][quantity]`"
                   input-classes="form-control-alternative"
                   v-model="product.quantity"
@@ -219,12 +228,16 @@
                   addonLeftText="$"
                   addonRightText=".00"
                   @keypress="isNumber($event)"
+                  @change="onProductCalculate(index, $event)"
                   placeholder="Unit Price"
                   input-classes="form-control-alternative"
-                  v-model="product.price"
+                  v-model="product.unit_price"
                 />
               </div>
               <div class="col form-group form-inline">
+                <span style="float: right; right: 3rem; position: absolute"
+                  >$ {{ product.total_price }}</span
+                >
                 <span
                   v-if="index >= 0"
                   @click.prevent="remove(index)"
@@ -239,15 +252,53 @@
                 Add Product
               </button>
             </div>
-          </form>
+          </div>
+          <div v-if="!invoice.business_id" class="text-center pt-3 pb-5">
+            Please select business type
+          </div>
         </card>
       </div>
     </div>
+    <div class="float-right mb-3">
+      <button
+        @click.prevent="createNewInvoice()"
+        type="button"
+        class="btn btn-default"
+      >
+        Create
+      </button>
+    </div>
   </div>
+
+  <modal v-model:show="warningAlert">
+    <template v-slot:header>
+      <h3 class="modal-title text-danger">Warning</h3>
+    </template>
+    <div>
+      If you change the business type, the data of product will be
+      <span class="text-danger font-weight-bold">reset</span>
+    </div>
+    <br />
+    <p class="text-danger">Are you sure, to change it?</p>
+    <template v-slot:footer>
+      <base-button type="secondary" @click.prevent="onCancelChangeBusiness()"
+        >Cancel</base-button
+      >
+      <base-button
+        type="danger"
+        @click.prevent="onBusinessSelected(invoice.business_id)"
+        >Change</base-button
+      >
+    </template>
+  </modal>
 </template>
 
 <script>
-// @ is an alias to /src
+import BusinessService from "../../services/business.service";
+import ProductService from "../../services/product.service";
+import UserService from "../../services/user.service";
+import InvoiceService from "../../services/invoice.service";
+
 import Multiselect from "@vueform/multiselect";
 export default {
   components: {
@@ -256,49 +307,169 @@ export default {
   name: "new-invoice",
   data() {
     return {
-      value: null,
-      employees: [
-        { value: "rey", label: "Rey" },
-        { value: "pheap", label: "Pheap" },
-        { value: "pruoun", label: "Pruoun" },
-        { value: "tem", label: "Tem" },
-        { value: "lapa", label: "Lapa" },
-        { value: "mey", label: "Mey" },
-      ],
-      model: {
-        username: "",
-        email: "",
-        address1: "",
-        address2: "",
+      isLoading: true,
+      invoice: {
+        invoiceType: "Invoice",
+        status: "Paid",
       },
-      productList: [
-        "បិតហ្វីមឡានកំរិត3ឆ្នាំ",
-        "ស្ទីកគ័រ សាក់ជញ្ជាំងកញ្ចក់",
-        "ព្រីនស្ទីកគ័របាតខ្មៅ",
+      businesses: [],
+      employees: [],
+      productList: [],
+      allProductLists: [],
+      products: [
+        {
+          product_id: "",
+          product_name: "",
+          width: "",
+          length: "",
+          quantity: "",
+          unit_price: "",
+          total_price: "",
+        },
       ],
-      products: [{ name: "", size_cm: "", price: "", quantity: "" }],
+      warningAlert: false,
     };
   },
-  methods: {
-    addProduct() {
-      this.products.push({
-        name: "",
-        price: "",
-        quantity: "",
-        size_cm: "",
+  mounted() {
+    this.isLoading = true;
+    BusinessService.getBusinesses().then((items) => {
+      this.isLoading = false;
+      this.businesses = items.data.data.map((item) => {
+        return { label: item.name, value: item.id };
       });
+    });
+
+    ProductService.getProducts().then((items) => {
+      this.isLoading = false;
+      this.allProductLists = items.data.data;
+    });
+
+    UserService.getUsers().then((items) => {
+      this.isLoading = false;
+      this.employees = items.data.data.map((item) => {
+        return { label: item.name, value: item.id };
+      });
+    });
+  },
+  methods: {
+    // On Change Business Type
+    onCancelChangeBusiness() {
+      this.warningAlert = false;
+      this.invoice.business_id = this.previousBid;
+    },
+    onChangeBusiness(id) {
+      this.previousBid = this.invoice.business_id;
+      if (this.invoice.business_id) {
+        this.warningAlert = true;
+      } else {
+        this.onBusinessSelected(id);
+      }
+    },
+    onBusinessSelected(id) {
+      this.warningAlert = false;
+      this.products = [
+        {
+          product_id: "",
+          product_name: "",
+          width: "",
+          length: "",
+          quantity: "",
+          unit_price: "",
+          total_price: "",
+        },
+      ];
+      console.log(this.allProductLists);
+      this.productList = this.allProductLists
+        .filter((product) => product.business_id === id)
+        .map((item) => {
+          return { label: item.name, value: item.id };
+        });
     },
 
+    // Products
+    addProduct() {
+      this.products.push({
+        product_id: "",
+        product_name: "",
+        width: "",
+        length: "",
+        quantity: "",
+        unit_price: "",
+        total_price: "",
+      });
+    },
     remove(index) {
       this.products.splice(index, 1);
     },
-
-    submit() {
-      const data = {
-        products: this.products,
-      };
-      alert(JSON.stringify(data, null, 2));
+    onProductChange(index, pId) {
+      const product = this.products[index];
+      if (pId) {
+        product.unit_price = this.allProductLists.find(
+          (prod) => prod.id === pId
+        ).price;
+      } else {
+        product.unit_price = "";
+      }
+      product.total_price = "";
+      product.width = "";
+      product.length = "";
+      product.quantity = "";
     },
+    onProductCalculate(index) {
+      const product = this.products[index];
+      // Product size
+      const width = product.width;
+      const length = product.length;
+      const m2 = (width * length) / 10000;
+      console.log("M2", m2);
+      const unit_price = product.unit_price;
+      const qty = product.quantity;
+      this.products[index].total_price = m2 * unit_price * qty;
+
+      // L16<=0,0
+      // L16<=0.1,"$0.50"
+      // L16<=0.7,"$1.00"
+      // L16<=0.75,"$1.00"
+      // L16<=0.8,"$1.00"
+      // L16<=1,"$1.00"
+      // L16<=1.3,"$1.50"
+      // L16<=1.5,"$1.50"
+      // L16<=1.8,"$2.00"
+      // L16<=15.4,"$15.00"
+      // L16<=15.5,"$15.50"
+      // L16<=15.9,"$15.50"
+    },
+    createNewInvoice() {
+      const invoice = this.invoice;
+      const employees = this.employees.map((emp) => {
+        return { employee_id: emp.value, employee_name: emp.label };
+      });
+      const data = {
+        type: invoice.invoiceType,
+        invoice_number: invoice.invoice_number,
+        date: invoice.date,
+        due_amount: invoice.due_amount,
+        business_id: invoice.business_id,
+        customer_name: invoice.cName,
+        customer_phone_number: invoice.cPhone,
+        customer_email: invoice.cEmail,
+        customer_address1: invoice.cAdd1,
+        customer_address2: invoice.cAdd2,
+        status: invoice.status,
+        total: invoice.total,
+        employess_data: employees,
+        product_data: this.products,
+      };
+      InvoiceService.postInvoice(data).then(
+        () => {
+          this.$router.push("/products");
+        },
+        (error) => {
+          alert("error to get data", error);
+        }
+      );
+    },
+
     // Allow only Nubmer
     isNumber(evt) {
       const charCode = evt.which ? evt.which : evt.keyCode;

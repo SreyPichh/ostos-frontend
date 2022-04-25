@@ -142,3 +142,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.page-item:hover {
+  cursor: pointer;
+}
+</style>

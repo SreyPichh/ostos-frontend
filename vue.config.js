@@ -1,5 +1,5 @@
-module.exports = {
-  devServer: {
-    proxy: "https://ostos-backend.herokuapp.com/",
-  },
-};
+// module.exports = {
+//   devServer: {
+//     proxy: "http://167.172.88.106/",
+//   },
+// };

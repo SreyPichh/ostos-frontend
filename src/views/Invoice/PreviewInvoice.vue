@@ -284,6 +284,7 @@ body {
   }
   .invoiceListHeading th {
     color: #000 !important;
+    background-color: #1a4567 !important;
   }
   @page {
     size: a4 portrait;

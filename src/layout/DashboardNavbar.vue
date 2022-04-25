@@ -18,11 +18,14 @@
         </base-input>
       </div>
     </form>
-    <ul class="navbar-nav align-items-center d-none d-md-flex">
+    <ul
+      v-if="currentUser"
+      class="navbar-nav align-items-center d-none d-md-flex"
+    >
       <li class="nav-item dropdown">
         <base-dropdown class="nav-link pr-0">
           <template v-slot:title>
-            <div class="media align-items-center">
+            <div class="media profile-toggle align-items-center">
               <span class="avatar avatar-sm rounded-circle">
                 <img
                   alt="Image placeholder"
@@ -30,7 +33,9 @@
                 />
               </span>
               <div class="media-body ml-2 d-none d-lg-block">
-                <span class="mb-0 text-sm font-weight-bold">Jessica Jones</span>
+                <span class="mb-0 text-sm font-weight-bold">
+                  {{ currentUser.name }}
+                </span>
               </div>
             </div>
           </template>
@@ -42,19 +47,11 @@
             <span>My profile</span>
           </router-link>
           <router-link to="/profile" class="dropdown-item">
-            <i class="ni ni-settings-gear-65"></i>
-            <span>Settings</span>
-          </router-link>
-          <router-link to="/profile" class="dropdown-item">
             <i class="ni ni-calendar-grid-58"></i>
             <span>Activity</span>
           </router-link>
-          <router-link to="/profile" class="dropdown-item">
-            <i class="ni ni-support-16"></i>
-            <span>Support</span>
-          </router-link>
           <div class="dropdown-divider"></div>
-          <router-link to="/profile" class="dropdown-item">
+          <router-link to="#" @click.prevent="logOut" class="dropdown-item">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
           </router-link>
@@ -72,6 +69,17 @@ export default {
       searchQuery: "",
     };
   },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user.user;
+    },
+    showAdminBoard() {
+      if (this.currentUser && this.currentUser["roles"]) {
+        return this.currentUser["roles"].includes("ROLE_ADMIN");
+      }
+      return false;
+    },
+  },
   methods: {
     toggleSidebar() {
       this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
@@ -82,6 +90,16 @@ export default {
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
+    logOut() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
+    },
   },
 };
 </script>
+
+<style scoped>
+.profile-toggle:hover {
+  cursor: pointer;
+}
+</style>

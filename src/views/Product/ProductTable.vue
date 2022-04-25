@@ -10,12 +10,15 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h3 class="mb-0">Invoice List</h3>
+          <h3 class="mb-0">
+            All Products :
+            <span class="text-muted">{{ items.length }} items</span>
+          </h3>
         </div>
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-primary"
-            :to="{ name: 'new-invoice' }"
+            :to="{ name: 'new-product' }"
           >
             Create New
           </router-link>
@@ -23,14 +26,13 @@
       </div>
     </div>
 
-    <div class="table-responsive" id="printMe">
-      <base-table thead-classes="thead-light" :data="items">
+    <div class="table-responsive">
+      <base-table class="table-sm" thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th>Invoice No</th>
-          <th>Customer</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Create Date</th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Business</th>
+          <th>Created Date</th>
           <th>Updated Date</th>
           <th>Action</th>
         </template>
@@ -38,29 +40,15 @@
         <template v-slot:default="row">
           <th scope="row">
             <router-link
-              :to="{
-                name: 'edit-invoice',
-                params: { invoiceId: row.item.id },
-              }"
-              >{{ row.item.invoice_number }}</router-link
+              :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
+              >{{ row.item.id }}</router-link
             >
           </th>
           <td>
-            {{ row.item.customer }}
+            {{ row.item.name }}
           </td>
-          <td>${{ row.item.total }}.00</td>
           <td>
-            <span
-              class="badge badge-pill badge-md"
-              :class="`badge-${
-                row.item.status === 'paid'
-                  ? 'success'
-                  : row.item.status === 'partial-billed'
-                  ? 'info'
-                  : 'danger'
-              }`"
-              >{{ row.item.status }}</span
-            >
+            {{ businesses["value"] }}
           </td>
           <td>
             {{
@@ -74,29 +62,32 @@
           </td>
           <td>
             <base-button
-              @click="onEditInvoice(row.item.id)"
+              @click="onEditProduct(row.item.id)"
               type="default"
               size="sm"
-            >
-              <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button type="default" size="sm">
-              <router-link to="/invoices/preview" target="_blank">
-                <i style="color: #fff" class="fas fa-print"></i>
-              </router-link>
-            </base-button>
+              ><i class="fas fa-pencil-alt"></i
+            ></base-button>
             <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
+              @click="onDeleteClick(row.item.id)"
               type="danger"
               size="sm"
-            >
-              <i class="fas fa-trash"></i>
-            </base-button>
+              ><i class="fas fa-trash"></i
+            ></base-button>
           </td>
         </template>
       </base-table>
     </div>
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
+    <div v-if="isPagination">
+      <base-pagination
+        :total="pagination.total"
+        :perPage="pagination.per_page"
+        :value="pagination.current_page"
+        @input="onPaginationClicked"
+        align="center"
+        size="sm"
+      ></base-pagination>
+    </div>
   </div>
 
   <modal
@@ -109,71 +100,86 @@
     </template>
     <div class="py-3 text-center">
       <i class="fas fa-trash fa-3x"></i>
-      <h4 class="heading mt-4">Are you sure, To delete this Invoice?</h4>
-      <p>Click OK to delete</p>
+      <h4 class="heading mt-4">Are you sure, To delete this Product?</h4>
     </div>
 
     <template v-slot:footer>
-      <base-button @click="deleteInvoice" type="white">Ok, Got it</base-button>
+      <base-button @click.prevent="deleteProduct()" type="white"
+        >Delete</base-button
+      >
       <base-button
         type="link"
         text-color="white"
         class="ml-auto"
-        @click="deleteAlert = false"
+        @click.prevent="deleteAlert = false"
       >
         Close
       </base-button>
     </template>
   </modal>
 </template>
+
 <script>
-import InvoiceService from "../../services/invoice.service";
+import ProductService from "../../services/product.service";
 import moment from "moment";
+import BusinessService from "../../services/business.service";
 
 export default {
-  name: "invoice-table",
+  name: "product-table",
+  components: {},
   data() {
     return {
       isLoading: true,
       deleteAlert: false,
+      isPagination: true,
+      businesses: [],
     };
   },
+  created: function () {
+    this.moment = moment;
+  },
+  mounted() {
+    this.getAllProducts();
+    BusinessService.getBusinesses().then((items) => {
+      this.businesses = items.data.data.map((item) => {
+        return { label: item.name, value: item.id };
+      });
+    });
+  },
   methods: {
-    getAllInvoices(options) {
+    onPaginationClicked(value) {
+      console.log(value);
+      this.getAllProducts({ page: value });
+    },
+    getAllProducts(options) {
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      ProductService.getProducts(options).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
           this.isLoading = false;
+          if (this.pagination.total_pages === 1) {
+            this.isPagination = false;
+          }
         },
         (error) => {
           alert("error to get data", error);
         }
       );
     },
-    onDeleteClick(invoiceId) {
+    onDeleteClick(productId) {
       this.deleteAlert = true;
-      this.isDeletingId = invoiceId;
+      this.isDeletingId = productId;
     },
-    deleteBusiness() {
-      InvoiceService.deleteInvoice(this.isDeletingId).then(() => {
+    deleteProduct() {
+      ProductService.deleteProduct(this.isDeletingId).then(() => {
         this.deleteAlert = false;
-        this.getAllInvoices();
+        this.getAllProducts();
       });
     },
-    onEditInvoice(invoiceId) {
-      this.$router.push({
-        name: "edit-invoice",
-        params: { invoiceId: invoiceId },
-      });
+    onEditProduct(proId) {
+      this.$router.push({ name: "edit-product", params: { Pid: proId } });
     },
-  },
-  created() {
-    this.moment = moment;
-  },
-  mounted() {
-    this.getAllInvoices();
   },
 };
 </script>
