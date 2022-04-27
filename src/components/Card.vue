@@ -12,7 +12,7 @@
     <div class="card-header" :class="headerClasses" v-if="$slots.header">
       <slot name="header"> </slot>
     </div>
-    <div class="card-body pb-0" :class="bodyClasses" v-if="!noBody">
+    <div class="card-body" :class="bodyClasses" v-if="!noBody">
       <slot></slot>
     </div>
 

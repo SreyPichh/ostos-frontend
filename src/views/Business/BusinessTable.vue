@@ -6,13 +6,13 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card" v-if="!isLoading">
+  <div class="card my-3" v-if="!isLoading">
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h3 class="mb-0">
+          <h4 class="mb-0">
             All Business : <span class="text-muted">{{ items.length }}</span>
-          </h3>
+          </h4>
         </div>
         <div class="col text-right">
           <router-link
@@ -40,7 +40,9 @@
           <th scope="row">
             <router-link
               :to="{ name: 'edit-business', params: { Bid: row.item.id } }"
-              >{{ row.item.id }}</router-link
+              ><span class="font-weight-700">
+                {{ row.item.id }}
+              </span></router-link
             >
           </th>
           <td>

@@ -1,28 +1,25 @@
-import axios from "axios";
-import authHeader from "./auth-header";
-const API_URL = "http://167.172.88.106/api/v1/products";
+import api from "./api";
+const API_URL = "products";
+
 class ProductService {
   getProducts(params) {
-    return axios.get(API_URL, {
-      headers: authHeader(),
+    return api.get(API_URL, {
       params: params,
     });
   }
   getProductById(Pid) {
-    return axios.get(API_URL + `/${Pid}`, { headers: authHeader() });
+    return api.get(API_URL + `/${Pid}`);
   }
   postProduct(body) {
-    return axios
-      .post(API_URL, body, { headers: authHeader() })
-      .then((response) => {
-        return response.data;
-      });
+    return api.post(API_URL, body).then((response) => {
+      return response.data;
+    });
   }
   updateProduct(Pid, body) {
-    return axios.patch(API_URL + `/${Pid}`, body, { headers: authHeader() });
+    return api.patch(API_URL + `/${Pid}`, body);
   }
   deleteProduct(productId) {
-    return axios.delete(API_URL + `/${productId}`, { headers: authHeader() });
+    return api.delete(API_URL + `/${productId}`);
   }
 }
 export default new ProductService();

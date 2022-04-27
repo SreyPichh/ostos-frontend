@@ -4,15 +4,25 @@
   </div>
 </template>
 <script>
-export default {};
+import EventBus from "./common/EventBus";
+export default {
+  methods: {
+    logOut() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
+    },
+  },
+  mounted() {
+    EventBus.on("logout", () => {
+      this.logOut();
+    });
+  },
+  beforeUnmount() {
+    EventBus.remove("logout");
+  },
+};
 </script>
 <style>
-.delete-icon {
-  float: right;
-  position: absolute;
-  right: 0;
-}
-
 .delete-icon:hover {
   color: red;
   cursor: pointer;

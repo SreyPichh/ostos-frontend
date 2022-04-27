@@ -1,12 +1,11 @@
-import axios from "axios";
-import authHeader from "./auth-header";
-const API_URL = "http://167.172.88.106/api/v1/user/profile";
+import api from "./api";
+const API_URL = "user/profile";
 class UserProfileService {
   getUserProfile() {
-    return axios.get(API_URL, { headers: authHeader() });
+    return api.get(API_URL);
   }
-  getAdminBoard() {
-    return axios.get(API_URL + "admin", { headers: authHeader() });
-  }
+  // getAdminBoard() {
+  //   return api.get(API_URL + "admin");
+  // }
 }
 export default new UserProfileService();

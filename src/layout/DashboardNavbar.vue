@@ -5,7 +5,7 @@
     :show-toggle-button="false"
     expand
   >
-    <form
+    <!-- <form
       class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto"
     >
       <div class="form-group mb-0">
@@ -17,10 +17,10 @@
         >
         </base-input>
       </div>
-    </form>
+    </form> -->
     <ul
       v-if="currentUser"
-      class="navbar-nav align-items-center d-none d-md-flex"
+      class="navbar-nav align-items-center d-none d-md-flex justify-content-end"
     >
       <li class="nav-item dropdown">
         <base-dropdown class="nav-link pr-0">

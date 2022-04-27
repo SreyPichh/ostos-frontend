@@ -12,7 +12,7 @@
   <div class="container-fluid mt--5 mb-5" v-if="!isLoading">
     <div class="row my-3">
       <div class="col-xl-12">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <div class="row">
             <div class="col-lg-2">
               <label class="form-control-label">Select Type</label>
@@ -67,7 +67,7 @@
 
     <div class="row">
       <div class="col-xl-6 order-xl-1">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -130,7 +130,13 @@
       </div>
 
       <div class="col-xl-6 pl-0 order-xl-2">
-        <card height="100%" shadow type="secondary" class="pb-4">
+        <card
+          height="100%"
+          shadow
+          type="secondary"
+          class="pb-4"
+          bodyClasses="pb-0"
+        >
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -160,7 +166,7 @@
 
     <div class="row my-3">
       <div class="col-xl-12 order-xl-2">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="py-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center justify-content-between">
@@ -179,79 +185,86 @@
               </div>
             </div>
           </template>
-          <div v-if="invoice.business_id">
-            <div
-              class="form-row mb--2"
-              v-for="(product, index) in products"
-              :key="index"
-            >
-              <div class="col-md-4">
-                <Multiselect
-                  class="form-group"
-                  v-model="product.product_id"
-                  :searchable="true"
-                  placeholder="Choose Product"
-                  @change="onProductChange(index, $event)"
-                  :options="productList"
-                />
-              </div>
-              <div class="col-md-1">
-                <base-input
-                  addonRightText="CM"
-                  @keypress="isNumber($event)"
-                  @change="onProductCalculate(index, $event)"
-                  input-classes="form-control-alternative"
-                  v-model="product.width"
-                />
-              </div>
-              <div class="col-md-1">
-                <base-input
-                  addonRightText="CM"
-                  @keypress="isNumber($event)"
-                  @change="onProductCalculate(index, $event)"
-                  input-classes="form-control-alternative"
-                  v-model="product.length"
-                />
-              </div>
-              <div class="col-md-1">
-                <base-input
-                  addonLeftText="Qty"
-                  @keypress="isNumber($event)"
-                  @change="onProductCalculate(index, $event)"
-                  :name="`products[${index}][quantity]`"
-                  input-classes="form-control-alternative"
-                  v-model="product.quantity"
-                />
-              </div>
-              <div class="col-md-2">
-                <base-input
-                  addonLeftText="$"
-                  addonRightText=".00"
-                  @keypress="isNumber($event)"
-                  @change="onProductCalculate(index, $event)"
-                  placeholder="Unit Price"
-                  input-classes="form-control-alternative"
-                  v-model="product.unit_price"
-                />
-              </div>
-              <div class="col form-group form-inline">
-                <span style="float: right; right: 3rem; position: absolute"
-                  >$ {{ product.total_price }}</span
-                >
-                <span
-                  v-if="index >= 0"
-                  @click.prevent="remove(index)"
-                  class="delete-icon"
-                  ><i class="fa fa-trash"></i
-                ></span>
-              </div>
-            </div>
 
-            <div class="form-group">
-              <button @click="addProduct" type="button" class="btn btn-default">
-                Add Product
-              </button>
-            </div>
+          <div class="table-responsive">
+            <table class="table tablesorter thead-light table-sm">
+              <thead>
+                <th class="col-sm-3">Product Name</th>
+                <th>width</th>
+                <th>length</th>
+                <th>quantity</th>
+                <!-- <th>M2</th> -->
+                <th>Unit Price</th>
+                <th>Total</th>
+                <th></th>
+              </thead>
+
+              <tbody v-for="(product, index) in products" :key="index">
+                <td>
+                  <Multiselect
+                    class=""
+                    v-model="product.product_id"
+                    :searchable="true"
+                    placeholder="Choose Product"
+                    @change="onProductChange(index, $event)"
+                    :options="productList"
+                  />
+                </td>
+                <td>
+                  <base-input
+                    addonRightText="CM"
+                    @keypress="isNumber($event)"
+                    @change="onProductCalculate(index, $event)"
+                    input-classes="form-control-alternative"
+                    v-model="product.width"
+                  />
+                </td>
+                <td>
+                  <base-input
+                    addonRightText="CM"
+                    @keypress="isNumber($event)"
+                    @change="onProductCalculate(index, $event)"
+                    input-classes="form-control-alternative"
+                    v-model="product.length"
+                  />
+                </td>
+
+                <td>
+                  <base-input
+                    addonLeftText="Qty"
+                    @keypress="isNumber($event)"
+                    @change="onProductCalculate(index, $event)"
+                    :name="`products[${index}][quantity]`"
+                    input-classes="form-control-alternative"
+                    v-model="product.quantity"
+                  />
+                </td>
+
+                <td>
+                  <base-input
+                    addonLeftText="$"
+                    addonRightText=".00"
+                    @keypress="isNumber($event)"
+                    @change="onProductCalculate(index, $event)"
+                    placeholder="Unit Price"
+                    input-classes="form-control-alternative"
+                    v-model="product.unit_price"
+                  />
+                </td>
+
+                <td>$ {{ product.total_price }}</td>
+                <td>
+                  <span @click.prevent="remove(index)" class="delete-icon"
+                    ><i class="fa fa-trash"></i
+                  ></span>
+                </td>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group">
+            <button @click="addProduct" type="button" class="btn btn-default">
+              Add Product
+            </button>
           </div>
           <div v-if="!invoice.business_id" class="text-center pt-3 pb-5">
             Please select business type
@@ -402,6 +415,7 @@ export default {
       this.products.splice(index, 1);
     },
     onProductChange(index, pId) {
+      console.log(index, pId);
       const product = this.products[index];
       if (pId) {
         product.unit_price = this.allProductLists.find(
@@ -485,3 +499,14 @@ export default {
 };
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
+<style scoped>
+.table td {
+  padding: 0.5rem;
+  vertical-align: unset !important;
+  border-top: 1px solid #e9ecef;
+}
+
+.table td .form-group {
+  margin-bottom: 0;
+}
+</style>

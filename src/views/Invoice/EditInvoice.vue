@@ -5,7 +5,7 @@
   <div class="container-fluid mt--5 mb-5">
     <div class="row">
       <div class="col-xl-12 mb-3">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <div class="row">
             <div class="col-lg-2">
               <label class="form-control-label">Select Type</label>
@@ -60,7 +60,7 @@
 
     <div class="row mb-3">
       <div class="col-xl-6 order-xl-1">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -128,7 +128,7 @@
       </div>
 
       <div class="col-xl-6 pl-0 order-xl-2">
-        <card height="100%" shadow type="secondary" class="pb-4">
+        <card height="100%" shadow type="secondary" class="pb-4" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -158,7 +158,7 @@
 
     <div class="row">
       <div class="col-xl-12 order-xl-2">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">

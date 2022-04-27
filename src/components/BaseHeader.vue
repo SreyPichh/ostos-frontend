@@ -1,6 +1,6 @@
 <template>
   <div class="header" :class="{ [`bg-${type}`]: type }">
-    <div class="container-fluid">
+    <div class="container-fluid test">
       <div class="header-body">
         <slot></slot>
       </div>

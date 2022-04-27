@@ -26,7 +26,7 @@
       </navbar-toggle-button>
 
       <div
-        class="collapse navbar-collapse"
+        class="justify-content-end collapse navbar-collapse"
         :class="{ show: toggled }"
         :id="contentId"
         v-click-outside="closeMenu"

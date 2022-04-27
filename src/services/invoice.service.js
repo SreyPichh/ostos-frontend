@@ -1,27 +1,22 @@
-import axios from "axios";
-import authHeader from "./auth-header";
-const API_URL = "http://167.172.88.106/api/v1/invoices";
+import api from "./api";
+const API_URL = "invoices";
 class InvoiceService {
   getInvoices() {
-    return axios.get(API_URL, { headers: authHeader() });
+    return api.get(API_URL);
   }
   getInvoiceById(InvoiceId) {
-    return axios.get(API_URL + `/${InvoiceId}`, { headers: authHeader() });
+    return api.get(API_URL + `/${InvoiceId}`);
   }
   postInvoice(body) {
-    return axios
-      .post(API_URL, body, { headers: authHeader() })
-      .then((response) => {
-        return response.data;
-      });
-  }
-  updateInvoice(InvoiceId, body) {
-    return axios.patch(API_URL + `/${InvoiceId}`, body, {
-      headers: authHeader(),
+    return api.post(API_URL, body).then((response) => {
+      return response.data;
     });
   }
+  updateInvoice(InvoiceId, body) {
+    return api.patch(API_URL + `/${InvoiceId}`, body);
+  }
   deleteInvoice(InvoiceId) {
-    return axios.delete(API_URL + `/${InvoiceId}`, { headers: authHeader() });
+    return api.delete(API_URL + `/${InvoiceId}`);
   }
 }
 export default new InvoiceService();

@@ -1,34 +1,28 @@
-import axios from "axios";
-import authHeader from "./auth-header";
-const API_URL = "http://167.172.88.106/api/v1/";
+import api from "./api";
+const API_URL = "users";
 class UserService {
+  getUserBoard() {
+    return api.get("/user/profile");
+  }
   getUsers() {
-    return axios.get(API_URL + "clients", { headers: authHeader() });
+    return api.get("clients");
   }
   getUserById(userId) {
-    return axios.get(API_URL + "users" + `/${userId}`, {
-      headers: authHeader(),
-    });
+    return api.get(API_URL + `/${userId}`);
   }
   createUser(body) {
-    return axios
-      .post(API_URL + "register", body, { headers: authHeader() })
-      .then((response) => {
-        return response.data;
-      });
+    return api.post("register", body).then((response) => {
+      return response.data;
+    });
   }
   updateUser(userId, body) {
-    return axios.patch(API_URL + `users/${userId}`, body, {
-      headers: authHeader(),
-    });
+    return api.patch(API_URL + `/${userId}`, body);
   }
   deleteUser(userId) {
-    return axios.delete(API_URL + `users/${userId}`, {
-      headers: authHeader(),
-    });
+    return api.delete(API_URL + `/${userId}`);
   }
   getAdminBoard() {
-    return axios.get(API_URL + "admin", { headers: authHeader() });
+    return api.get("admin");
   }
 }
 export default new UserService();

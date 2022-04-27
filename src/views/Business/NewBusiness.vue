@@ -5,7 +5,7 @@
   <div class="container-fluid mt--5">
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -48,7 +48,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-xl-6 pl-0 order-xl-2">
-        <card height="100%" shadow type="secondary">
+        <card height="100%" shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -117,7 +117,7 @@
       </div>
 
       <div class="col-xl-6 pl-0 order-xl-3">
-        <card height="100%" shadow type="secondary" class="mb-3">
+        <card height="100%" shadow type="secondary" class="mb-3" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -161,7 +161,7 @@
           </div>
         </card>
 
-        <card height="100%" shadow type="secondary">
+        <card height="100%" shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -198,7 +198,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">

@@ -5,7 +5,7 @@
   <div class="container-fluid mt--5 mb-5">
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row justify-content-between">

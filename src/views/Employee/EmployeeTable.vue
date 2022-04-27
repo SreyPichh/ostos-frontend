@@ -10,10 +10,10 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h3 class="mb-0">
+          <h4 class="mb-0">
             All Employees :
             <span class="text-muted">{{ items.length }}</span>
-          </h3>
+          </h4>
         </div>
         <div class="col text-right">
           <router-link
@@ -40,7 +40,9 @@
           <th scope="row">
             <router-link
               :to="{ name: 'edit-employee', params: { UserId: row.item.id } }"
-              >{{ row.item.id }}</router-link
+              ><span class="font-weight-700">
+                {{ row.item.id }}
+              </span></router-link
             >
           </th>
           <td>

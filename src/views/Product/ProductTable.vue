@@ -6,14 +6,22 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card" v-if="!isLoading">
+  <div class="card my-3" v-if="businesses.length && !isLoading">
     <div class="card-header border-0">
       <div class="row align-items-center">
-        <div class="col d-flex">
-          <h3 class="mb-0">
+        <div class="col-lg-2 d-flex">
+          <h4 class="mb-0">
             All Products :
-            <span class="text-muted">{{ items.length }} items</span>
-          </h3>
+            <span class="text-muted">{{ items.length }}</span>
+          </h4>
+        </div>
+        <div class="col-lg-3 d-flex align-items-center">
+          <label class="form-control-label mr-2 mb-0">Business</label>
+          <Multiselect
+            @change="onSearchProduct"
+            v-model="searchParams.business"
+            :options="businesses"
+          />
         </div>
         <div class="col text-right">
           <router-link
@@ -41,14 +49,17 @@
           <th scope="row">
             <router-link
               :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
-              >{{ row.item.id }}</router-link
             >
+              <span class="font-weight-700">
+                {{ row.item.id }}
+              </span>
+            </router-link>
           </th>
           <td>
             {{ row.item.name }}
           </td>
           <td>
-            {{ businesses["value"] }}
+            {{ getBusinessesLabel(row.item.business_id) }}
           </td>
           <td>
             {{
@@ -123,15 +134,19 @@
 import ProductService from "../../services/product.service";
 import moment from "moment";
 import BusinessService from "../../services/business.service";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   name: "product-table",
-  components: {},
+  components: { Multiselect },
   data() {
     return {
       isLoading: true,
       deleteAlert: false,
       isPagination: true,
+      searchParams: {
+        businesse: [],
+      },
       businesses: [],
     };
   },
@@ -147,6 +162,12 @@ export default {
     });
   },
   methods: {
+    getBusinessesLabel(bId) {
+      if (this.businesses) {
+        const business = this.businesses.find((b) => b.value === bId);
+        return business.label;
+      }
+    },
     onPaginationClicked(value) {
       console.log(value);
       this.getAllProducts({ page: value });
@@ -179,6 +200,9 @@ export default {
     },
     onEditProduct(proId) {
       this.$router.push({ name: "edit-product", params: { Pid: proId } });
+    },
+    onSearchProduct() {
+      console.log(this.searchParams);
     },
   },
 };

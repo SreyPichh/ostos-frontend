@@ -1,6 +1,5 @@
 <template>
   <base-header
-    type="gradient-success"
     class="header pt-5 pt-lg-8 d-flex align-items-center"
   ></base-header>
   <div class="container-fluid mt--7">

@@ -2,14 +2,26 @@
   <base-header
     class="header pt-5 pt-lg-8 d-flex align-items-center"
   ></base-header>
-  <div class="container-fluid mt--5 mb-5" v-if="businesses.length !== 0">
-    <div class="row mb-3">
-      <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary">
+
+  <div v-if="isLoading" class="d-flex justify-content-center mt-9">
+    <scaling-squares-spinner
+      :animation-duration="1250"
+      :size="65"
+      :color="'#ff1d5e'"
+    />
+  </div>
+
+  <div
+    class="container-fluid mt--5 mb-5"
+    v-if="businesses.length !== 0 && !isLoading"
+  >
+    <div class="row my-3">
+      <div class="col-xl-12 order-xl-1">
+        <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row justify-content-between form-inline">
-                <div class="col d-flex form-inline">
+                <div class="col-6 d-flex form-inline">
                   <h3 class="mb-0 mr-2">Product Info</h3>
                   <i
                     class="my-favourite"
@@ -21,7 +33,7 @@
                     @click.prevent="onSetAsFavourite"
                   ></i>
                 </div>
-                <div class="col-2 d-flex justify-content-end">
+                <div class="col d-flex justify-content-end">
                   <lable class="text-green mr-2">Active</lable>
                   <base-switch
                     :value="true"
@@ -74,7 +86,7 @@
         </card>
       </div>
     </div>
-    <div class="float-right">
+    <div class="float-right mb-3">
       <button
         @click.prevent="createNewProduct()"
         type="button"
@@ -99,10 +111,12 @@ export default {
       product: {},
       businesses: [],
       isFavourite: false,
+      isLoading: true,
     };
   },
   mounted() {
     BusinessService.getBusinesses().then((items) => {
+      this.isLoading = false;
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
       });

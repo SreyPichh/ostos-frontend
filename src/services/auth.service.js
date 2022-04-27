@@ -1,9 +1,9 @@
-import axios from "axios";
-const API_URL = "http://167.172.88.106/api/v1/";
+import api from "./api";
+import TokenService from "./token.service";
 class AuthService {
   login(user) {
-    return axios
-      .post(API_URL + "oauth/token", {
+    return api
+      .post("oauth/token", {
         username: user.email,
         password: user.password,
         client_id: "1",
@@ -12,25 +12,27 @@ class AuthService {
       })
       .then((response) => {
         if (response.data.access_token) {
-          axios
-            .get(API_URL + "user/profile", {
-              headers: {
-                Authorization: "Bearer " + response.data.access_token,
-              },
-            })
-            .then((user) => {
-              response.data.user = user.data.data;
-              localStorage.setItem("user", JSON.stringify(response.data));
-            });
+          TokenService.setUser(response.data);
+          // api
+          //   .get("user/profile", {
+          //     headers: {
+          //       Authorization: "Bearer " + response.data.access_token,
+          //     },
+          //   })
+          //   .then((user) => {
+          //     response.data.user = user.data.data;
+          //     localStorage.setItem("user", JSON.stringify(response.data));
+          //   });
         }
         return response.data;
       });
   }
   logout() {
-    localStorage.removeItem("user");
+    TokenService.removeUser();
+    // localStorage.removeItem("user");
   }
   register(user) {
-    return axios.post(API_URL + "signup", {
+    return api.post("signup", {
       username: user.username,
       email: user.email,
       password: user.password,
