@@ -186,7 +186,7 @@
             </div>
           </template>
 
-          <div class="table-responsive">
+          <div class="table-responsive pb-7" v-if="invoice.business_id">
             <table class="table tablesorter thead-light table-sm">
               <thead>
                 <th class="col-sm-3">Product Name</th>
@@ -202,7 +202,6 @@
               <tbody v-for="(product, index) in products" :key="index">
                 <td>
                   <Multiselect
-                    class=""
                     v-model="product.product_id"
                     :searchable="true"
                     placeholder="Choose Product"
@@ -260,12 +259,13 @@
                 </td>
               </tbody>
             </table>
+            <div class="form-group">
+              <button @click="addProduct" type="button" class="btn btn-default">
+                Add Product
+              </button>
+            </div>
           </div>
-          <div class="form-group">
-            <button @click="addProduct" type="button" class="btn btn-default">
-              Add Product
-            </button>
-          </div>
+
           <div v-if="!invoice.business_id" class="text-center pt-3 pb-5">
             Please select business type
           </div>
@@ -391,7 +391,6 @@ export default {
           total_price: "",
         },
       ];
-      console.log(this.allProductLists);
       this.productList = this.allProductLists
         .filter((product) => product.business_id === id)
         .map((item) => {
@@ -415,7 +414,6 @@ export default {
       this.products.splice(index, 1);
     },
     onProductChange(index, pId) {
-      console.log(index, pId);
       const product = this.products[index];
       if (pId) {
         product.unit_price = this.allProductLists.find(
