@@ -2,8 +2,14 @@
   <base-header
     class="header pt-5 pt-lg-8 d-flex align-items-center"
   ></base-header>
-
-  <div class="container-fluid mt--5">
+  <div v-if="isLoading" class="d-flex justify-content-center mt-9">
+    <scaling-squares-spinner
+      :animation-duration="1250"
+      :size="65"
+      :color="'#ff1d5e'"
+    />
+  </div>
+  <div class="container-fluid mt--5" v-if="!isLoading">
     <div class="row">
       <div class="col-xl-12 order-xl-1">
         <card shadow type="secondary" bodyClasses="pb-0">
@@ -147,7 +153,6 @@ export default {
   },
   mounted() {
     this.isLoading = true;
-    this.userId = this.$route.params.UserId;
     userProfile.getUserProfile().then((item) => {
       this.userProfile = item.data.data;
       this.isLoading = false;

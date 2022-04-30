@@ -189,10 +189,19 @@
           <div class="table-responsive pb-7" v-if="invoice.business_id">
             <table class="table tablesorter thead-light table-sm">
               <thead>
-                <th class="col-sm-3">Product Name</th>
-                <th>width</th>
-                <th>length</th>
-                <th>quantity</th>
+                <th
+                  :class="selectedBusiness !== 'car' ? 'col-sm-4' : 'col-sm-5'"
+                >
+                  Product Name
+                </th>
+                <template v-if="selectedBusiness == 'printing'">
+                  <th>ALL Cover</th>
+                </template>
+                <template v-if="selectedBusiness !== 'car'">
+                  <th>width</th>
+                  <th>length</th>
+                  <th>quantity</th>
+                </template>
                 <!-- <th>M2</th> -->
                 <th>Unit Price</th>
                 <th>Total</th>
@@ -209,36 +218,47 @@
                     :options="productList"
                   />
                 </td>
-                <td>
-                  <base-input
-                    addonRightText="CM"
-                    @keypress="isNumber($event)"
-                    @change="onProductCalculate(index, $event)"
-                    input-classes="form-control-alternative"
-                    v-model="product.width"
-                  />
-                </td>
-                <td>
-                  <base-input
-                    addonRightText="CM"
-                    @keypress="isNumber($event)"
-                    @change="onProductCalculate(index, $event)"
-                    input-classes="form-control-alternative"
-                    v-model="product.length"
-                  />
-                </td>
-
-                <td>
-                  <base-input
-                    addonLeftText="Qty"
-                    @keypress="isNumber($event)"
-                    @change="onProductCalculate(index, $event)"
-                    :name="`products[${index}][quantity]`"
-                    input-classes="form-control-alternative"
-                    v-model="product.quantity"
-                  />
-                </td>
-
+                <template v-if="selectedBusiness == 'printing'">
+                  <td>
+                    <base-checkbox
+                      @input="onCoverALlClick(index, $event)"
+                      v-model="product.coverAll"
+                    >
+                    </base-checkbox>
+                  </td>
+                </template>
+                <template v-if="selectedBusiness !== 'car'">
+                  <td>
+                    <base-input
+                      addonRightText="CM"
+                      :disabled="product.coverAll"
+                      @keypress="isNumber($event)"
+                      @change="onProductCalculate(index, $event)"
+                      input-classes="form-control-alternative"
+                      v-model="product.width"
+                    />
+                  </td>
+                  <td>
+                    <base-input
+                      addonRightText="CM"
+                      :disabled="product.coverAll"
+                      @keypress="isNumber($event)"
+                      @change="onProductCalculate(index, $event)"
+                      input-classes="form-control-alternative"
+                      v-model="product.length"
+                    />
+                  </td>
+                  <td>
+                    <base-input
+                      addonLeftText="Qty"
+                      @keypress="isNumber($event)"
+                      @change="onProductCalculate(index, $event)"
+                      :name="`products[${index}][quantity]`"
+                      input-classes="form-control-alternative"
+                      v-model="product.quantity"
+                    />
+                  </td>
+                </template>
                 <td>
                   <base-input
                     addonLeftText="$"
@@ -329,17 +349,7 @@ export default {
       employees: [],
       productList: [],
       allProductLists: [],
-      products: [
-        {
-          product_id: "",
-          product_name: "",
-          width: "",
-          length: "",
-          quantity: "",
-          unit_price: "",
-          total_price: "",
-        },
-      ],
+      products: [],
       warningAlert: false,
     };
   },
@@ -352,7 +362,7 @@ export default {
       });
     });
 
-    ProductService.getProducts().then((items) => {
+    ProductService.getProducts({ limit: 0 }).then((items) => {
       this.isLoading = false;
       this.allProductLists = items.data.data;
     });
@@ -380,22 +390,38 @@ export default {
     },
     onBusinessSelected(id) {
       this.warningAlert = false;
-      this.products = [
-        {
-          product_id: "",
-          product_name: "",
-          width: "",
-          length: "",
-          quantity: "",
-          unit_price: "",
-          total_price: "",
-        },
-      ];
-      this.productList = this.allProductLists
-        .filter((product) => product.business_id === id)
-        .map((item) => {
-          return { label: item.name, value: item.id };
-        });
+      if (id) {
+        this.selectedBusiness = this.businesses
+          .find((b) => b.value === id)
+          .label.toLowerCase()
+          .trim();
+        this.products = [
+          {
+            product_id: "",
+            product_name: "",
+            coverAll: false,
+            width: "",
+            length: "",
+            quantity: "",
+            unit_price: "",
+            total_price: 0,
+          },
+        ];
+        this.productList = this.allProductLists
+          .filter((product) => product.business_id === id)
+          .map((item) => {
+            return { label: item.name, value: item.id };
+          });
+      }
+    },
+    onCoverALlClick(index, isChecked) {
+      const product = this.products[index];
+      product.coverAll = isChecked;
+      if (isChecked) {
+        product.width = "";
+        product.length = "";
+      }
+      this.onProductCalculate(index);
     },
 
     // Products
@@ -407,7 +433,7 @@ export default {
         length: "",
         quantity: "",
         unit_price: "",
-        total_price: "",
+        total_price: 0,
       });
     },
     remove(index) {
@@ -422,34 +448,28 @@ export default {
       } else {
         product.unit_price = "";
       }
-      product.total_price = "";
+      product.total_price = 0;
       product.width = "";
       product.length = "";
       product.quantity = "";
     },
     onProductCalculate(index) {
       const product = this.products[index];
-      // Product size
-      const width = product.width;
-      const length = product.length;
-      const m2 = (width * length) / 10000;
-      console.log("M2", m2);
+      const isCoverAll = product.coverAll;
       const unit_price = product.unit_price;
       const qty = product.quantity;
-      this.products[index].total_price = m2 * unit_price * qty;
-
-      // L16<=0,0
-      // L16<=0.1,"$0.50"
-      // L16<=0.7,"$1.00"
-      // L16<=0.75,"$1.00"
-      // L16<=0.8,"$1.00"
-      // L16<=1,"$1.00"
-      // L16<=1.3,"$1.50"
-      // L16<=1.5,"$1.50"
-      // L16<=1.8,"$2.00"
-      // L16<=15.4,"$15.00"
-      // L16<=15.5,"$15.50"
-      // L16<=15.9,"$15.50"
+      const width = product.width;
+      const length = product.length;
+      // Set Total Price
+      if (!isCoverAll) {
+        const m2 = (width * length) / 10000;
+        this.products[index].total_price = m2 * unit_price * qty;
+      } else if (this.selectedBusiness !== "ktv") {
+        console.log("this from ktv");
+        this.products[index].total_price = unit_price * qty;
+      } else {
+        this.products[index].total_price = unit_price * qty;
+      }
     },
     createNewInvoice() {
       const invoice = this.invoice;

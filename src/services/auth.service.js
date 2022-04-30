@@ -12,24 +12,22 @@ class AuthService {
       })
       .then((response) => {
         if (response.data.access_token) {
-          TokenService.setUser(response.data);
-          // api
-          //   .get("user/profile", {
-          //     headers: {
-          //       Authorization: "Bearer " + response.data.access_token,
-          //     },
-          //   })
-          //   .then((user) => {
-          //     response.data.user = user.data.data;
-          //     localStorage.setItem("user", JSON.stringify(response.data));
-          //   });
+          api
+            .get("user/profile", {
+              headers: {
+                Authorization: "Bearer " + response.data.access_token,
+              },
+            })
+            .then((user) => {
+              response.data.user = user.data.data;
+              localStorage.setItem("user", JSON.stringify(response.data));
+            });
         }
-        return response.data;
+        TokenService.setUser(response.data);
       });
   }
   logout() {
     TokenService.removeUser();
-    // localStorage.removeItem("user");
   }
   register(user) {
     return api.post("signup", {

@@ -6,6 +6,11 @@
       :color="'#ff1d5e'"
     />
   </div>
+  <div class="card my-3" v-if="businesses.length == 0 && !isLoading">
+    <div class="text-center p-5">
+      There is no Business, Please create business at least 1
+    </div>
+  </div>
   <div class="card my-3" v-if="businesses.length && !isLoading">
     <div class="card-header border-0">
       <div class="row align-items-center">
@@ -25,7 +30,7 @@
         </div>
         <div class="col text-right">
           <router-link
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm btn-default"
             :to="{ name: 'new-product' }"
           >
             Create New

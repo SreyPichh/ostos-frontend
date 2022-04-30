@@ -5,19 +5,6 @@
     :show-toggle-button="false"
     expand
   >
-    <!-- <form
-      class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto"
-    >
-      <div class="form-group mb-0">
-        <base-input
-          placeholder="Search"
-          class="input-group-alternative"
-          alternative=""
-          addon-right-icon="fas fa-search"
-        >
-        </base-input>
-      </div>
-    </form> -->
     <ul
       v-if="currentUser"
       class="navbar-nav align-items-center d-none d-md-flex justify-content-end"
@@ -73,12 +60,12 @@ export default {
     currentUser() {
       return this.$store.state.auth.user.user;
     },
-    showAdminBoard() {
-      if (this.currentUser && this.currentUser["roles"]) {
-        return this.currentUser["roles"].includes("ROLE_ADMIN");
-      }
-      return false;
-    },
+    // showAdminBoard() {
+    //   if (this.currentUser && this.currentUser["roles"]) {
+    //     return this.currentUser["roles"].includes("ROLE_ADMIN");
+    //   }
+    //   return false;
+    // },
   },
   methods: {
     toggleSidebar() {

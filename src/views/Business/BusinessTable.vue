@@ -16,7 +16,7 @@
         </div>
         <div class="col text-right">
           <router-link
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm btn-default"
             :to="{ name: 'new-business' }"
           >
             Create New

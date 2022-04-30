@@ -117,7 +117,13 @@
       </div>
 
       <div class="col-xl-6 pl-0 order-xl-3">
-        <card height="100%" shadow type="secondary" class="mb-3" bodyClasses="pb-0">
+        <card
+          height="100%"
+          shadow
+          type="secondary"
+          class="mb-3"
+          bodyClasses="pb-0"
+        >
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
