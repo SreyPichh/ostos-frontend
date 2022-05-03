@@ -38,7 +38,7 @@
           :link="{
             name: 'Reciept',
             icon: 'fa fa-file-alt text-red',
-            path: '/reciepts',
+            path: '/receipts',
           }"
         />
         <sidebar-item

@@ -6,8 +6,10 @@ class BusinessService {
       params: params,
     });
   }
-  getBusinessById(Pid) {
-    return api.get(API_URL + `/${Pid}`);
+  getBusinessById(Pid, params) {
+    return api.get(API_URL + `/${Pid}`, {
+      params: params,
+    });
   }
   postBusiness(body) {
     return api.post(API_URL, body).then((response) => {

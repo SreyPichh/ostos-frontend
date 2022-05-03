@@ -23,11 +23,11 @@
                   <i
                     class="my-favourite"
                     :class="
-                      isFavourite
+                      product.isFavorite
                         ? 'fa fa-star text-danger'
                         : 'far fa-star text-danger'
                     "
-                    @click.prevent="onSetAsFavourite"
+                    @click.prevent="product.isFavorite = !product.isFavorite"
                   ></i>
                 </div>
                 <div class="col d-flex justify-content-end">
@@ -105,7 +105,6 @@ export default {
       isLoading: true,
       product: {},
       businesses: [],
-      isFavourite: false,
     };
   },
   mounted() {
@@ -124,7 +123,6 @@ export default {
   },
   methods: {
     updateProduct() {
-      this.product.isActive = this.product.isActive ? 1 : 0;
       ProductService.updateProduct(this.productId, this.product).then(
         () => {
           this.$router.push("/products");
@@ -133,9 +131,6 @@ export default {
           alert("error to get data", error);
         }
       );
-    },
-    onSetAsFavourite() {
-      this.isFavourite = !this.isFavourite;
     },
     // Allow only Nubmer
     isNumber(evt) {

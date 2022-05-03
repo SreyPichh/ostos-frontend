@@ -10,12 +10,12 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h4 class="mb-0">Invoice List</h4>
+          <h4 class="mb-0">Receipt List</h4>
         </div>
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-default"
-            :to="{ name: 'new-invoice' }"
+            :to="{ name: 'new-receipt' }"
           >
             Create New
           </router-link>
@@ -26,7 +26,7 @@
     <div class="table-responsive" id="printMe">
       <base-table thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th>Invoice No</th>
+          <th>Receipt No</th>
           <th>Customer</th>
           <th>Total</th>
           <th>Status</th>
@@ -39,16 +39,16 @@
           <th scope="row">
             <router-link
               :to="{
-                name: 'edit-invoice',
-                params: { invoiceId: row.item.id },
+                name: 'edit-receipt',
+                params: { receiptId: row.item.id },
               }"
               ><span class="font-weight-700">
-                {{ row.item.invoice_number }}
+                {{ row.item.receipt_number }}
               </span></router-link
             >
           </th>
           <td>
-            {{ row.item.customer_name }}
+            {{ row.item.customer }}
           </td>
           <td>${{ row.item.total }}.00</td>
           <td>
@@ -76,14 +76,14 @@
           </td>
           <td>
             <base-button
-              @click="onEditInvoice(row.item.id)"
+              @click="onEditReceipt(row.item.id)"
               type="default"
               size="sm"
             >
               <i class="fas fa-pencil-alt"></i>
             </base-button>
             <base-button type="default" size="sm">
-              <router-link to="/invoices/preview" target="_blank">
+              <router-link to="/receipts/preview" target="_blank">
                 <i style="color: #fff" class="fas fa-print"></i>
               </router-link>
             </base-button>
@@ -111,14 +111,12 @@
     </template>
     <div class="py-3 text-center">
       <i class="fas fa-trash fa-3x"></i>
-      <h4 class="heading mt-4">Are you sure, To delete this Invoice?</h4>
+      <h4 class="heading mt-4">Are you sure, To delete this Receipt?</h4>
       <p>Click OK to delete</p>
     </div>
 
     <template v-slot:footer>
-      <base-button @click.prevent="deleteInvoice" type="white"
-        >Ok, Got it</base-button
-      >
+      <base-button @click="deleteReceipt" type="white">Ok, Got it</base-button>
       <base-button
         type="link"
         text-color="white"
@@ -131,11 +129,11 @@
   </modal>
 </template>
 <script>
-import InvoiceService from "../../services/invoice.service";
+import ReceiptService from "../../services/receipt.service";
 import moment from "moment";
 
 export default {
-  name: "invoice-table",
+  name: "receipt-table",
   data() {
     return {
       isLoading: true,
@@ -143,9 +141,9 @@ export default {
     };
   },
   methods: {
-    getAllInvoices(options) {
+    getAllReceipts(options) {
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      ReceiptService.getReceipts(options).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
@@ -156,20 +154,20 @@ export default {
         }
       );
     },
-    onDeleteClick(invoiceId) {
+    onDeleteClick(receiptId) {
       this.deleteAlert = true;
-      this.isDeletingId = invoiceId;
+      this.isDeletingId = receiptId;
     },
-    deleteInvoice() {
-      InvoiceService.deleteInvoice(this.isDeletingId).then(() => {
+    deleteReceipt() {
+      ReceiptService.deleteReceipt(this.isDeletingId).then(() => {
         this.deleteAlert = false;
-        this.getAllInvoices();
+        this.getAllReceipts();
       });
     },
-    onEditInvoice(invoiceId) {
+    onEditReceipt(receiptId) {
       this.$router.push({
-        name: "edit-invoice",
-        params: { invoiceId: invoiceId },
+        name: "edit-receipt",
+        params: { receiptId: receiptId },
       });
     },
   },
@@ -177,7 +175,7 @@ export default {
     this.moment = moment;
   },
   mounted() {
-    this.getAllInvoices();
+    this.getAllReceipts();
   },
 };
 </script>

@@ -15,14 +15,6 @@
         <card shadow type="secondary" bodyClasses="pb-0">
           <div class="row">
             <div class="col-lg-2">
-              <label class="form-control-label">Select Type</label>
-              <Multiselect
-                v-model="invoice.invoiceType"
-                mode="single"
-                :options="['Invoice', 'Reciept', 'Quote']"
-              />
-            </div>
-            <div class="col-lg-2">
               <base-input
                 addonLeftText="#INV"
                 label="Invoice No"
@@ -34,13 +26,16 @@
               />
             </div>
             <div class="col-lg-3">
-              <base-input label="Date" v-model="invoice.date">
-                <input
-                  class="form-control"
-                  type="datetime-local"
-                  id="example-datetime-local-input"
-                />
-              </base-input>
+              <!-- <base-input label="Date" v-model="invoice.date">
+                <input class="form-control" type="date" />
+              </base-input> -->
+              {{ invoice.date }}
+              <input
+                type="date"
+                class="today"
+                v-model="invoice.date"
+                data-date="invoice.date"
+              />
             </div>
             <div class="col-lg-2">
               <label class="form-control-label">Status</label>
@@ -100,9 +95,17 @@
             <div class="col-lg-6">
               <base-input
                 addonLeftIcon="fa fa-phone"
-                placeholder="Phone Number"
+                placeholder="Phone Number 1"
                 input-classes="form-control-alternative"
-                v-model="invoice.cPhone"
+                v-model="invoice.cPhone1"
+              />
+            </div>
+            <div class="col-lg-6">
+              <base-input
+                addonLeftIcon="fa fa-phone"
+                placeholder="Phone Number 2"
+                input-classes="form-control-alternative"
+                v-model="invoice.cPhone2"
               />
             </div>
           </div>
@@ -113,16 +116,6 @@
                 placeholder="Address 1"
                 input-classes="form-control-alternative"
                 v-model="invoice.cAdd1"
-              />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <base-input
-                alternative=""
-                placeholder="Address 2"
-                input-classes="form-control-alternative"
-                v-model="invoice.cAdd2"
               />
             </div>
           </div>
@@ -166,7 +159,7 @@
 
     <div class="row my-3">
       <div class="col-xl-12 order-xl-2">
-        <card shadow type="secondary" bodyClasses="py-0">
+        <card shadow type="secondary" bodyClasses="p-0">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center justify-content-between">
@@ -195,14 +188,14 @@
                   Product Name
                 </th>
                 <template v-if="selectedBusiness == 'printing'">
-                  <th>ALL Cover</th>
+                  <th>ម៉ៅផ្ដាច់</th>
                 </template>
                 <template v-if="selectedBusiness !== 'car'">
                   <th>width</th>
                   <th>length</th>
+                  <th v-if="selectedBusiness == 'printing'">M&sup2;</th>
                   <th>quantity</th>
                 </template>
-                <!-- <th>M2</th> -->
                 <th>Unit Price</th>
                 <th>Total</th>
                 <th></th>
@@ -248,6 +241,10 @@
                       v-model="product.length"
                     />
                   </td>
+                  <td v-if="selectedBusiness == 'printing'">
+                    <span>{{ (product.width * product.length) / 10000 }}</span>
+                    m&sup2;
+                  </td>
                   <td>
                     <base-input
                       addonLeftText="Qty"
@@ -279,8 +276,12 @@
                 </td>
               </tbody>
             </table>
-            <div class="form-group">
-              <button @click="addProduct" type="button" class="btn btn-default">
+            <div class="form-group pl-2">
+              <button
+                @click.prevent="addProduct"
+                type="button"
+                class="btn btn-default"
+              >
                 Add Product
               </button>
             </div>
@@ -331,8 +332,9 @@ import BusinessService from "../../services/business.service";
 import ProductService from "../../services/product.service";
 import UserService from "../../services/user.service";
 import InvoiceService from "../../services/invoice.service";
-
 import Multiselect from "@vueform/multiselect";
+import moment from "moment";
+
 export default {
   components: {
     Multiselect,
@@ -344,6 +346,7 @@ export default {
       invoice: {
         invoiceType: "Invoice",
         status: "Paid",
+        date: moment("2022-03-07", "YYYY-MM-DD").format("dddd MM YYYY"),
       },
       businesses: [],
       employees: [],
@@ -355,6 +358,8 @@ export default {
   },
   mounted() {
     this.isLoading = true;
+    console.log(document.querySelector(".today"));
+    // document.querySelector(".today").value = this.invoice.date;
     BusinessService.getBusinesses().then((items) => {
       this.isLoading = false;
       this.businesses = items.data.data.map((item) => {
@@ -483,8 +488,9 @@ export default {
         due_amount: invoice.due_amount,
         business_id: invoice.business_id,
         customer_name: invoice.cName,
-        customer_phone_number: invoice.cPhone,
         customer_email: invoice.cEmail,
+        customer_phone_number1: invoice.cPhone1,
+        customer_phone_number2: invoice.cPhone2,
         customer_address1: invoice.cAdd1,
         customer_address2: invoice.cAdd2,
         status: invoice.status,
@@ -492,14 +498,16 @@ export default {
         employess_data: employees,
         product_data: this.products,
       };
-      InvoiceService.postInvoice(data).then(
-        () => {
-          this.$router.push("/products");
-        },
-        (error) => {
-          alert("error to get data", error);
-        }
-      );
+      if (data) {
+        InvoiceService.postInvoice(data).then(
+          () => {
+            this.$router.push("/products");
+          },
+          (error) => {
+            alert("error to get data", error);
+          }
+        );
+      }
     },
 
     // Allow only Nubmer
@@ -519,9 +527,13 @@ export default {
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
 .table td {
-  padding: 0.5rem;
+  padding: 0.5rem !important;
   vertical-align: unset !important;
   border-top: 1px solid #e9ecef;
+}
+
+.table th {
+  padding: 0.5rem !important;
 }
 
 .table td .form-group {

@@ -48,24 +48,29 @@
   </base-nav>
 </template>
 <script>
+import UserProfileService from "../services/userProfile.service";
+
 export default {
   data() {
     return {
       activeNotifications: false,
+      currentUser: null,
       showMenu: false,
       searchQuery: "",
     };
   },
   computed: {
-    currentUser() {
-      return this.$store.state.auth.user.user;
-    },
     // showAdminBoard() {
     //   if (this.currentUser && this.currentUser["roles"]) {
     //     return this.currentUser["roles"].includes("ROLE_ADMIN");
     //   }
     //   return false;
     // },
+  },
+  mounted() {
+    UserProfileService.getUserProfile().then((user) => {
+      this.currentUser = user.data.data;
+    });
   },
   methods: {
     toggleSidebar() {

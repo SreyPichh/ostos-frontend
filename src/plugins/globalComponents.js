@@ -19,9 +19,12 @@ import Tabs from "../components/Tabs/Tabs";
 
 import { ElTooltip, ElPopover } from "element-plus";
 import { ScalingSquaresSpinner } from "epic-spinners";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 const GlobalComponents = {
   install(app) {
+    app.component("date-picker", DatePicker);
     app.component("scaling-squares-spinner", ScalingSquaresSpinner);
     app.component("badge", Badge);
     app.component("base-alert", BaseAlert);

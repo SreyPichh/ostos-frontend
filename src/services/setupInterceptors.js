@@ -23,17 +23,19 @@ const setup = (store) => {
         // Access Token was expired
         if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;
-          try {
-            const rs = await axiosInstance.post("/oauth/refreshtoken", {
-              refresh_token: TokenService.getLocalRefreshToken(),
-            });
-            const { access_token } = rs.data;
-            store.dispatch("oauth/refresh_token", access_token);
-            TokenService.updateLocalAccessToken(access_token);
-            return axiosInstance(originalConfig);
-          } catch (_error) {
-            return Promise.reject(_error);
-          }
+          store.dispatch("auth/logout");
+          this.$router.push("/login");
+          // try {
+          //   const rs = await axiosInstance.post("/oauth/refreshtoken", {
+          //     refresh_token: TokenService.getLocalRefreshToken(),
+          //   });
+          //   const { access_token } = rs.data;
+          //   store.dispatch("oauth/refresh_token", access_token);
+          //   TokenService.updateLocalAccessToken(access_token);
+          //   return axiosInstance(originalConfig);
+          // } catch (_error) {
+          //   return Promise.reject(_error);
+          // }
         }
       }
       return Promise.reject(err);

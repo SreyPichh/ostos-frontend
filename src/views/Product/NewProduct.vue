@@ -26,11 +26,11 @@
                   <i
                     class="my-favourite"
                     :class="
-                      isFavourite
+                      product.isFavorite
                         ? 'fa fa-star text-danger'
                         : 'far fa-star text-danger'
                     "
-                    @click.prevent="onSetAsFavourite"
+                    @click.prevent="product.isFavorite = !product.isFavorite"
                   ></i>
                 </div>
                 <div class="col d-flex justify-content-end">
@@ -92,7 +92,7 @@
         type="button"
         class="btn btn-default"
       >
-        Save
+        Create
       </button>
     </div>
   </div>
@@ -108,9 +108,11 @@ export default {
   name: "new-product",
   data() {
     return {
-      product: {},
+      product: {
+        isFavorite: false,
+        isActive: true,
+      },
       businesses: [],
-      isFavourite: false,
       isLoading: true,
     };
   },
@@ -132,9 +134,6 @@ export default {
           alert("error to get data", error);
         }
       );
-    },
-    onSetAsFavourite() {
-      this.isFavourite = !this.isFavourite;
     },
     // Allow only Nubmer
     isNumber(evt) {

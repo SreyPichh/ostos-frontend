@@ -12,18 +12,9 @@ class AuthService {
       })
       .then((response) => {
         if (response.data.access_token) {
-          api
-            .get("user/profile", {
-              headers: {
-                Authorization: "Bearer " + response.data.access_token,
-              },
-            })
-            .then((user) => {
-              response.data.user = user.data.data;
-              localStorage.setItem("user", JSON.stringify(response.data));
-            });
+          TokenService.setUser(response.data);
         }
-        TokenService.setUser(response.data);
+        return response.data;
       });
   }
   logout() {

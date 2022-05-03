@@ -22,6 +22,10 @@ import Employee from "../views/Employee/Employee.vue";
 import NewEmployee from "../views/Employee/NewEmployee.vue";
 import EditEmployee from "../views/Employee/EditEmployee.vue";
 
+import Quote from "../views/Quote/Quote.vue";
+
+import Receipt from "../views/Receipt/Receipt.vue";
+
 import Profile from "../views/UserProfile.vue";
 
 import Login from "../views/Login.vue";
@@ -72,6 +76,26 @@ const routes = [
         components: { default: EditInvoice },
       },
       {
+        path: "/quotes",
+        name: "quotes",
+        components: { default: Quote },
+      },
+      {
+        path: "/quotes/new",
+        name: "new-quote",
+        components: { default: Quote },
+      },
+      {
+        path: "/receipts",
+        name: "receipts",
+        components: { default: Receipt },
+      },
+      {
+        path: "/receipts/new",
+        name: "new-receipt",
+        components: { default: Receipt },
+      },
+      {
         path: "/products",
         name: "products",
         components: { default: Product },
@@ -95,7 +119,8 @@ const routes = [
         path: "/employees/:UserId",
         name: "edit-employee",
         components: { default: EditEmployee },
-      },      {
+      },
+      {
         path: "/employees/new",
         name: "new-employee",
         components: { default: NewEmployee },
@@ -147,15 +172,15 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   // const publicPages = ["/login", "/register", "/dashboard", "/invoices"];
-//   // const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem("user");
-//   if (!loggedIn) {
-//     next("/login");
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login", "/register"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("user");
+  if (authRequired && !loggedIn) {
+    next("/login");
+  } else {
+    next();
+  }
+});
 
 export default router;

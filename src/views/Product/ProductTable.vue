@@ -6,6 +6,7 @@
       :color="'#ff1d5e'"
     />
   </div>
+
   <div class="card my-3" v-if="businesses.length == 0 && !isLoading">
     <div class="text-center p-5">
       There is no Business, Please create business at least 1
@@ -23,11 +24,14 @@
         <div class="col-lg-3 d-flex align-items-center">
           <label class="form-control-label mr-2 mb-0">Business</label>
           <Multiselect
-            @change="onSearchProduct"
             v-model="searchParams.business"
             :options="businesses"
+            @clear="getAllProducts"
           />
         </div>
+        <base-button type="default" @click.prevent="onFilterProduct"
+          >Filter</base-button
+        >
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-default"
@@ -50,7 +54,7 @@
           <th>Action</th>
         </template>
 
-        <template v-slot:default="row">
+        <template v-slot:default="row" v-if="!isSearcing">
           <th scope="row">
             <router-link
               :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
@@ -78,6 +82,18 @@
           </td>
           <td>
             <base-button
+              @click="onSetFavorite(row.item.id, row.item.isFavorite)"
+              type="secondary"
+              size="sm"
+              ><i
+                :class="
+                  row.item.isFavorite
+                    ? 'fa fa-star text-danger'
+                    : 'far fa-star text-danger'
+                "
+              ></i
+            ></base-button>
+            <base-button
               @click="onEditProduct(row.item.id)"
               type="default"
               size="sm"
@@ -93,8 +109,17 @@
         </template>
       </base-table>
     </div>
-    <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-    <div v-if="isPagination">
+    <div v-if="isSearcing" class="d-flex justify-content-center p-5">
+      <scaling-squares-spinner
+        :animation-duration="1250"
+        :size="45"
+        :color="'#ff1d5e'"
+      />
+    </div>
+    <div v-if="items.length === 0 && !isSearcing" class="text-center p-5">
+      Empty Data
+    </div>
+    <div v-if="isPagination && items.length !== 0 && items.length > 10">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
@@ -147,10 +172,11 @@ export default {
   data() {
     return {
       isLoading: true,
+      isSearcing: false,
       deleteAlert: false,
       isPagination: true,
       searchParams: {
-        businesse: [],
+        business: [],
       },
       businesses: [],
     };
@@ -172,6 +198,17 @@ export default {
         const business = this.businesses.find((b) => b.value === bId);
         return business.label;
       }
+    },
+    onSetFavorite(productId, isFavorite) {
+      // console.log(productId, isFavorite);
+      ProductService.updateProduct(productId, { isFavorite: !isFavorite }).then(
+        () => {
+          this.getAllProducts();
+        },
+        (error) => {
+          alert("error to get data", error);
+        }
+      );
     },
     onPaginationClicked(value) {
       console.log(value);
@@ -206,8 +243,19 @@ export default {
     onEditProduct(proId) {
       this.$router.push({ name: "edit-product", params: { Pid: proId } });
     },
-    onSearchProduct() {
-      console.log(this.searchParams);
+    onFilterProduct() {
+      if (
+        this.searchParams.business &&
+        this.searchParams.business.length !== 0
+      ) {
+        this.isSearcing = true;
+        BusinessService.getBusinessById(this.searchParams.business, {
+          include: "product",
+        }).then((b) => {
+          this.isSearcing = false;
+          this.items = b.data.data.product.data;
+        });
+      }
     },
   },
 };
