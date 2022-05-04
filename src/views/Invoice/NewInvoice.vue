@@ -26,23 +26,40 @@
               />
             </div>
             <div class="col-lg-3">
-              <!-- <base-input label="Date" v-model="invoice.date">
-                <input class="form-control" type="date" />
-              </base-input> -->
-              {{ invoice.date }}
-              <input
-                type="date"
-                class="today"
-                v-model="invoice.date"
-                data-date="invoice.date"
-              />
+              <div class="form-group">
+                <label class="form-control-label">Date</label>
+                <v-date-picker
+                  class="inline-block h-full"
+                  :masks="masks"
+                  color="red"
+                  v-model="invoice.date"
+                >
+                  <template v-slot="{ inputValue, togglePopover }">
+                    <div class="d-flex items-center">
+                      <button
+                        class="py-2 px-3 border bg-red rounded-left"
+                        @click="togglePopover()"
+                      >
+                        <i class="fa fa-calendar-alt fa-lg text-white"></i>
+                      </button>
+                      <input
+                        :value="inputValue"
+                        class="px-2 border form-control bg-white"
+                        readonly
+                      />
+                    </div>
+                  </template>
+                </v-date-picker>
+              </div>
             </div>
             <div class="col-lg-2">
-              <label class="form-control-label">Status</label>
-              <Multiselect
-                v-model="invoice.status"
-                :options="['Paid', 'Unpaid', 'Partial Billed']"
-              />
+              <div class="form-group">
+                <label class="form-control-label">Status</label>
+                <Multiselect
+                  v-model="invoice.status"
+                  :options="['Paid', 'Unpaid', 'Partial Billed']"
+                />
+              </div>
             </div>
             <div class="col-lg-2">
               <base-input
@@ -333,7 +350,6 @@ import ProductService from "../../services/product.service";
 import UserService from "../../services/user.service";
 import InvoiceService from "../../services/invoice.service";
 import Multiselect from "@vueform/multiselect";
-import moment from "moment";
 
 export default {
   components: {
@@ -346,7 +362,10 @@ export default {
       invoice: {
         invoiceType: "Invoice",
         status: "Paid",
-        date: moment("2022-03-07", "YYYY-MM-DD").format("dddd MM YYYY"),
+        date: new Date(),
+      },
+      masks: {
+        input: "WWWW, DD-MM-YYYY",
       },
       businesses: [],
       employees: [],
@@ -358,8 +377,6 @@ export default {
   },
   mounted() {
     this.isLoading = true;
-    console.log(document.querySelector(".today"));
-    // document.querySelector(".today").value = this.invoice.date;
     BusinessService.getBusinesses().then((items) => {
       this.isLoading = false;
       this.businesses = items.data.data.map((item) => {
