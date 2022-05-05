@@ -16,35 +16,38 @@
           <div class="row">
             <div class="col-lg-2">
               <base-input
-                addonLeftText="#INV"
+                addonLeftText="#INV-"
                 label="Invoice No"
-                inputType="number"
                 @keypress="isNumber($event)"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative"
+                input-classes="form-control-alternative px-2"
+                disabled="true"
                 v-model="invoice.invoice_number"
               />
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-4">
               <div class="form-group">
                 <label class="form-control-label">Date</label>
                 <v-date-picker
                   class="inline-block h-full"
                   :masks="masks"
+                  :model-config="modelConfig"
+                  is-required
+                  mode="date"
                   color="red"
                   v-model="invoice.date"
                 >
                   <template v-slot="{ inputValue, togglePopover }">
                     <div class="d-flex items-center">
                       <button
-                        class="py-2 px-3 border bg-red rounded-left"
+                        class="px-3 border bg-red rounded-left"
                         @click="togglePopover()"
                       >
                         <i class="fa fa-calendar-alt fa-lg text-white"></i>
                       </button>
                       <input
                         :value="inputValue"
-                        class="px-2 border form-control bg-white"
+                        class="px-2 border rounded-0 form-control bg-white"
                         readonly
                       />
                     </div>
@@ -69,7 +72,7 @@
                 label="Due Amount"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.dueAmount"
+                v-model="invoice.due_amount"
               />
             </div>
           </div>
@@ -96,15 +99,15 @@
                 alternative=""
                 placeholder="Enter Name"
                 input-classes="form-control-alternative"
-                v-model="invoice.cName"
+                v-model="invoice.customer_name"
               />
             </div>
             <div class="col-lg-6">
               <base-input
                 addonLeftIcon="fa fa-envelope"
-                placeholder="jesse@example.com"
+                placeholder="-----"
                 input-classes="form-control-alternative"
-                v-model="invoice.cEmail"
+                v-model="invoice.customer_email"
               />
             </div>
           </div>
@@ -114,7 +117,7 @@
                 addonLeftIcon="fa fa-phone"
                 placeholder="Phone Number 1"
                 input-classes="form-control-alternative"
-                v-model="invoice.cPhone1"
+                v-model="invoice.customer_phone_number"
               />
             </div>
             <div class="col-lg-6">
@@ -122,7 +125,7 @@
                 addonLeftIcon="fa fa-phone"
                 placeholder="Phone Number 2"
                 input-classes="form-control-alternative"
-                v-model="invoice.cPhone2"
+                v-model="invoice.customer_phone_number2"
               />
             </div>
           </div>
@@ -132,7 +135,7 @@
                 alternative=""
                 placeholder="Address 1"
                 input-classes="form-control-alternative"
-                v-model="invoice.cAdd1"
+                v-model="invoice.customer_address1"
               />
             </div>
           </div>
@@ -160,12 +163,12 @@
           <div class="row">
             <div class="col-lg-12">
               <Multiselect
-                v-model="invoice.employee_id"
+                v-model="employees"
                 mode="tags"
                 placeholder="Choose employee"
                 :searchable="true"
                 :createTag="true"
-                :options="employees"
+                :options="employeeOptions"
               >
               </Multiselect>
             </div>
@@ -350,6 +353,7 @@ import ProductService from "../../services/product.service";
 import UserService from "../../services/user.service";
 import InvoiceService from "../../services/invoice.service";
 import Multiselect from "@vueform/multiselect";
+import moment from "moment";
 
 export default {
   components: {
@@ -360,15 +364,18 @@ export default {
     return {
       isLoading: true,
       invoice: {
-        invoiceType: "Invoice",
         status: "Paid",
-        date: new Date(),
+        date: moment(new Date()).format("YYYY-MM-DD"),
+      },
+      modelConfig: {
+        type: "string",
+        mask: "YYYY-MM-DD",
       },
       masks: {
         input: "WWWW, DD-MM-YYYY",
       },
       businesses: [],
-      employees: [],
+      employeeOptions: [],
       productList: [],
       allProductLists: [],
       products: [],
@@ -377,6 +384,10 @@ export default {
   },
   mounted() {
     this.isLoading = true;
+    InvoiceService.getLastInvoiceId().then((item) => {
+      const id = item.data.data.id;
+      this.invoice.invoice_number = String(id + 1).padStart(6, "0");
+    });
     BusinessService.getBusinesses().then((items) => {
       this.isLoading = false;
       this.businesses = items.data.data.map((item) => {
@@ -391,7 +402,8 @@ export default {
 
     UserService.getUsers().then((items) => {
       this.isLoading = false;
-      this.employees = items.data.data.map((item) => {
+      this.employeesList = items.data.data;
+      this.employeeOptions = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
       });
     });
@@ -487,7 +499,6 @@ export default {
         const m2 = (width * length) / 10000;
         this.products[index].total_price = m2 * unit_price * qty;
       } else if (this.selectedBusiness !== "ktv") {
-        console.log("this from ktv");
         this.products[index].total_price = unit_price * qty;
       } else {
         this.products[index].total_price = unit_price * qty;
@@ -495,30 +506,24 @@ export default {
     },
     createNewInvoice() {
       const invoice = this.invoice;
-      const employees = this.employees.map((emp) => {
-        return { employee_id: emp.value, employee_name: emp.label };
-      });
-      const data = {
-        type: invoice.invoiceType,
-        invoice_number: invoice.invoice_number,
-        date: invoice.date,
-        due_amount: invoice.due_amount,
-        business_id: invoice.business_id,
-        customer_name: invoice.cName,
-        customer_email: invoice.cEmail,
-        customer_phone_number1: invoice.cPhone1,
-        customer_phone_number2: invoice.cPhone2,
-        customer_address1: invoice.cAdd1,
-        customer_address2: invoice.cAdd2,
-        status: invoice.status,
-        total: invoice.total,
-        employess_data: employees,
-        product_data: this.products,
-      };
-      if (data) {
-        InvoiceService.postInvoice(data).then(
+      invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
+      invoice.total = 100;
+      console.log(this.employees);
+      if (this.employees) {
+        const employee_data = this.employees.map((empId) => {
+          const emp = this.employeesList.find((emp) => emp.id === empId);
+          return {
+            employee_id: emp.id,
+            employee_name: emp.name,
+          };
+        });
+        invoice.employee_data = employee_data;
+      }
+      invoice.product_data = this.products;
+      if (this.invoice) {
+        InvoiceService.postInvoice(this.invoice).then(
           () => {
-            this.$router.push("/products");
+            this.$router.push("/invoices");
           },
           (error) => {
             alert("error to get data", error);

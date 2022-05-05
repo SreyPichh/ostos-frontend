@@ -30,7 +30,9 @@
       <base-table class="table-sm" thead-classes="thead-light" :data="items">
         <template v-slot:columns>
           <th>ID</th>
+          <th>First Name & Last Name</th>
           <th>Name</th>
+          <th>Gender</th>
           <th>Created Date</th>
           <th>Updated Date</th>
           <th>Action</th>
@@ -45,8 +47,12 @@
               </span></router-link
             >
           </th>
+          <td>{{ row.item.f_name }} {{ row.item.l_name }}</td>
           <td>
             {{ row.item.name }}
+          </td>
+          <td>
+            {{ row.item.gender }}
           </td>
           <td>
             {{

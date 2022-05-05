@@ -43,7 +43,7 @@
                 params: { invoiceId: row.item.id },
               }"
               ><span class="font-weight-700">
-                {{ row.item.invoice_number }}
+                {{ `INV-` + String(row.item.invoice_number).padStart(6, "0") }}
               </span></router-link
             >
           </th>

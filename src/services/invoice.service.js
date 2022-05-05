@@ -18,5 +18,8 @@ class InvoiceService {
   deleteInvoice(InvoiceId) {
     return api.delete(API_URL + `/${InvoiceId}`);
   }
+  getLastInvoiceId() {
+    return api.get("get_last_id");
+  }
 }
 export default new InvoiceService();
