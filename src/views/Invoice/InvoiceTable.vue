@@ -83,7 +83,13 @@
               <i class="fas fa-pencil-alt"></i>
             </base-button>
             <base-button type="default" size="sm">
-              <router-link to="/invoices/preview" target="_blank">
+              <router-link
+                :to="{
+                  name: 'preview-invoice',
+                  params: { invoiceId: row.item.id },
+                }"
+                target="_blank"
+              >
                 <i style="color: #fff" class="fas fa-print"></i>
               </router-link>
             </base-button>

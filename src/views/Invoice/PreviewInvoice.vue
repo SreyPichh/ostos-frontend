@@ -1,5 +1,12 @@
 <template>
-  <body class="A5 container">
+  <div v-if="isLoading" class="d-flex justify-content-center mt-9">
+    <scaling-squares-spinner
+      :animation-duration="1250"
+      :size="65"
+      :color="'#ff1d5e'"
+    />
+  </div>
+  <body class="A5 container" v-if="!isLoading && invoice">
     <div class="row justify-content-md-center mt-3" id="noPrint">
       <div class="d-flex align-items-center">
         <button class="btn btn-secondary" @click="onPrintWindow()">
@@ -37,10 +44,20 @@
         <div class="d-flex justify-content-between">
           <div class="d-flex align-items-baseline">
             <h2 class="font-weight-bold mr-1">Invoce:</h2>
-            <p>INV-00001</p>
+            <p>
+              {{
+                invoice.object === "Invoice"
+                  ? "#INV-"
+                  : invoice.object === "Quote"
+                  ? "#QUN"
+                  : "#REN"
+              }}{{ invoice.invoice_number }}
+            </p>
           </div>
           <div class="text-right">
-            <p class="font-weight-bold">Date: Friday, 01st Apr, 2022</p>
+            <p class="font-weight-bold">
+              Date: <span>{{ invoice.date }}</span>
+            </p>
           </div>
         </div>
       </div>
@@ -48,7 +65,9 @@
       <div class="customer-info">
         <div class="mb-2 d-flex justify-content-between">
           <div class="w-100 d-flex align-items-start flex-column">
-            <h3 class="mr-2">Customer :</h3>
+            <h3 class="mr-2">
+              Customer : <span>{{ invoice.customer_name }}</span>
+            </h3>
             <h3 class="mr-2">ឈ្មោះ :</h3>
             <h3 class="mr-2">លេខទូរសព្ទ៍ :</h3>
           </div>
@@ -215,9 +234,18 @@
 </template>
 
 <script>
+import InvoiceService from "../../services/invoice.service";
+import moment from "moment";
+
 export default {
   name: "preview-invoice",
   components: {},
+  data() {
+    return {
+      isLoading: true,
+      invoice: {},
+    };
+  },
   methods: {
     onPrintWindow() {
       window.print();
@@ -225,6 +253,21 @@ export default {
     onCloseWindow() {
       window.close();
     },
+  },
+  mounted() {
+    this.isLoading = true;
+    this.invoiceId = this.$route.params.invoiceId;
+    InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
+      const invoice = item.data.data;
+
+      invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
+      invoice.date = moment(invoice.date).format("dddd, Do MMMM, YYYY");
+      this.employees = invoice.employee_data.map((emp) => emp.employee_id);
+      this.products = invoice.product_data;
+      this.invoice = invoice;
+      this.isLoading = false;
+      console.log(this.invoice);
+    });
   },
 };
 </script>

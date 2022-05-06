@@ -97,7 +97,7 @@
                   addonLeftIcon="fa fa-phone"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
-                  v-model="employee.phone"
+                  v-model="employee.phone_number"
                 />
               </div>
               <div class="col-lg-3">
@@ -106,7 +106,7 @@
                   addonLeftIcon="fa fa-address-card"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
-                  v-model="employee.phone"
+                  v-model="employee.national_id"
                 />
               </div>
             </div>

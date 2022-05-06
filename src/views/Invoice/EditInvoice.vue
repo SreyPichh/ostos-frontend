@@ -168,7 +168,6 @@
                 placeholder="Choose employee"
                 :searchable="true"
                 :createTag="true"
-                :value="employee"
                 :options="employeeOptions"
               >
               </Multiselect>
@@ -191,7 +190,7 @@
                   <Multiselect
                     v-model="invoice.business_id"
                     placeholder="Business Type"
-                    @change="onChangeBusiness"
+                    @change="onChangeBusiness()"
                     :searchable="true"
                     :options="businesses"
                   />
@@ -200,7 +199,10 @@
             </div>
           </template>
 
-          <div class="table-responsive pb-7" v-if="invoice.business_id">
+          <div
+            class="table-responsive pb-7"
+            v-if="invoice.business_id && productList"
+          >
             <table class="table tablesorter thead-light table-sm">
               <thead>
                 <th
@@ -221,7 +223,6 @@
                 <th>Total</th>
                 <th></th>
               </thead>
-
               <tbody v-for="(product, index) in products" :key="index">
                 <td>
                   <Multiselect
@@ -289,7 +290,7 @@
                   />
                 </td>
 
-                <td>$ {{ product.total_price }}</td>
+                <td>${{ product.total_price }}</td>
                 <td>
                   <span @click.prevent="remove(index)" class="delete-icon"
                     ><i class="fa fa-trash"></i
@@ -297,14 +298,20 @@
                 </td>
               </tbody>
             </table>
-            <div class="form-group pl-2">
+            <div class="row px-3 align-items-center justify-content-between">
               <button
                 @click.prevent="addProduct"
                 type="button"
-                class="btn btn-default"
+                class="btn btn-default ml-2"
               >
                 Add Product
               </button>
+              <div>
+                <h2>
+                  Total :
+                  <span class="bg-teal px-3 py-1">${{ invoice.total }}.00</span>
+                </h2>
+              </div>
             </div>
           </div>
 
@@ -316,11 +323,11 @@
     </div>
     <div class="float-right mb-3">
       <button
-        @click.prevent="createNewInvoice()"
+        @click.prevent="updateInvoice()"
         type="button"
         class="btn btn-default"
       >
-        Create
+        Update
       </button>
     </div>
   </div>
@@ -341,7 +348,7 @@
       >
       <base-button
         type="danger"
-        @click.prevent="onBusinessSelected(invoice.business_id)"
+        @click.prevent="onBusinessSelected(invoice.business_id, true)"
         >Change</base-button
       >
     </template>
@@ -371,6 +378,7 @@ export default {
       masks: {
         input: "WWWW, DD-MM-YYYY",
       },
+      selectedBusiness: "",
       businesses: [],
       productList: [],
       allProductLists: [],
@@ -383,33 +391,34 @@ export default {
   mounted() {
     this.isLoading = true;
     this.invoiceId = this.$route.params.invoiceId;
-    InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
-      const invoice = item.data.data;
-      invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
-      this.employees = invoice.employee_data.map((emp) => emp.employee_id);
-      this.invoice = invoice;
-    });
-
     // Get All Businesses
     BusinessService.getBusinesses().then((items) => {
-      this.isLoading = false;
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
       });
     });
 
-    // Get All Products
-    ProductService.getProducts({ limit: 0 }).then((items) => {
-      this.isLoading = false;
-      this.allProductLists = items.data.data;
-    });
-
     // Get ALl Employeese
     UserService.getUsers().then((items) => {
-      this.isLoading = false;
       this.employeesList = items.data.data;
       this.employeeOptions = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
+      });
+    });
+
+    InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
+      const invoice = item.data.data;
+
+      invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
+      this.employees = invoice.employee_data.map((emp) => emp.employee_id);
+      this.products = invoice.product_data;
+      this.invoice = invoice;
+
+      // Get All Products
+      ProductService.getProducts({ limit: 0 }).then((items) => {
+        this.allProductLists = items.data.data;
+        this.onBusinessSelected(invoice.business_id, false);
+        this.isLoading = false;
       });
     });
   },
@@ -424,34 +433,41 @@ export default {
       if (this.invoice.business_id) {
         this.warningAlert = true;
       } else {
-        this.onBusinessSelected(id);
+        this.onBusinessSelected(id, true);
       }
     },
-    onBusinessSelected(id) {
+    onBusinessSelected(id, isReset) {
       this.warningAlert = false;
       if (id) {
         this.selectedBusiness = this.businesses
           .find((b) => b.value === id)
           .label.toLowerCase()
           .trim();
-        this.products = [
-          {
-            product_id: "",
-            product_name: "",
-            coverAll: false,
-            width: "",
-            length: "",
-            quantity: "",
-            unit_price: "",
-            total_price: 0,
-          },
-        ];
+
+        if (isReset) {
+          this.onResetProducts();
+        }
         this.productList = this.allProductLists
           .filter((product) => product.business_id === id)
           .map((item) => {
             return { label: item.name, value: item.id };
           });
       }
+    },
+    onResetProducts() {
+      this.products = [
+        {
+          product_id: "",
+          product_name: "",
+          coverAll: false,
+          width: "",
+          length: "",
+          quantity: "",
+          unit_price: "",
+          total_price: 0,
+        },
+      ];
+      this.totalALlProducts();
     },
     onCoverALlClick(index, isChecked) {
       const product = this.products[index];
@@ -476,7 +492,11 @@ export default {
       });
     },
     remove(index) {
-      this.products.splice(index, 1);
+      // Not allow to delete product if length equal 1
+      if (this.products.length !== 1) {
+        this.products.splice(index, 1);
+        this.totalALlProducts();
+      }
     },
     onProductChange(index, pId) {
       const product = this.products[index];
@@ -491,6 +511,7 @@ export default {
       product.width = "";
       product.length = "";
       product.quantity = "";
+      this.onProductCalculate(index);
     },
     onProductCalculate(index) {
       const product = this.products[index];
@@ -500,41 +521,41 @@ export default {
       const width = product.width;
       const length = product.length;
       // Set Total Price
-      if (!isCoverAll) {
+      if (this.selectedBusiness === "car") {
+        this.products[index].total_price = unit_price;
+      } else if (!isCoverAll) {
         const m2 = (width * length) / 10000;
         this.products[index].total_price = m2 * unit_price * qty;
       } else if (this.selectedBusiness !== "ktv") {
-        console.log("this from ktv");
         this.products[index].total_price = unit_price * qty;
       } else {
         this.products[index].total_price = unit_price * qty;
       }
+      this.totalALlProducts();
     },
-    createNewInvoice() {
+    totalALlProducts() {
+      this.invoice.total = this.products.length
+        ? this.products
+            .map((item) => Number(item.total_price))
+            .reduce((prev, next) => prev + next)
+        : 0;
+    },
+    updateInvoice() {
       const invoice = this.invoice;
-      const employees = this.employees.map((emp) => {
-        return { employee_id: emp.value, employee_name: emp.label };
-      });
-      const total = 100;
-      const data = {
-        invoice_number: invoice.invoice_number.replace(/^0+/, ""),
-        date: invoice.date,
-        due_amount: invoice.due_amount,
-        business_id: invoice.business_id,
-        customer_name: invoice.cName,
-        customer_email: invoice.cEmail,
-        customer_phone_number: invoice.cPhone1,
-        // customer_phone_number1: invoice.cPhone1,
-        // customer_phone_number2: invoice.cPhone2,
-        customer_address1: invoice.cAdd1,
-        customer_address2: invoice.cAdd2,
-        status: invoice.status,
-        employee_data: employees,
-        product_data: this.products,
-        total: total,
-      };
-      if (data) {
-        InvoiceService.postInvoice(data).then(
+      invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
+      if (this.employees) {
+        const employee_data = this.employees.map((empId) => {
+          const emp = this.employeesList.find((emp) => emp.id === empId);
+          return {
+            employee_id: emp.id,
+            employee_name: emp.name,
+          };
+        });
+        invoice.employee_data = employee_data;
+      }
+      invoice.product_data = this.products;
+      if (this.invoice) {
+        InvoiceService.updateInvoice(this.invoiceId, this.invoice).then(
           () => {
             this.$router.push("/invoices");
           },

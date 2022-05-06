@@ -200,7 +200,7 @@
           </template>
 
           <div class="table-responsive pb-7" v-if="invoice.business_id">
-            <table class="table tablesorter thead-light table-sm">
+            <table class="table">
               <thead>
                 <th
                   :class="selectedBusiness !== 'car' ? 'col-sm-4' : 'col-sm-5'"
@@ -288,7 +288,7 @@
                   />
                 </td>
 
-                <td>$ {{ product.total_price }}</td>
+                <td>${{ product.total_price }}</td>
                 <td>
                   <span @click.prevent="remove(index)" class="delete-icon"
                     ><i class="fa fa-trash"></i
@@ -296,14 +296,20 @@
                 </td>
               </tbody>
             </table>
-            <div class="form-group pl-2">
+            <div class="row px-3 align-items-center justify-content-between">
               <button
                 @click.prevent="addProduct"
                 type="button"
-                class="btn btn-default"
+                class="btn btn-default ml-2"
               >
                 Add Product
               </button>
+              <div>
+                <h2>
+                  Total :
+                  <span class="bg-teal px-3 py-1">${{ invoice.total }}.00</span>
+                </h2>
+              </div>
             </div>
           </div>
 
@@ -366,6 +372,7 @@ export default {
       invoice: {
         status: "Paid",
         date: moment(new Date()).format("YYYY-MM-DD"),
+        total: 0,
       },
       modelConfig: {
         type: "string",
@@ -374,6 +381,8 @@ export default {
       masks: {
         input: "WWWW, DD-MM-YYYY",
       },
+      selectedBusiness: "",
+      employees: [],
       businesses: [],
       employeeOptions: [],
       productList: [],
@@ -385,8 +394,8 @@ export default {
   mounted() {
     this.isLoading = true;
     InvoiceService.getLastInvoiceId().then((item) => {
-      const id = item.data.data.id;
-      this.invoice.invoice_number = String(id + 1).padStart(6, "0");
+      const invoiceId = item.data.data.length !== 0 ? item.data.data.id : 0;
+      this.invoice.invoice_number = String(invoiceId + 1).padStart(6, "0");
     });
     BusinessService.getBusinesses().then((items) => {
       this.isLoading = false;
@@ -429,24 +438,29 @@ export default {
           .find((b) => b.value === id)
           .label.toLowerCase()
           .trim();
-        this.products = [
-          {
-            product_id: "",
-            product_name: "",
-            coverAll: false,
-            width: "",
-            length: "",
-            quantity: "",
-            unit_price: "",
-            total_price: 0,
-          },
-        ];
+
+        this.onResetProducts();
         this.productList = this.allProductLists
           .filter((product) => product.business_id === id)
           .map((item) => {
             return { label: item.name, value: item.id };
           });
       }
+    },
+    onResetProducts() {
+      this.products = [
+        {
+          product_id: "",
+          product_name: "",
+          coverAll: false,
+          width: "",
+          length: "",
+          quantity: "",
+          unit_price: "",
+          total_price: 0,
+        },
+      ];
+      this.totalALlProducts();
     },
     onCoverALlClick(index, isChecked) {
       const product = this.products[index];
@@ -471,7 +485,11 @@ export default {
       });
     },
     remove(index) {
-      this.products.splice(index, 1);
+      // Not allow to delete product if length equal 1
+      if (this.products.length !== 1) {
+        this.products.splice(index, 1);
+        this.totalALlProducts();
+      }
     },
     onProductChange(index, pId) {
       const product = this.products[index];
@@ -486,6 +504,7 @@ export default {
       product.width = "";
       product.length = "";
       product.quantity = "";
+      this.onProductCalculate(index);
     },
     onProductCalculate(index) {
       const product = this.products[index];
@@ -495,7 +514,9 @@ export default {
       const width = product.width;
       const length = product.length;
       // Set Total Price
-      if (!isCoverAll) {
+      if (this.selectedBusiness === "car") {
+        this.products[index].total_price = unit_price;
+      } else if (!isCoverAll) {
         const m2 = (width * length) / 10000;
         this.products[index].total_price = m2 * unit_price * qty;
       } else if (this.selectedBusiness !== "ktv") {
@@ -503,12 +524,18 @@ export default {
       } else {
         this.products[index].total_price = unit_price * qty;
       }
+      this.totalALlProducts();
+    },
+    totalALlProducts() {
+      this.invoice.total = this.products.length
+        ? this.products
+            .map((item) => Number(item.total_price))
+            .reduce((prev, next) => prev + next)
+        : 0;
     },
     createNewInvoice() {
       const invoice = this.invoice;
       invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
-      invoice.total = 100;
-      console.log(this.employees);
       if (this.employees) {
         const employee_data = this.employees.map((empId) => {
           const emp = this.employeesList.find((emp) => emp.id === empId);

@@ -134,15 +134,15 @@ const routes = [
   },
   {
     path: "/invoices/preview",
-    redirect: "/invoices/generate-pdf/preview",
+    redirect: "/invoices/:invoiceId/generate-pdf/preview",
     component: GeneratePDFLayout,
     meta: {
       requiresAuth: true,
     },
     children: [
       {
-        path: "/invoices/generate-pdf/preview",
-        name: "preview",
+        path: "/invoices/:invoiceId/generate-pdf/preview",
+        name: "preview-invoice",
         components: { default: PreviewInvoice },
       },
     ],

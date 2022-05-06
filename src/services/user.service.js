@@ -4,16 +4,16 @@ class UserService {
   getUserBoard() {
     return api.get("/user/profile");
   }
-  getUsers() {
-    return api.get("clients");
-  }
-  getUserById(userId) {
-    return api.get(API_URL + `/${userId}`);
-  }
   createUser(body) {
     return api.post("register", body).then((response) => {
       return response.data;
     });
+  }
+  getUsers() {
+    return api.get("employees");
+  }
+  getUserById(userId) {
+    return api.get(API_URL + `/${userId}`);
   }
   updateUser(userId, body) {
     return api.patch(API_URL + `/${userId}`, body);
@@ -22,7 +22,7 @@ class UserService {
     return api.delete(API_URL + `/${userId}`);
   }
   getAdminBoard() {
-    return api.get("admin");
+    return api.get(API_URL + "?include=roles");
   }
 }
 export default new UserService();

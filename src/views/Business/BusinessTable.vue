@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive table-sm">
       <base-table thead-classes="thead-light" :data="items">
         <template v-slot:columns>
           <th>ID</th>
