@@ -49,7 +49,7 @@
             >
           </th>
           <td>
-            {{ row.item.customer_name }}
+            {{ row.item.customer_name ? row.item.customer_name : "-----" }}
           </td>
           <td>
             {{ getBusinessesLabel(row.item.business_id) }}
@@ -139,18 +139,27 @@
       </base-button>
     </template>
   </modal>
+  <!-- <base-button type="link" @click="filterModal = true">Filter</base-button> -->
+  <FilterModal
+    :show="filterModal"
+    @close="filterModal = false"
+    @items="filterOutput"
+  ></FilterModal>
 </template>
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
 import moment from "moment";
+import FilterModal from "./FilterModal.vue";
 
 export default {
   name: "invoice-table",
+  components: { FilterModal },
   data() {
     return {
       isLoading: true,
       deleteAlert: false,
+      filterModal: false,
       businesses: [],
     };
   },
@@ -163,6 +172,10 @@ export default {
     });
   },
   methods: {
+    filterOutput(items) {
+      this.filterModal = false;
+      this.items = items;
+    },
     getAllInvoices(options) {
       this.isLoading = true;
       InvoiceService.getInvoices(options).then(

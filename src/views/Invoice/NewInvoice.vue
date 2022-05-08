@@ -60,11 +60,12 @@
                 <label class="form-control-label">Status</label>
                 <Multiselect
                   v-model="invoice.status"
-                  :options="['Paid', 'Unpaid', 'Partial Billed']"
+                  :options="['Paid', 'Unpaid', 'Partial_Billed']"
+                  @change="onChangeStatus($event)"
                 />
               </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-2" v-if="invoice.status === 'Partial_Billed'">
               <base-input
                 addonLeftText="$"
                 addonRightText=".00"
@@ -296,7 +297,7 @@
                 </td>
               </tbody>
             </table>
-            <div class="row px-3 align-items-center justify-content-between">
+            <div class="row p-3 align-items-baseline justify-content-between">
               <button
                 @click.prevent="addProduct"
                 type="button"
@@ -304,11 +305,23 @@
               >
                 Add Product
               </button>
-              <div>
-                <h2>
-                  Total :
-                  <span class="bg-teal px-3 py-1">${{ invoice.total }}.00</span>
-                </h2>
+              <div class="text-left">
+                <h4>
+                  សរុប/Total :
+                  <span class="px-3 py-1">${{ invoice.total }}.00</span>
+                </h4>
+                <h4>
+                  ប្រាក់កក់/Deposite :
+                  <span class="px-3 py-1">${{ invoice.due_amount }}.00</span>
+                </h4>
+                <h4>
+                  នៅខ្វះ/Balance :
+                  <span
+                    class="bg-pink px-3 py-1 text-red"
+                    v-if="invoice.due_amount - invoice.total < 0"
+                    >${{ (invoice.due_amount - invoice.total) * -1 }}.00</span
+                  >
+                </h4>
               </div>
             </div>
           </div>
@@ -370,7 +383,6 @@ export default {
     return {
       isLoading: true,
       invoice: {
-        status: "Paid",
         date: moment(new Date()).format("YYYY-MM-DD"),
         total: 0,
       },
@@ -611,6 +623,17 @@ export default {
             .map((item) => Number(item.total_price))
             .reduce((prev, next) => prev + next)
         : 0;
+
+      if (this.invoice.status === "Paid") {
+        this.invoice.due_amount = this.invoice.total;
+      }
+    },
+    onChangeStatus(status) {
+      if (status === "Paid") {
+        this.invoice.due_amount = this.invoice.total;
+      } else {
+        this.invoice.due_amount = 0;
+      }
     },
     createNewInvoice() {
       const invoice = this.invoice;

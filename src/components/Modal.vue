@@ -120,4 +120,8 @@ export default {
 .modal.show {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.modal-content {
+  background-color: #eee !important;
+}
 </style>

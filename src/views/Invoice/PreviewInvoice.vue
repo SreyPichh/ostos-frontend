@@ -159,11 +159,17 @@
             </div>
             <div class="d-flex align-items-baseline">
               <h3 class="col-sm-8 text-right">ប្រាក់កក់/Deposite</h3>
-              <h3 class="col-sm-4 deposite-bg-color">$</h3>
+              <h3 class="col-sm-4">${{ invoice.due_amount }}.00</h3>
             </div>
             <div class="d-flex align-items-baseline">
               <h3 class="col-sm-8 text-right">នៅខ្វះ/Balance</h3>
-              <h3 class="col-sm-4 balance-bg-color">$</h3>
+              <h3 class="col-sm-4 bg-pink">
+                <span
+                  class="py-1 text-red"
+                  v-if="invoice.due_amount - invoice.total < 0"
+                  >${{ (invoice.due_amount - invoice.total) * -1 }}.00</span
+                >
+              </h3>
             </div>
           </div>
         </div>
