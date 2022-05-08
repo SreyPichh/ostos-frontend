@@ -6,7 +6,7 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card my-3" v-if="!isLoading">
+  <div class="card my-3" v-if="!isLoading && businesses.length">
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
@@ -28,6 +28,7 @@
         <template v-slot:columns>
           <th>Invoice No</th>
           <th>Customer</th>
+          <th>Business</th>
           <th>Total</th>
           <th>Status</th>
           <th>Create Date</th>
@@ -49,6 +50,9 @@
           </th>
           <td>
             {{ row.item.customer_name }}
+          </td>
+          <td>
+            {{ getBusinessesLabel(row.item.business_id) }}
           </td>
           <td>${{ row.item.total }}.00</td>
           <td>
@@ -138,6 +142,7 @@
 </template>
 <script>
 import InvoiceService from "../../services/invoice.service";
+import BusinessService from "../../services/business.service";
 import moment from "moment";
 
 export default {
@@ -146,7 +151,16 @@ export default {
     return {
       isLoading: true,
       deleteAlert: false,
+      businesses: [],
     };
+  },
+  mounted() {
+    this.getAllInvoices();
+    BusinessService.getBusinesses().then((items) => {
+      this.businesses = items.data.data.map((item) => {
+        return { label: item.name, value: item.id };
+      });
+    });
   },
   methods: {
     getAllInvoices(options) {
@@ -178,12 +192,15 @@ export default {
         params: { invoiceId: invoiceId },
       });
     },
+    getBusinessesLabel(bId) {
+      if (this.businesses) {
+        const business = this.businesses.find((b) => b.value === bId);
+        return business.label;
+      }
+    },
   },
   created() {
     this.moment = moment;
-  },
-  mounted() {
-    this.getAllInvoices();
   },
 };
 </script>

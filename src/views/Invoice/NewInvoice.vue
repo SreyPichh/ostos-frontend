@@ -494,9 +494,11 @@ export default {
     onProductChange(index, pId) {
       const product = this.products[index];
       if (pId) {
-        product.unit_price = this.allProductLists.find(
+        const selectedProduct = this.allProductLists.find(
           (prod) => prod.id === pId
-        ).price;
+        );
+        product.product_name = selectedProduct.name;
+        product.unit_price = selectedProduct.price;
       } else {
         product.unit_price = "";
       }
@@ -516,15 +518,92 @@ export default {
       // Set Total Price
       if (this.selectedBusiness === "car") {
         this.products[index].total_price = unit_price;
-      } else if (!isCoverAll) {
-        const m2 = (width * length) / 10000;
-        this.products[index].total_price = m2 * unit_price * qty;
-      } else if (this.selectedBusiness !== "ktv") {
-        this.products[index].total_price = unit_price * qty;
-      } else {
-        this.products[index].total_price = unit_price * qty;
+      } else if (this.selectedBusiness === "printing") {
+        if (!isCoverAll) {
+          const m2 = (width * length) / 10000;
+          this.products[index].total_price = m2 * unit_price * qty;
+        } else {
+          this.products[index].total_price = unit_price * qty;
+        }
+      } else if (this.selectedBusiness === "ktv") {
+        this.products[index].unit_price = this.ktvPriceM2(
+          (width * length) / 10000
+        );
+        console.log((width * length) / 10000);
+
+        this.products[index].total_price =
+          this.products[index].unit_price * qty;
       }
       this.totalALlProducts();
+    },
+    ktvPriceM2(size) {
+      let unit_price = 0;
+      if (size <= 0) {
+        unit_price = 0;
+      } else if (size > 0 && size <= 0.1) {
+        unit_price = 0.5;
+      } else if (size > 0.1 && size <= 1) {
+        unit_price = 1;
+      } else if (size > 1 && size <= 1.5) {
+        unit_price = 1.5;
+      } else if (size > 1.5 && size <= 1.8) {
+        unit_price = 2;
+      } else if (size > 1.8 && size <= 2) {
+        unit_price = 2.5;
+      } else if (size > 2 && size <= 3.4) {
+        unit_price = 3;
+      } else if (size > 3.4 && size <= 3.5) {
+        unit_price = 3.5;
+      } else if (size > 3.5 && size <= 4) {
+        unit_price = 4;
+      } else if (size > 4 && size <= 4.4) {
+        unit_price = 4.5;
+      } else if (size > 4.4 && size <= 5.4) {
+        unit_price = 5;
+      } else if (size > 5.4 && size <= 5.9) {
+        unit_price = 5.5;
+      } else if (size > 5.9 && size <= 6) {
+        unit_price = 6;
+      } else if (size > 6 && size <= 6.5) {
+        unit_price = 6.5;
+      } else if (size > 6.5 && size <= 7.4) {
+        unit_price = 7;
+      } else if (size > 7.4 && size <= 7.9) {
+        unit_price = 7.5;
+      } else if (size > 7.9 && size <= 8.4) {
+        unit_price = 8;
+      } else if (size > 8.4 && size <= 8.9) {
+        unit_price = 8.5;
+      } else if (size > 8.9 && size <= 9.4) {
+        unit_price = 9;
+      } else if (size > 9.4 && size <= 9.9) {
+        unit_price = 9.5;
+      } else if (size > 9.9 && size <= 10.8) {
+        unit_price = 10;
+      } else if (size > 10.8 && size <= 10.9) {
+        unit_price = 10.5;
+      } else if (size > 10.9 && size <= 11.4) {
+        unit_price = 11;
+      } else if (size > 11.4 && size <= 11.9) {
+        unit_price = 11.5;
+      } else if (size > 11.9 && size <= 12) {
+        unit_price = 12;
+      } else if (size > 12 && size <= 12.9) {
+        unit_price = 12.5;
+      } else if (size > 12.9 && size <= 13.4) {
+        unit_price = 13;
+      } else if (size > 13.4 && size <= 13.9) {
+        unit_price = 13.5;
+      } else if (size > 13.9 && size <= 14.4) {
+        unit_price = 14;
+      } else if (size > 14.4 && size <= 14.9) {
+        unit_price = 14.5;
+      } else if (size > 14.9 && size <= 15.4) {
+        unit_price = 15;
+      } else if (size > 15.4 && size <= 15.9) {
+        unit_price = 15.5;
+      }
+      return unit_price;
     },
     totalALlProducts() {
       this.invoice.total = this.products.length
