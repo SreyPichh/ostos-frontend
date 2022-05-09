@@ -10,6 +10,72 @@
     />
   </div>
   <div class="container-fluid mt--5 mb-5" v-if="!isLoading">
+    <div class="row">
+      <div class="col-xl-12 order-xl-1">
+        <card shadow type="secondary" bodyClasses="pb-0">
+          <template v-slot:header>
+            <div class="bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-7">
+                  <h3 class="mb-0">Customer Information</h3>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <div class="row">
+            <div class="col-lg-3">
+              <base-input
+                label="Name"
+                addonLeftIcon="fa fa-user"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.customer_name"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input
+                label="Email"
+                addonLeftIcon="fa fa-envelope"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.customer_email"
+              />
+            </div>
+
+            <div class="col-lg-3">
+              <base-input
+                label="Phone Number 1"
+                addonLeftIcon="fa fa-phone"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.customer_phone_number"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input
+                label="Phone Number 2"
+                addonLeftIcon="fa fa-phone"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.customer_phone_number2"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 form-group">
+              <label class="form-control-label">Address</label>
+              <textarea
+                class="form-control form-control-alternative"
+                rows="2"
+                v-model="invoice.customer_address1"
+              ></textarea>
+            </div>
+          </div>
+        </card>
+      </div>
+    </div>
+
     <div class="row my-3">
       <div class="col-xl-12">
         <card shadow type="secondary" bodyClasses="pb-0">
@@ -25,7 +91,7 @@
                 v-model="invoice.invoice_number"
               />
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
               <div class="form-group">
                 <label class="form-control-label">Date</label>
                 <v-date-picker
@@ -55,12 +121,22 @@
                 </v-date-picker>
               </div>
             </div>
+            <div class="col-lg-3">
+              <label class="form-control-label">Businesses</label>
+              <Multiselect
+                v-model="invoice.business_id"
+                placeholder="Business Type"
+                @change="onChangeBusiness"
+                :searchable="true"
+                :options="businesses"
+              />
+            </div>
             <div class="col-lg-2">
               <div class="form-group">
                 <label class="form-control-label">Status</label>
                 <Multiselect
                   v-model="invoice.status"
-                  :options="['Paid', 'Unpaid', 'Partial_Billed']"
+                  :options="['paid', 'unpaid', 'partial_billed']"
                   @change="onChangeStatus($event)"
                 />
               </div>
@@ -81,103 +157,6 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-xl-6 order-xl-1">
-        <card shadow type="secondary" bodyClasses="pb-0">
-          <template v-slot:header>
-            <div class="bg-white border-0">
-              <div class="row align-items-center">
-                <div class="col-7">
-                  <h3 class="mb-0">Customer Information</h3>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <div class="row">
-            <div class="col-lg-6">
-              <base-input
-                alternative=""
-                placeholder="Enter Name"
-                input-classes="form-control-alternative"
-                v-model="invoice.customer_name"
-              />
-            </div>
-            <div class="col-lg-6">
-              <base-input
-                addonLeftIcon="fa fa-envelope"
-                placeholder="-----"
-                input-classes="form-control-alternative"
-                v-model="invoice.customer_email"
-              />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6">
-              <base-input
-                addonLeftIcon="fa fa-phone"
-                placeholder="Phone Number 1"
-                input-classes="form-control-alternative"
-                v-model="invoice.customer_phone_number"
-              />
-            </div>
-            <div class="col-lg-6">
-              <base-input
-                addonLeftIcon="fa fa-phone"
-                placeholder="Phone Number 2"
-                input-classes="form-control-alternative"
-                v-model="invoice.customer_phone_number2"
-              />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <base-input
-                alternative=""
-                placeholder="Address 1"
-                input-classes="form-control-alternative"
-                v-model="invoice.customer_address1"
-              />
-            </div>
-          </div>
-        </card>
-      </div>
-
-      <div class="col-xl-6 pl-0 order-xl-2">
-        <card
-          height="100%"
-          shadow
-          type="secondary"
-          class="pb-4"
-          bodyClasses="pb-0"
-        >
-          <template v-slot:header>
-            <div class="bg-white border-0">
-              <div class="row align-items-center">
-                <div class="col-7">
-                  <h3 class="mb-0">Employee Information</h3>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <div class="row">
-            <div class="col-lg-12">
-              <Multiselect
-                v-model="employees"
-                mode="tags"
-                placeholder="Choose employee"
-                :searchable="true"
-                :createTag="true"
-                :options="employeeOptions"
-              >
-              </Multiselect>
-            </div>
-          </div>
-        </card>
-      </div>
-    </div>
-
     <div class="row my-3">
       <div class="col-xl-12 order-xl-2">
         <card shadow type="secondary" bodyClasses="p-0">
@@ -187,14 +166,17 @@
                 <div class="col">
                   <h3 class="mb-0">Invoices Items</h3>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-5">
+                  <label class="form-control-label">Employees</label>
                   <Multiselect
-                    v-model="invoice.business_id"
-                    placeholder="Business Type"
-                    @change="onChangeBusiness"
+                    v-model="employees"
+                    mode="tags"
+                    placeholder="Choose employee"
                     :searchable="true"
-                    :options="businesses"
-                  />
+                    :createTag="true"
+                    :options="employeeOptions"
+                  >
+                  </Multiselect>
                 </div>
               </div>
             </div>
@@ -301,7 +283,7 @@
               <button
                 @click.prevent="addProduct"
                 type="button"
-                class="btn btn-default ml-2"
+                class="btn btn-default btn-sm ml-2"
               >
                 Add Product
               </button>
@@ -451,12 +433,20 @@ export default {
           .label.toLowerCase()
           .trim();
 
+        this.onAutoSetStatus(this.selectedBusiness);
         this.onResetProducts();
         this.productList = this.allProductLists
           .filter((product) => product.business_id === id)
           .map((item) => {
             return { label: item.name, value: item.id };
           });
+      }
+    },
+    onAutoSetStatus(business) {
+      if (business === "car") {
+        this.invoice.status = "paid";
+      } else {
+        this.invoice.status = "unpaid";
       }
     },
     onResetProducts() {
@@ -472,6 +462,7 @@ export default {
           total_price: 0,
         },
       ];
+      this.invoice.due_amount = 0;
       this.totalALlProducts();
     },
     onCoverALlClick(index, isChecked) {
@@ -550,70 +541,64 @@ export default {
     },
     ktvPriceM2(size) {
       let unit_price = 0;
-      if (size <= 0) {
-        unit_price = 0;
-      } else if (size > 0 && size <= 0.1) {
+      if (size >= 0.01 && size < 0.07) {
         unit_price = 0.5;
-      } else if (size > 0.1 && size <= 1) {
+      } else if (size >= 0.07 && size < 0.13) {
         unit_price = 1;
-      } else if (size > 1 && size <= 1.5) {
+      } else if (size >= 0.13 && size < 0.16) {
         unit_price = 1.5;
-      } else if (size > 1.5 && size <= 1.8) {
+      } else if (size >= 0.16 && size < 0.2) {
         unit_price = 2;
-      } else if (size > 1.8 && size <= 2) {
+      } else if (size >= 0.2 && size < 0.26) {
         unit_price = 2.5;
-      } else if (size > 2 && size <= 3.4) {
+      } else if (size >= 0.26 && size < 0.35) {
         unit_price = 3;
-      } else if (size > 3.4 && size <= 3.5) {
-        unit_price = 3.5;
-      } else if (size > 3.5 && size <= 4) {
+      } else if (size >= 0.35 && size < 0.41) {
         unit_price = 4;
-      } else if (size > 4 && size <= 4.4) {
+      } else if (size >= 0.41 && size < 0.44) {
         unit_price = 4.5;
-      } else if (size > 4.4 && size <= 5.4) {
+      } else if (size >= 0.44 && size < 0.51) {
         unit_price = 5;
-      } else if (size > 5.4 && size <= 5.9) {
+      } else if (size >= 0.51 && size < 0.6) {
         unit_price = 5.5;
-      } else if (size > 5.9 && size <= 6) {
+      } else if (size >= 0.6 && size < 0.63) {
         unit_price = 6;
-      } else if (size > 6 && size <= 6.5) {
+      } else if (size >= 0.63 && size < 0.7) {
         unit_price = 6.5;
-      } else if (size > 6.5 && size <= 7.4) {
+      } else if (size >= 0.7 && size < 0.75) {
         unit_price = 7;
-      } else if (size > 7.4 && size <= 7.9) {
+      } else if (size >= 0.75 && size < 0.8) {
         unit_price = 7.5;
-      } else if (size > 7.9 && size <= 8.4) {
+      } else if (size >= 0.8 && size < 0.85) {
         unit_price = 8;
-      } else if (size > 8.4 && size <= 8.9) {
+      } else if (size >= 0.85 && size < 0.9) {
         unit_price = 8.5;
-      } else if (size > 8.9 && size <= 9.4) {
+      } else if (size >= 0.9 && size < 0.95) {
         unit_price = 9;
-      } else if (size > 9.4 && size <= 9.9) {
+      } else if (size >= 0.95 && size < 1) {
         unit_price = 9.5;
-      } else if (size > 9.9 && size <= 10.8) {
+      } else if (size >= 1 && size < 1.06) {
         unit_price = 10;
-      } else if (size > 10.8 && size <= 10.9) {
+      } else if (size >= 1.06 && size < 1.11) {
         unit_price = 10.5;
-      } else if (size > 10.9 && size <= 11.4) {
+      } else if ((size >= 1, 11 && size < 1.16)) {
         unit_price = 11;
-      } else if (size > 11.4 && size <= 11.9) {
+      } else if (size >= 1.16 && size < 1.21) {
         unit_price = 11.5;
-      } else if (size > 11.9 && size <= 12) {
+      } else if (size >= 1.21 && size < 1.26) {
         unit_price = 12;
-      } else if (size > 12 && size <= 12.9) {
+      } else if (size >= 1.26 && size < 1.3) {
         unit_price = 12.5;
-      } else if (size > 12.9 && size <= 13.4) {
+      } else if (size >= 1.3 && size < 1.35) {
         unit_price = 13;
-      } else if (size > 13.4 && size <= 13.9) {
+      } else if (size >= 1.35 && size < 1.4) {
         unit_price = 13.5;
-      } else if (size > 13.9 && size <= 14.4) {
+      } else if (size >= 1.4 && size < 1.45) {
         unit_price = 14;
-      } else if (size > 14.4 && size <= 14.9) {
+      } else if (size >= 1.45 && size < 1.5) {
         unit_price = 14.5;
-      } else if (size > 14.9 && size <= 15.4) {
+      } else if (size >= 1.5 && size <= 1.55) {
         unit_price = 15;
-      } else if (size > 15.4 && size <= 15.9) {
-        unit_price = 15.5;
       }
       return unit_price;
     },
@@ -624,12 +609,12 @@ export default {
             .reduce((prev, next) => prev + next)
         : 0;
 
-      if (this.invoice.status === "Paid") {
+      if (this.invoice.status === "paid") {
         this.invoice.due_amount = this.invoice.total;
       }
     },
     onChangeStatus(status) {
-      if (status === "Paid") {
+      if (status === "paid") {
         this.invoice.due_amount = this.invoice.total;
       } else {
         this.invoice.due_amount = 0;
@@ -676,7 +661,7 @@ export default {
 };
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
-<style scoped>
+<style>
 .table td {
   padding: 0.5rem !important;
   vertical-align: unset !important;
@@ -689,5 +674,10 @@ export default {
 
 .table td .form-group {
   margin-bottom: 0;
+}
+
+table thead {
+  background-color: #1a4567;
+  color: #fff;
 }
 </style>
