@@ -13,7 +13,7 @@
     />
     <template v-slot:footer>
       <button @click.prevent="onFilter()" class="btn btn-default">
-        Filter
+        Search
       </button>
       <button
         type="link"

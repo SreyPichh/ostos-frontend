@@ -139,7 +139,7 @@
       </base-button>
     </template>
   </modal>
-  <!-- <base-button type="link" @click="filterModal = true">Filter</base-button> -->
+  <!-- <base-button type="link" @click="filterModal = true">Search</base-button> -->
   <FilterModal
     :show="filterModal"
     @close="filterModal = false"

@@ -40,7 +40,7 @@
         <hr class="my-1" />
         <div class="d-flex justify-content-between">
           <div class="d-flex align-items-baseline">
-            <h2 class="font-weight-bold mr-1">Invoce:</h2>
+            <h3 class="font-weight-bold mr-1">Invoce:</h3>
             <p>#INV-{{ invoice.invoice_number }}</p>
           </div>
           <div class="text-right">
@@ -79,14 +79,14 @@
           </div>
           <div class="text-right">
             <p class="mb-0">
-              <span class="font-weight-bold">Address</span> :
+              <span class="font-weight-bold p">Address</span> :
               {{ business.address }}
             </p>
             <p class="mb-0">
-              <span class="font-weight-bold">Email</span> : {{ business.email }}
+              <span class="font-weight-bold p">Email</span> : {{ business.email }}
             </p>
             <p class="mb-0">
-              <span class="font-weight-bold">Phone</span> :
+              <span class="font-weight-bold p">Phone</span> :
               {{ business.phone_number1 }}
               {{ business.phone_number2 ? `| ${business.phone_number2}` : "" }}
               {{ business.phone_number3 ? `| ${business.phone_number3}` : "" }}
@@ -280,18 +280,18 @@ html,
 }
 
 @font-face {
-  font-family: Battambang;
-  src: url("/static/invoice/fonts/Battambang/Battambang-Regular.ttf");
+  font-family: Battambang !important;
+  src: url("/static/invoice/fonts/Battambang/Battambang-Regular.ttf") !important;
 }
 
 @font-face {
-  font-family: Opensans;
-  src: url("/static/invoice/fonts/OpenSans-Regular.ttf");
+  font-family: Opensans !important;
+  src: url("/static/invoice/fonts/OpenSans-Regular.ttf") !important;
 }
 
 body {
-  font-family: "Battambang", "Opensans", sans-serif;
-  font-size: 16px;
+  font-family: "Battambang", "Opensans", sans-serif !important;
+  font-size: 16px !important;
 }
 
 .logo {
@@ -323,6 +323,28 @@ tr.invoiceListHeading {
     background-color: #fff !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
+    font-family: "Battambang", "Opensans", sans-serif !important;
+    font-size: 16px !important;
+  }
+
+  table tr th {
+    font-size: 20px !important;
+  }
+
+  table tr td {
+    font-size: 20px !important;
+  }
+
+  p {
+    font-size: 16px !important;
+  }
+
+  h3 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 28px !important;
   }
 
   tr.invoiceListHeading {

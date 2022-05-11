@@ -119,7 +119,7 @@
     <div v-if="items.length === 0 && !isSearcing" class="text-center p-5">
       Empty Data
     </div>
-    <div v-if="isPagination && items.length !== 0 && items.length > 10">
+    <div v-if="(isPagination && items.length !== 0) || items.length > 10">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
