@@ -223,7 +223,7 @@ export default {
 </script>
 <style>
 .form-search-control {
-  height: 2rem;
+  height: 2rem !important;
   border-radius: 0.375rem 0 0 0.375rem !important;
 }
 </style>
