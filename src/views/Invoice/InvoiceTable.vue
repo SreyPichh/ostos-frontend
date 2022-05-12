@@ -9,9 +9,24 @@
   <div class="card my-3" v-if="!isLoading && businesses.length">
     <div class="card-header border-0">
       <div class="row align-items-center">
-        <div class="col d-flex">
+        <div class="col-lg-2 d-flex">
           <h4 class="mb-0">Invoice List</h4>
         </div>
+        <div class="col-lg-3 d-flex align-items-center">
+          <div class="d-flex items-center">
+            <input
+              class="px-2 border form-control form-search-control bg-white"
+              v-model="inputSearch"
+            />
+            <button
+              class="px-3 border bg-red rounded-right"
+              @click="getAllInvoices({ search: inputSearch })"
+            >
+              <i class="fa fa-search text-white"></i>
+            </button>
+          </div>
+        </div>
+
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-default"
@@ -139,27 +154,20 @@
       </base-button>
     </template>
   </modal>
-  <!-- <base-button type="link" @click="filterModal = true">Search</base-button> -->
-  <FilterModal
-    :show="filterModal"
-    @close="filterModal = false"
-    @items="filterOutput"
-  ></FilterModal>
 </template>
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
 import moment from "moment";
-import FilterModal from "./FilterModal.vue";
 
 export default {
   name: "invoice-table",
-  components: { FilterModal },
+  components: {},
   data() {
     return {
       isLoading: true,
       deleteAlert: false,
-      filterModal: false,
+      inputSearch: "",
       businesses: [],
     };
   },
@@ -172,10 +180,6 @@ export default {
     });
   },
   methods: {
-    filterOutput(items) {
-      this.filterModal = false;
-      this.items = items;
-    },
     getAllInvoices(options) {
       this.isLoading = true;
       InvoiceService.getInvoices(options).then(
@@ -217,4 +221,9 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.form-search-control {
+  height: 2rem;
+  border-radius: 0.375rem 0 0 0.375rem !important;
+}
+</style>

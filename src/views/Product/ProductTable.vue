@@ -18,7 +18,7 @@
         <div class="col-lg-2 d-flex">
           <h4 class="mb-0">
             All Products :
-            <span class="text-muted">{{ items.length }}</span>
+            <span class="text-muted">{{ totalCount }}</span>
           </h4>
         </div>
         <div class="col-lg-3 d-flex align-items-center">
@@ -26,10 +26,10 @@
           <Multiselect
             v-model="searchParams.business"
             :options="businesses"
-            @clear="getAllProducts"
+            @clear="getAllProducts()"
           />
         </div>
-        <base-button type="default" @click.prevent="onFilterProduct"
+        <base-button type="success btn-sm" @click.prevent="onFilterProduct"
           >Filter</base-button
         >
         <div class="col text-right">
@@ -81,7 +81,7 @@
             }}
           </td>
           <td>
-            <base-button
+            <!-- <base-button
               @click="onSetFavorite(row.item.id, row.item.isFavorite)"
               type="secondary"
               size="sm"
@@ -92,15 +92,15 @@
                     : 'far fa-star text-danger'
                 "
               ></i
-            ></base-button>
+            ></base-button> -->
             <base-button
-              @click="onEditProduct(row.item.id)"
+              @click.prevent="onEditProduct(row.item.id)"
               type="default"
               size="sm"
               ><i class="fas fa-pencil-alt"></i
             ></base-button>
             <base-button
-              @click="onDeleteClick(row.item.id)"
+              @click.prevent="onDeleteClick(row.item.id)"
               type="danger"
               size="sm"
               ><i class="fas fa-trash"></i
@@ -119,7 +119,7 @@
     <div v-if="items.length === 0 && !isSearcing" class="text-center p-5">
       Empty Data
     </div>
-    <div v-if="(isPagination && items.length !== 0) || items.length > 10">
+    <div v-if="isPagination && !items.length !== 0 && items.length <= 10">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
@@ -175,8 +175,9 @@ export default {
       isSearcing: false,
       deleteAlert: false,
       isPagination: true,
+      totalCount: 0,
       searchParams: {
-        business: [],
+        business: "all",
       },
       businesses: [],
     };
@@ -190,6 +191,7 @@ export default {
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
       });
+      this.businesses.unshift({ label: "ALL", value: "all" });
     });
   },
   methods: {
@@ -220,6 +222,7 @@ export default {
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          this.totalCount = this.pagination.total;
           this.isLoading = false;
           if (this.pagination.total_pages === 1) {
             this.isPagination = false;
@@ -244,7 +247,10 @@ export default {
       this.$router.push({ name: "edit-product", params: { Pid: proId } });
     },
     onFilterProduct() {
-      if (
+      console.log(this.searchParams.business);
+      if (this.searchParams.business && this.searchParams.business === "all") {
+        this.getAllProducts();
+      } else if (
         this.searchParams.business &&
         this.searchParams.business.length !== 0
       ) {
@@ -254,6 +260,7 @@ export default {
         }).then((b) => {
           this.isSearcing = false;
           this.items = b.data.data.product.data;
+          this.totalCount = this.items.length;
         });
       }
     },

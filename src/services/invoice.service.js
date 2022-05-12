@@ -1,8 +1,11 @@
 import api from "./api";
 const API_URL = "invoices";
 class InvoiceService {
-  getInvoices() {
-    return api.get(API_URL);
+  getInvoices(params) {
+    console.log(params);
+    return api.get(API_URL, {
+      params: params,
+    });
   }
   getInvoiceById(InvoiceId) {
     return api.get(API_URL + `/${InvoiceId}`);
