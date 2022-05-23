@@ -7,81 +7,82 @@
     />
   </div>
 
-  <div class="card my-3" v-if="businesses.length == 0 && !isLoading">
-    <div class="text-center p-5">
-      There is no Business, Please create business at least 1
-    </div>
-  </div>
-  <div class="card my-3" v-if="businesses.length && !isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col-lg-2 d-flex">
-          <h4 class="mb-0">
-            All Products :
-            <span class="text-muted">{{ totalCount }}</span>
-          </h4>
-        </div>
-        <div class="col-lg-3 d-flex align-items-center">
-          <label class="form-control-label mr-2 mb-0">Business</label>
-          <Multiselect
-            v-model="searchParams.business"
-            :options="businesses"
-            @clear="getAllProducts()"
-          />
-        </div>
-        <base-button type="success btn-sm" @click.prevent="onFilterProduct"
-          >Filter</base-button
-        >
-        <div class="col text-right">
-          <router-link
-            class="btn btn-sm btn-default"
-            :to="{ name: 'new-product' }"
-          >
-            Create New
-          </router-link>
-        </div>
+  <template v-if="!isLoading">
+    <div class="card my-3" v-if="businesses.length == 0">
+      <div class="text-center p-5">
+        There is no Business, Please create business at least 1
       </div>
     </div>
-
-    <div class="table-responsive">
-      <base-table class="table-sm" thead-classes="thead-light" :data="items">
-        <template v-slot:columns>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Business</th>
-          <th>Created Date</th>
-          <th>Updated Date</th>
-          <th>Action</th>
-        </template>
-
-        <template v-slot:default="row" v-if="!isSearcing">
-          <th scope="row">
+    <div class="card my-3" v-if="businesses.length">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col-lg-2 d-flex">
+            <h3 class="mb-0">
+              All Products :
+              <span class="text-muted">{{ totalCount }}</span>
+            </h3>
+          </div>
+          <div class="col-lg-3 d-flex align-items-center">
+            <label class="form-control-label mr-2 mb-0">Business</label>
+            <Multiselect
+              v-model="searchParams.business"
+              :options="businesses"
+              @clear="getAllProducts()"
+            />
+          </div>
+          <base-button type="success btn-sm" @click.prevent="onFilterProduct"
+            >Filter</base-button
+          >
+          <div class="col text-right">
             <router-link
-              :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
+              class="btn btn-sm btn-default"
+              :to="{ name: 'new-product' }"
             >
-              <span class="font-weight-700">
-                {{ row.item.id }}
-              </span>
+              Create New
             </router-link>
-          </th>
-          <td>
-            {{ row.item.name }}
-          </td>
-          <td>
-            {{ getBusinessesLabel(row.item.business_id) }}
-          </td>
-          <td>
-            {{
-              moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            {{
-              moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            <!-- <base-button
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <base-table class="table-sm" thead-classes="thead-light" :data="items">
+          <template v-slot:columns>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Business</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th>Action</th>
+          </template>
+
+          <template v-slot:default="row" v-if="!isSearcing">
+            <th scope="row">
+              <router-link
+                :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
+              >
+                <span class="font-weight-700">
+                  {{ row.item.id }}
+                </span>
+              </router-link>
+            </th>
+            <td>
+              {{ row.item.name }}
+            </td>
+            <td>
+              {{ getBusinessesLabel(row.item.business_id) }}
+            </td>
+            <td>
+              {{
+                moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              {{
+                moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              <!-- <base-button
               @click="onSetFavorite(row.item.id, row.item.isFavorite)"
               type="secondary"
               size="sm"
@@ -93,33 +94,41 @@
                 "
               ></i
             ></base-button> -->
-            <base-button
-              @click.prevent="onEditProduct(row.item.id)"
-              type="default"
-              size="sm"
-              ><i class="fas fa-pencil-alt"></i
-            ></base-button>
-            <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
-              type="danger"
-              size="sm"
-              ><i class="fas fa-trash"></i
-            ></base-button>
-          </td>
-        </template>
-      </base-table>
+              <base-button
+                @click.prevent="onEditProduct(row.item.id)"
+                type="default"
+                size="sm"
+                ><i class="fas fa-pencil-alt"></i
+              ></base-button>
+              <base-button
+                @click.prevent="onDeleteClick(row.item.id)"
+                type="danger"
+                size="sm"
+                ><i class="fas fa-trash"></i
+              ></base-button>
+            </td>
+          </template>
+        </base-table>
+      </div>
+      <div v-if="isSearcing" class="d-flex justify-content-center p-5">
+        <scaling-squares-spinner
+          :animation-duration="1250"
+          :size="45"
+          :color="'#ff1d5e'"
+        />
+      </div>
+      <div v-if="items.length === 0 && !isSearcing" class="text-center p-5">
+        Empty Data
+      </div>
     </div>
-    <div v-if="isSearcing" class="d-flex justify-content-center p-5">
-      <scaling-squares-spinner
-        :animation-duration="1250"
-        :size="45"
-        :color="'#ff1d5e'"
-      />
-    </div>
-    <div v-if="items.length === 0 && !isSearcing" class="text-center p-5">
-      Empty Data
-    </div>
-    <div v-if="isPagination && !items.length !== 0 && items.length <= 10">
+    <div
+      v-if="
+        isPagination &&
+        !items.length !== 0 &&
+        items.length <= 10 &&
+        this.pagination.total_pages !== 1
+      "
+    >
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
@@ -129,7 +138,7 @@
         size="sm"
       ></base-pagination>
     </div>
-  </div>
+  </template>
 
   <modal
     v-model:show="deleteAlert"
@@ -202,7 +211,6 @@ export default {
       }
     },
     onSetFavorite(productId, isFavorite) {
-      // console.log(productId, isFavorite);
       ProductService.updateProduct(productId, { isFavorite: !isFavorite }).then(
         () => {
           this.getAllProducts();
@@ -213,7 +221,6 @@ export default {
       );
     },
     onPaginationClicked(value) {
-      console.log(value);
       this.getAllProducts({ page: value });
     },
     getAllProducts(options) {
@@ -224,9 +231,6 @@ export default {
           this.pagination = res.data.meta.pagination;
           this.totalCount = this.pagination.total;
           this.isLoading = false;
-          if (this.pagination.total_pages === 1) {
-            this.isPagination = false;
-          }
         },
         (error) => {
           alert("error to get data", error);
@@ -247,7 +251,6 @@ export default {
       this.$router.push({ name: "edit-product", params: { Pid: proId } });
     },
     onFilterProduct() {
-      console.log(this.searchParams.business);
       if (this.searchParams.business && this.searchParams.business === "all") {
         this.getAllProducts();
       } else if (

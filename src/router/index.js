@@ -126,6 +126,21 @@ const routes = [
         components: { default: NewEmployee },
       },
       {
+        path: "/payments",
+        name: "payments",
+        components: { default: Employee },
+      },
+      {
+        path: "/purchases",
+        name: "purchases",
+        components: { default: Employee },
+      },
+      {
+        path: "/notebooks",
+        name: "notebooks",
+        components: { default: Employee },
+      },
+      {
         path: "/profile",
         name: "profile",
         components: { default: Profile },
@@ -163,6 +178,10 @@ const routes = [
         components: { default: Register },
       },
     ],
+  },
+  {
+    path: "/logout",
+    name: "logout",
   },
 ];
 

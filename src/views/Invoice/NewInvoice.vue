@@ -87,7 +87,6 @@
                 @keypress="isNumber($event)"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative px-2"
-                disabled="true"
                 v-model="invoice.invoice_number"
               />
             </div>
@@ -103,7 +102,7 @@
                   color="red"
                   v-model="invoice.date"
                 >
-                  <template v-slot="{ inputValue, togglePopover }">
+                  <template v-slot="{ inputValue, inputEvents, togglePopover }">
                     <div class="d-flex items-center">
                       <button
                         class="px-3 border bg-red rounded-left"
@@ -113,8 +112,8 @@
                       </button>
                       <input
                         :value="inputValue"
-                        class="px-2 border rounded-0 form-control bg-white"
-                        readonly
+                        v-on="inputEvents"
+                        class="px-2 border date-control form-control bg-white"
                       />
                     </div>
                   </template>
@@ -136,12 +135,12 @@
                 <label class="form-control-label">Status</label>
                 <Multiselect
                   v-model="invoice.status"
-                  :options="['paid', 'unpaid', 'partial_billed']"
+                  :options="['Paid', 'Unpaid', 'Partial Billed']"
                   @change="onChangeStatus($event)"
                 />
               </div>
             </div>
-            <div class="col-lg-2" v-if="invoice.status === 'Partial_Billed'">
+            <div class="col-lg-2" v-if="invoice.status === 'Partial Billed'">
               <base-input
                 addonLeftText="$"
                 addonRightText=".00"
@@ -216,11 +215,13 @@
                 </td>
                 <template v-if="selectedBusiness == 'printing'">
                   <td>
-                    <base-checkbox
-                      @input="onCoverALlClick(index, $event)"
-                      v-model="product.coverAll"
-                    >
-                    </base-checkbox>
+                    <div class="text-center">
+                      <input
+                        @change="onCoverALlClick(index, $event)"
+                        type="checkbox"
+                        v-model="product.coverAll"
+                      />
+                    </div>
                   </td>
                 </template>
                 <template v-if="selectedBusiness !== 'car'">
@@ -262,7 +263,6 @@
                 <td>
                   <base-input
                     addonLeftText="$"
-                    addonRightText=".00"
                     @keypress="isNumber($event)"
                     @change="onProductCalculate(index, $event)"
                     placeholder="Unit Price"
@@ -290,18 +290,25 @@
               <div class="text-left">
                 <h4>
                   សរុប/Total :
-                  <span class="px-3 py-1">${{ invoice.total }}.00</span>
+                  <span class="px-3 py-1"
+                    >${{ invoice.total
+                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
+                  >
                 </h4>
                 <h4>
                   ប្រាក់កក់/Deposite :
-                  <span class="px-3 py-1">${{ invoice.due_amount }}.00</span>
+                  <span class="px-3 py-1"
+                    >${{ invoice.due_amount
+                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
+                  >
                 </h4>
                 <h4>
                   នៅខ្វះ/Balance :
                   <span
                     class="bg-pink px-3 py-1 text-red"
                     v-if="invoice.due_amount - invoice.total < 0"
-                    >${{ (invoice.due_amount - invoice.total) * -1 }}.00</span
+                    >${{ (invoice.due_amount - invoice.total) * -1
+                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
                   >
                 </h4>
               </div>
@@ -314,14 +321,42 @@
         </card>
       </div>
     </div>
-    <div class="float-right mb-3">
-      <button
-        @click.prevent="createNewInvoice()"
-        type="button"
-        class="btn btn-default"
-      >
-        Create
-      </button>
+    <div class="row justify-content-between mb-3">
+      <div class="col-lg-6 form-group">
+        <label class="form-control-label">Invoice Note.</label>
+        <textarea
+          class="form-control form-control-alternative"
+          rows="4"
+          v-model="invoice.invoice_note"
+        ></textarea>
+      </div>
+      <div class="col-lg-1 form-group">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            v-model="invoice.signature"
+            id="signature"
+          />
+          <label class="form-check-label" for="signature">Signature</label>
+        </div>
+      </div>
+      <div class="col-lg-5 text-right">
+        <button
+          @click.prevent="createNewInvoice(true)"
+          type="button"
+          class="btn btn-default"
+        >
+          Create & Print
+        </button>
+        <button
+          @click.prevent="createNewInvoice()"
+          type="button"
+          class="btn btn-default"
+        >
+          Create
+        </button>
+      </div>
     </div>
   </div>
 
@@ -373,7 +408,7 @@ export default {
         mask: "YYYY-MM-DD",
       },
       masks: {
-        input: "WWWW, DD-MM-YYYY",
+        input: "DD-MM-YYYY",
       },
       selectedBusiness: "",
       employees: [],
@@ -444,9 +479,9 @@ export default {
     },
     onAutoSetStatus(business) {
       if (business === "car") {
-        this.invoice.status = "paid";
+        this.invoice.status = "Paid";
       } else {
-        this.invoice.status = "unpaid";
+        this.invoice.status = "Unpaid";
       }
     },
     onResetProducts() {
@@ -467,8 +502,7 @@ export default {
     },
     onCoverALlClick(index, isChecked) {
       const product = this.products[index];
-      product.coverAll = isChecked;
-      if (isChecked) {
+      if (isChecked.target.value === "true") {
         product.width = "";
         product.length = "";
       }
@@ -532,8 +566,6 @@ export default {
         this.products[index].unit_price = this.ktvPriceM2(
           (width * length) / 10000
         );
-        console.log((width * length) / 10000);
-
         this.products[index].total_price =
           this.products[index].unit_price * qty;
       }
@@ -609,18 +641,18 @@ export default {
             .reduce((prev, next) => prev + next)
         : 0;
 
-      if (this.invoice.status === "paid") {
+      if (this.invoice.status === "Paid") {
         this.invoice.due_amount = this.invoice.total;
       }
     },
     onChangeStatus(status) {
-      if (status === "paid") {
+      if (status === "Paid") {
         this.invoice.due_amount = this.invoice.total;
       } else {
         this.invoice.due_amount = 0;
       }
     },
-    createNewInvoice() {
+    createNewInvoice(isPrint) {
       const invoice = this.invoice;
       invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
       if (this.employees) {
@@ -636,8 +668,15 @@ export default {
       invoice.product_data = this.products;
       if (this.invoice) {
         InvoiceService.postInvoice(this.invoice).then(
-          () => {
+          (result) => {
             this.$router.push("/invoices");
+            if (isPrint) {
+              let resolvedRoute = this.$router.resolve({
+                name: "preview-invoice",
+                params: { invoiceId: result.data.id },
+              });
+              window.open(resolvedRoute.href, "_blank");
+            }
           },
           (error) => {
             alert("error to get data", error);
@@ -679,5 +718,9 @@ export default {
 table thead {
   background-color: #1a4567;
   color: #fff;
+}
+
+.date-control {
+  border-radius: 0 0.375rem 0.375rem 0 !important;
 }
 </style>

@@ -32,7 +32,7 @@
                 <div class="col d-flex justify-content-end">
                   <lable class="text-green mr-2">Active</lable>
                   <base-switch
-                    :value="this.product.isActive ? true : false"
+                    :value="product.isActive ? true : false"
                     v-model="product.isActive"
                   ></base-switch>
                 </div>

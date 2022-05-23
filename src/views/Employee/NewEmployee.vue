@@ -21,7 +21,6 @@
               <div class="col-lg-2">
                 <base-input
                   label="First Name"
-                  placeholder="-----"
                   input-classes="form-control-alternative"
                   v-model="employee.f_name"
                 />
@@ -29,7 +28,6 @@
               <div class="col-lg-2">
                 <base-input
                   label="Last Name"
-                  placeholder="-----"
                   input-classes="form-control-alternative"
                   v-model="employee.l_name"
                 />
@@ -37,7 +35,6 @@
               <div class="col-lg-3">
                 <base-input
                   label="UserName"
-                  placeholder="------"
                   input-classes="form-control-alternative"
                   v-model="employee.name"
                 />
@@ -46,7 +43,6 @@
                 <base-input
                   label="Email"
                   addonLeftIcon="fa fa-envelope"
-                  placeholder="-----"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
                   v-model="employee.email"
@@ -110,7 +106,7 @@
                 />
               </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-lg-4">
                 <base-input
                   label="Password"
@@ -121,7 +117,7 @@
                 >
                 </base-input>
               </div>
-            </div>
+            </div> -->
             <div class="row">
               <div class="col-lg-12 form-group">
                 <label class="form-control-label">Address</label>
@@ -174,7 +170,7 @@ export default {
   mounted() {},
   methods: {
     createEmployee() {
-      console.log(this.employee);
+      this.employee.password = "test@123";
       UserService.createUser(this.employee).then(
         () => {
           this.$router.push("/employees");

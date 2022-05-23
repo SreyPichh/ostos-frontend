@@ -57,6 +57,27 @@
         />
         <sidebar-item
           :link="{
+            name: 'Payment',
+            icon: 'fa fa-cash-register text-red',
+            path: '/payments',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Purchase',
+            icon: 'fa fa-money-check-alt text-red',
+            path: '/purchases',
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Note Book',
+            icon: 'fa fa-clipboard text-red',
+            path: '/notebooks',
+          }"
+        />
+        <sidebar-item
+          :link="{
             name: 'Profile',
             icon: 'ni ni-single-02 text-red',
             path: '/profile',

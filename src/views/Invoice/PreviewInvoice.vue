@@ -158,11 +158,15 @@
           <div class="w-50">
             <div class="d-flex align-items-baseline">
               <h3 class="col-sm-8 text-right">សរុប/Total</h3>
-              <h3 class="col-sm-4 total-bg-color">${{ invoice.total }}.00</h3>
+              <h3 class="col-sm-4 total-bg-color">
+                ${{ invoice.total }}{{ invoice.total >= 1 ? ".00" : "" }}
+              </h3>
             </div>
             <div class="d-flex align-items-baseline">
               <h3 class="col-sm-8 text-right">ប្រាក់កក់/Deposite</h3>
-              <h3 class="col-sm-4">${{ invoice.due_amount }}.00</h3>
+              <h3 class="col-sm-4">
+                ${{ invoice.due_amount }}{{ invoice.total >= 1 ? ".00" : "" }}
+              </h3>
             </div>
             <div class="d-flex align-items-baseline">
               <h3 class="col-sm-8 text-right">នៅខ្វះ/Balance</h3>
@@ -170,7 +174,8 @@
                 <span
                   class="py-1 text-red"
                   v-if="invoice.due_amount - invoice.total < 0"
-                  >${{ (invoice.due_amount - invoice.total) * -1 }}.00</span
+                  >${{ (invoice.due_amount - invoice.total) * -1
+                  }}{{ invoice.total >= 1 ? ".00" : "" }}</span
                 >
               </h3>
             </div>
@@ -264,8 +269,10 @@ export default {
       this.businessId = invoice.business_id;
       BusinessService.getBusinessById(this.businessId).then((item) => {
         const business = item.data.data;
-        this.selectedBusiness = business.name.toLowerCase().trim();
-        business.invoice_note = business.invoice_note.split("\n");
+        if (business && business.name && business.invoice_note) {
+          this.selectedBusiness = business.name.toLowerCase().trim();
+          business.invoice_note = business.invoice_note.split("\n");
+        }
         this.business = business;
         this.isLoading = false;
       });

@@ -6,83 +6,86 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card" v-if="!isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col d-flex">
-          <h4 class="mb-0">
-            All Employees :
-            <span class="text-muted">{{ items.length }}</span>
-          </h4>
-        </div>
-        <div class="col text-right">
-          <router-link
-            class="btn btn-sm btn-default"
-            :to="{ name: 'new-employee' }"
-          >
-            Create New
-          </router-link>
+
+  <template v-if="!isLoading">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col d-flex">
+            <h4 class="mb-0">
+              All Employees :
+              <span class="text-muted">{{ items.length }}</span>
+            </h4>
+          </div>
+          <div class="col text-right">
+            <router-link
+              class="btn btn-sm btn-default"
+              :to="{ name: 'new-employee' }"
+            >
+              Create New
+            </router-link>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="table-responsive">
-      <base-table class="table-sm" thead-classes="thead-light" :data="items">
-        <template v-slot:columns>
-          <th>ID</th>
-          <th>First Name & Last Name</th>
-          <th>Name</th>
-          <th>Gender</th>
-          <th>Created Date</th>
-          <th>Updated Date</th>
-          <th>Action</th>
-        </template>
+      <div class="table-responsive">
+        <base-table class="table-sm" thead-classes="thead-light" :data="items">
+          <template v-slot:columns>
+            <th>ID</th>
+            <th>First Name & Last Name</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Created Date</th>
+            <th>Updated Date</th>
+            <th>Action</th>
+          </template>
 
-        <template v-slot:default="row">
-          <th scope="row">
-            <router-link
-              :to="{ name: 'edit-employee', params: { UserId: row.item.id } }"
-              ><span class="font-weight-700">
-                {{ row.item.id }}
-              </span></router-link
-            >
-          </th>
-          <td>{{ row.item.f_name }} {{ row.item.l_name }}</td>
-          <td>
-            {{ row.item.name }}
-          </td>
-          <td>
-            {{ row.item.gender }}
-          </td>
-          <td>
-            {{
-              moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            {{
-              moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            <base-button
-              @click="onEditEmployee(row.item.id)"
-              type="default"
-              size="sm"
-              ><i class="fas fa-pencil-alt"></i
-            ></base-button>
-            <base-button
-              @click="onDeleteClick(row.item.id)"
-              type="danger"
-              size="sm"
-              ><i class="fas fa-trash"></i
-            ></base-button>
-          </td>
-        </template>
-      </base-table>
+          <template v-slot:default="row">
+            <th scope="row">
+              <router-link
+                :to="{ name: 'edit-employee', params: { UserId: row.item.id } }"
+                ><span class="font-weight-700">
+                  {{ row.item.id }}
+                </span></router-link
+              >
+            </th>
+            <td>{{ row.item.f_name }} {{ row.item.l_name }}</td>
+            <td>
+              {{ row.item.name }}
+            </td>
+            <td>
+              {{ row.item.gender }}
+            </td>
+            <td>
+              {{
+                moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              {{
+                moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              <base-button
+                @click="onEditEmployee(row.item.id)"
+                type="default"
+                size="sm"
+                ><i class="fas fa-pencil-alt"></i
+              ></base-button>
+              <base-button
+                @click="onDeleteClick(row.item.id)"
+                type="danger"
+                size="sm"
+                ><i class="fas fa-trash"></i
+              ></base-button>
+            </td>
+          </template>
+        </base-table>
+      </div>
+      <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
     </div>
-    <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-    <div v-if="isNopagination">
+    <div v-if="this.pagination.total_pages !== 1">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
@@ -92,7 +95,7 @@
         size="sm"
       ></base-pagination>
     </div>
-  </div>
+  </template>
 
   <modal
     v-model:show="deleteAlert"
@@ -143,7 +146,6 @@ export default {
   },
   methods: {
     onPaginationClicked(value) {
-      console.log(value);
       this.getAllUsers({ page: value });
     },
     getAllUsers(options) {
@@ -153,9 +155,6 @@ export default {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
           this.isLoading = false;
-          if (this.pagination.total_pages === 1) {
-            this.isPagination = false;
-          }
         },
         (error) => {
           alert("error to get data", error);

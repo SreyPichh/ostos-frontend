@@ -16,30 +16,12 @@
         <ul class="nav align-items-center d-md-none">
           <base-dropdown class="nav-item" position="right">
             <template v-slot:title>
-              <a
-                class="nav-link nav-link-icon"
-                href="#"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i class="ni ni-bell-55"></i>
-              </a>
-            </template>
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </base-dropdown>
-          <base-dropdown class="nav-item" position="right">
-            <template v-slot:title>
               <a class="nav-link" href="#" role="button">
                 <div class="media align-items-center">
                   <span class="avatar avatar-sm rounded-circle">
                     <img
                       alt="Image placeholder"
-                      src="img/theme/team-1-800x800.jpg"
+                      src="img/theme/team-4-800x800.jpg"
                     />
                   </span>
                 </div>
@@ -54,22 +36,18 @@
               <span>My profile</span>
             </router-link>
             <router-link to="/profile" class="dropdown-item">
-              <i class="ni ni-settings-gear-65"></i>
-              <span>Settings</span>
-            </router-link>
-            <router-link to="/profile" class="dropdown-item">
               <i class="ni ni-calendar-grid-58"></i>
               <span>Activity</span>
             </router-link>
-            <router-link to="/profile" class="dropdown-item">
-              <i class="ni ni-support-16"></i>
-              <span>Support</span>
-            </router-link>
             <div class="dropdown-divider"></div>
-            <a href="#!" class="dropdown-item">
+            <router-link
+              to="/logout"
+              @click.prevent="logOut"
+              class="dropdown-item"
+            >
               <i class="ni ni-user-run"></i>
               <span>Logout</span>
-            </a>
+            </router-link>
           </base-dropdown>
         </ul>
       </slot>
@@ -133,6 +111,10 @@ export default {
     },
     showSidebar() {
       this.$sidebar.displaySidebar(true);
+    },
+    logOut() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
     },
   },
   beforeUnmount() {
