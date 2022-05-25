@@ -26,10 +26,16 @@
               />
             </div>
             <div class="col-lg-6">
-              <base-input
+              <!-- <base-input
                 placeholder="Logo"
                 input-classes="form-control-alternative"
                 v-model="business.logo"
+              /> -->
+              <input
+                type="file"
+                @change="onFileSelected"
+                accept="image/*"
+                class="upload-logo"
               />
             </div>
           </div>
@@ -262,6 +268,8 @@
 
 <script>
 import BusinessService from "../../services/business.service";
+import axios from "axios";
+
 export default {
   components: {},
   name: "new-business",
@@ -269,12 +277,27 @@ export default {
     return {
       value: null,
       business: {},
+      selectedFile: null,
     };
   },
   methods: {
+    onupload() {
+      const fd = new FormData();
+      fd.append("image", this.selectedFile, this.selectedFile.name);
+      axios
+        .post(
+          "https://us-central1-ostos-sticker-2022.cloudfunctions.net/uploadFile",
+          fd
+        )
+        .then((img) => console.log(img));
+    },
     createNewBusiness() {
+      this.business.logo = this.selectedFile;
       BusinessService.postBusiness(this.business).then(
         () => {
+          if (this.selectedFile) {
+            this.onupload();
+          }
           this.$router.push("/products");
         },
         (error) => {
@@ -293,7 +316,10 @@ export default {
         evt.preventDefault();
       }
     },
+    onFileSelected(event) {
+      this.selectedFile = event.target.files[0];
+    },
   },
 };
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
+<!-- <style src="@vueform/multiselect/themes/default.css"></style> -->
