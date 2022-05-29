@@ -31,12 +31,16 @@
                 input-classes="form-control-alternative"
                 v-model="business.logo"
               /> -->
-              <input
-                type="file"
-                @change="onFileSelected"
-                accept="image/*"
-                class="upload-logo"
-              />
+              <label class="uploadImg">
+                <input
+                  type="file"
+                  @change="onFileSelected($event, 'logo')"
+                  accept="image/*"
+                  class="upload-logo"
+                />
+                Choose Image
+              </label>
+              <img :src="logoUrl" height="100" />
             </div>
           </div>
           <div class="row">
@@ -162,11 +166,23 @@
               </div>
               <div class="row">
                 <div class="col-lg-12">
-                  <base-input
+                  <!-- <base-input
                     placeholder="ABA QR"
                     input-classes="form-control-alternative"
                     v-model="business.qr_code"
-                  />
+                  /> -->
+
+                  <h4>ABA QR</h4>
+                  <label class="uploadImg">
+                    <input
+                      type="file"
+                      @change="onFileSelected($event, 'abaQR')"
+                      accept="image/*"
+                      class="upload-logo"
+                    />
+                    Choose Image
+                  </label>
+                  <img :src="qrimageUrl" height="100" />
                 </div>
               </div>
             </div>
@@ -243,12 +259,23 @@
           </div>
           <div class="row">
             <div class="col-lg-12">
-              <base-input
+              <!-- <base-input
                 alternative=""
                 placeholder="Invoice signature"
                 input-classes="form-control-alternative"
                 v-model="business.digital_sign"
-              />
+              /> -->
+              <h4>Invoice signature</h4>
+              <label class="uploadImg">
+                <input
+                  type="file"
+                  @change="onFileSelected($event, 'signature')"
+                  accept="image/*"
+                  class="upload-logo"
+                />
+                Choose Image
+              </label>
+              <img :src="signatureUrl" height="100" />
             </div>
           </div>
         </card>
@@ -278,6 +305,10 @@ export default {
       value: null,
       business: {},
       selectedFile: null,
+      logoUrl: "",
+      qrimageUrl: "",
+      signatureUrl: "",
+      image: null,
     };
   },
   methods: {
@@ -316,10 +347,39 @@ export default {
         evt.preventDefault();
       }
     },
-    onFileSelected(event) {
-      this.selectedFile = event.target.files[0];
+    onFileSelected(event, target) {
+      // this.selectedFile = event.target.files[0];
+      const file = event.target.files;
+      let fileName = file[0].name;
+      console.log(fileName);
+      if (fileName.lastIndexOf(".") <= 0) {
+        return alert("invalid file format");
+      }
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file[0]);
+      fileReader.addEventListener("load", () => {
+        if (target === "logo") {
+          this.logoUrl = fileReader.result;
+        } else if (target === "abaQR") {
+          this.qrimageUrl = fileReader.result;
+        } else if (target === "signature") {
+          this.signatureUrl = fileReader.result;
+        }
+      });
     },
   },
 };
 </script>
 <!-- <style src="@vueform/multiselect/themes/default.css"></style> -->
+<style scoped>
+.uploadImg {
+  border: 1px solid;
+  border-radius: 5px;
+  background-color: rgba(255, 129, 129, 0.303);
+  padding: 7px;
+  margin-right: 20px;
+}
+.upload-logo {
+  display: none;
+}
+</style>
