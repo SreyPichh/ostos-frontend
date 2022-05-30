@@ -16,7 +16,7 @@
             </div>
           </template>
 
-          <div class="row">
+          <div class="row uploadImageInner">
             <div class="col-lg-6">
               <base-input
                 alternative=""
@@ -40,7 +40,7 @@
                 />
                 Choose Image
               </label>
-              <img :src="logoUrl" height="100" />
+              <img :src="logoUrl" height="100" class="previewImage" />
             </div>
           </div>
           <div class="row">
@@ -131,7 +131,7 @@
           height="100%"
           shadow
           type="secondary"
-          class="mb-3"
+          class="mb-3 cardContainer"
           bodyClasses="pb-0"
         >
           <template v-slot:header>
@@ -182,7 +182,7 @@
                     />
                     Choose Image
                   </label>
-                  <img :src="qrimageUrl" height="100" />
+                  <img :src="qrimageUrl" height="100" class="previewImage" />
                 </div>
               </div>
             </div>
@@ -226,7 +226,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary" bodyClasses="pb-0">
+        <card shadow type="secondary" bodyClasses="pb-0" class="cardContainer">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -275,7 +275,7 @@
                 />
                 Choose Image
               </label>
-              <img :src="signatureUrl" height="100" />
+              <img :src="signatureUrl" height="100" class="previewImage" />
             </div>
           </div>
         </card>
@@ -378,8 +378,21 @@ export default {
   background-color: rgba(255, 129, 129, 0.303);
   padding: 7px;
   margin-right: 20px;
+  cursor: pointer;
+  position: absolute;
+}
+.previewImage {
+  position: relative;
+  left: 140px;
+}
+.uploadImageInner {
+  margin-bottom: 20px;
 }
 .upload-logo {
   display: none;
+  cursor: pointer;
+}
+.cardContainer {
+  padding-bottom: 30px;
 }
 </style>
