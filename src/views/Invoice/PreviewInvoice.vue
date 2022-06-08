@@ -40,11 +40,11 @@
         <hr class="my-1" />
         <div class="d-flex justify-content-between">
           <div class="d-flex align-items-baseline">
-            <h2 class="font-weight-bold mr-1">Invoce:</h2>
+            <h2 class="mr-1">Invoce:</h2>
             <p>#INV-{{ invoice.invoice_number }}</p>
           </div>
           <div class="text-right">
-            <p class="font-weight-bold">
+            <p>
               Date: <span>{{ invoice.date }}</span>
             </p>
           </div>
@@ -81,15 +81,15 @@
           </div>
           <div class="text-right">
             <p class="mb-0">
-              <span class="font-weight-bold h2">Address</span> :
+              Address :
               {{ business.address }}
             </p>
             <p class="mb-0">
-              <span class="font-weight-bold p">Email</span> :
+              Email :
               {{ business.email }}
             </p>
             <p class="mb-0">
-              <span class="font-weight-bold p">Phone</span> :
+              Phone :
               {{ business.phone_number1 }}
               {{ business.phone_number2 ? `| ${business.phone_number2}` : "" }}
               {{ business.phone_number3 ? `| ${business.phone_number3}` : "" }}
@@ -139,18 +139,14 @@
                 height="120"
               />
               <div class="ml-2">
-                <p class="mr-2 mb-0 p24-px">
-                  លេខគណនីធនាគារ : <span class="font-weight-bold">ABA</span>
-                </p>
+                <p class="mr-2 mb-0 p24-px">លេខគណនីធនាគារ : <span>ABA</span></p>
                 <p class="mr-2 mb-0 p24-px">
                   លេខកុង :
-                  <span class="font-weight-bold">{{
-                    business.acc_number
-                  }}</span>
+                  <span>{{ business.acc_number }}</span>
                 </p>
                 <p class="mr-2 mb-0 p24-px">
                   ឈ្មេាះ :
-                  <span class="font-weight-bold">{{ business.aba_name }}</span>
+                  <span>{{ business.aba_name }}</span>
                 </p>
               </div>
             </div>
@@ -190,13 +186,13 @@
             </div>
             <div class="text-left">
               <div class="d-flex">
-                <p class="font-weight-bold mr-1 mb-0">ចំណាំ:</p>
+                <p class="mr-1 mb-0">ចំណាំ:</p>
                 <p class="mb-0">
                   {{ business.invoice_note[0] }}
                 </p>
               </div>
               <div class="d-flex">
-                <p class="font-weight-bold mr-1 mb-0">Note:</p>
+                <p class="mr-1 mb-0">Note:</p>
                 <p class="mb-0">
                   {{ business.invoice_note[1] }}
                 </p>
@@ -325,6 +321,14 @@ tr.invoiceListHeading {
   color: #fff;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: normal !important;
+}
+
 @media print {
   #noPrint {
     display: none;
@@ -360,6 +364,14 @@ tr.invoiceListHeading {
 
   h2 {
     font-size: 24px !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-weight: normal !important;
   }
 
   tr.invoiceListHeading {

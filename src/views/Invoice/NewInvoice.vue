@@ -283,7 +283,7 @@
               <button
                 @click.prevent="addProduct"
                 type="button"
-                class="btn btn-default btn-sm ml-2"
+                class="btn btn-warning btn-sm ml-2"
               >
                 Add Product
               </button>

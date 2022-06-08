@@ -5,7 +5,7 @@
   <div class="container-fluid mt--5">
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary" bodyClasses="pb-0">
+        <card shadow type="secondary">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -16,7 +16,7 @@
             </div>
           </template>
 
-          <div class="row uploadImageInner">
+          <div class="row">
             <div class="col-lg-6">
               <base-input
                 alternative=""
@@ -25,32 +25,33 @@
                 v-model="business.name"
               />
             </div>
-            <div class="col-lg-6">
-              <!-- <base-input
-                placeholder="Logo"
-                input-classes="form-control-alternative"
-                v-model="business.logo"
-              /> -->
-              <label class="uploadImg">
-                <input
-                  type="file"
-                  @change="onFileSelected($event, 'logo')"
-                  accept="image/*"
-                  class="upload-logo"
-                />
-                Choose Image
-              </label>
-              <img :src="logoUrl" height="100" class="previewImage" />
+          </div>
+          <div class="row">
+            <div class="col-lg-12 form-group">
+              <textarea
+                placeholder="Address"
+                class="form-control form-control-alternative"
+                rows="2"
+                v-model="business.address"
+              ></textarea>
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-12">
-              <base-input
-                alternative=""
-                placeholder="Address"
-                input-classes="form-control-alternative"
-                v-model="business.address"
+            <div class="col-lg-6">
+              <button
+                class="btn btn-info align-top"
+                @click="onPickFile('businessImg')"
+              >
+                Business Logo
+              </button>
+              <input
+                type="file"
+                ref="businessImg"
+                @change="onFileSelected($event, 'logo')"
+                accept="image/*"
+                class="d-none"
               />
+              <img :src="logoUrl" height="100" class="align-top" />
             </div>
           </div>
         </card>
@@ -127,13 +128,7 @@
       </div>
 
       <div class="col-xl-6 pl-0 order-xl-3">
-        <card
-          height="100%"
-          shadow
-          type="secondary"
-          class="mb-3 cardContainer"
-          bodyClasses="pb-0"
-        >
+        <card height="100%" shadow type="secondary" class="mb-3 cardContainer">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -166,23 +161,20 @@
               </div>
               <div class="row">
                 <div class="col-lg-12">
-                  <!-- <base-input
-                    placeholder="ABA QR"
-                    input-classes="form-control-alternative"
-                    v-model="business.qr_code"
-                  /> -->
-
-                  <h4>ABA QR</h4>
-                  <label class="uploadImg">
-                    <input
-                      type="file"
-                      @change="onFileSelected($event, 'abaQR')"
-                      accept="image/*"
-                      class="upload-logo"
-                    />
-                    Choose Image
-                  </label>
-                  <img :src="qrimageUrl" height="100" class="previewImage" />
+                  <button
+                    class="btn btn-info align-top"
+                    @click="onPickFile('abaQRImg')"
+                  >
+                    ABA QR
+                  </button>
+                  <input
+                    type="file"
+                    ref="abaQRImg"
+                    @change="onFileSelected($event, 'abaQR')"
+                    accept="image/*"
+                    class="d-none"
+                  />
+                  <img :src="qrimageUrl" height="100" class="align-top" />
                 </div>
               </div>
             </div>
@@ -226,7 +218,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-xl-12 pl-0 order-xl-1">
-        <card shadow type="secondary" bodyClasses="pb-0" class="cardContainer">
+        <card shadow type="secondary" class="cardContainer">
           <template v-slot:header>
             <div class="bg-white border-0">
               <div class="row align-items-center">
@@ -242,40 +234,49 @@
               <label class="form-control-label">Invoice top text</label>
               <textarea
                 class="form-control form-control-alternative"
-                rows="5"
+                rows="2"
                 v-model="business.invoice_toptext"
               ></textarea>
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-12 form-group">
-              <label class="form-control-label">Invoice note text</label>
+            <div class="col-lg-6 form-group">
+              <label class="form-control-label"
+                >Invoice note text (Khmer)</label
+              >
               <textarea
                 class="form-control form-control-alternative"
-                rows="5"
-                v-model="business.invoice_note"
+                rows="2"
+                v-model="invoice_note_kh"
+              ></textarea>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label class="form-control-label"
+                >Invoice note text (English)</label
+              >
+              <textarea
+                class="form-control form-control-alternative"
+                rows="2"
+                v-model="invoice_note_en"
               ></textarea>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-12">
-              <!-- <base-input
-                alternative=""
-                placeholder="Invoice signature"
-                input-classes="form-control-alternative"
-                v-model="business.digital_sign"
-              /> -->
-              <h4>Invoice signature</h4>
-              <label class="uploadImg">
-                <input
-                  type="file"
-                  @change="onFileSelected($event, 'signature')"
-                  accept="image/*"
-                  class="upload-logo"
-                />
-                Choose Image
-              </label>
-              <img :src="signatureUrl" height="100" class="previewImage" />
+              <button
+                class="btn btn-info align-top"
+                @click="onPickFile('signatureImg')"
+              >
+                Signature
+              </button>
+              <input
+                type="file"
+                ref="signatureImg"
+                @change="onFileSelected($event, 'signature')"
+                accept="image/*"
+                class="d-none"
+              />
+              <img :src="signatureUrl" height="100" class="align-top" />
             </div>
           </div>
         </card>
@@ -303,7 +304,11 @@ export default {
   data() {
     return {
       value: null,
-      business: {},
+      business: {
+        logo: "",
+        qr_code: "",
+        digital_sign: "",
+      },
       selectedFile: null,
       logoUrl: "",
       qrimageUrl: "",
@@ -329,7 +334,7 @@ export default {
           if (this.selectedFile) {
             this.onupload();
           }
-          this.$router.push("/products");
+          this.$router.push("/businesses");
         },
         (error) => {
           alert("error to get data", error);
@@ -346,6 +351,9 @@ export default {
       ) {
         evt.preventDefault();
       }
+    },
+    onPickFile(imgRef) {
+      this.$refs[imgRef].click();
     },
     onFileSelected(event, target) {
       // this.selectedFile = event.target.files[0];
@@ -371,28 +379,3 @@ export default {
 };
 </script>
 <!-- <style src="@vueform/multiselect/themes/default.css"></style> -->
-<style scoped>
-.uploadImg {
-  border: 1px solid;
-  border-radius: 5px;
-  background-color: rgba(255, 129, 129, 0.303);
-  padding: 7px;
-  margin-right: 20px;
-  cursor: pointer;
-  position: absolute;
-}
-.previewImage {
-  position: relative;
-  left: 140px;
-}
-.uploadImageInner {
-  margin-bottom: 20px;
-}
-.upload-logo {
-  display: none;
-  cursor: pointer;
-}
-.cardContainer {
-  padding-bottom: 30px;
-}
-</style>

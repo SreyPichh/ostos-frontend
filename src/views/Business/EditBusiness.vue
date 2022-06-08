@@ -229,18 +229,30 @@
               <label class="form-control-label">Invoice top text</label>
               <textarea
                 class="form-control form-control-alternative"
-                rows="5"
+                rows="2"
                 v-model="business.invoice_toptext"
               ></textarea>
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-12 form-group">
-              <label class="form-control-label">Invoice note text</label>
+            <div class="col-lg-6 form-group">
+              <label class="form-control-label"
+                >Invoice note text (Khmer)</label
+              >
               <textarea
                 class="form-control form-control-alternative"
-                rows="5"
-                v-model="business.invoice_note"
+                rows="2"
+                v-model="invoice_note_kh"
+              ></textarea>
+            </div>
+            <div class="col-lg-6 form-group">
+              <label class="form-control-label"
+                >Invoice note text (English)</label
+              >
+              <textarea
+                class="form-control form-control-alternative"
+                rows="2"
+                v-model="invoice_note_en"
               ></textarea>
             </div>
           </div>
@@ -285,11 +297,14 @@ export default {
     this.businessId = this.$route.params.Bid;
     BusinessService.getBusinessById(this.businessId).then((item) => {
       this.business = item.data.data;
+      this.invoice_note_kh = this.business.invoice_note.split("\n")[0];
+      this.invoice_note_en = this.business.invoice_note.split("\n")[1];
       this.isLoading = false;
     });
   },
   methods: {
     updateBusiness() {
+      this.business.invoice_note = `${this.invoice_note_kh}\n${this.invoice_note_en}`;
       BusinessService.updateBusiness(this.businessId, this.business).then(
         () => {
           this.$router.push("/businesses");

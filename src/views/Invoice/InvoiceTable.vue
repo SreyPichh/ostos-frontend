@@ -333,9 +333,9 @@ export default {
             .join(";") +
           "&searchJoin=and";
         InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
-          console.log(invoices.data.data);
           this.isSearcing = false;
           this.items = invoices.data.data;
+          this.pagination = invoices.data.meta.pagination;
           this.totalCount = this.items.length;
         });
       }
