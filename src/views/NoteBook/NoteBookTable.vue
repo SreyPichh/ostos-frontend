@@ -10,12 +10,12 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h4 class="mb-0">Receipt List</h4>
+          <h4 class="mb-0">NoteBook List</h4>
         </div>
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-default"
-            :to="{ name: 'new-receipt' }"
+            :to="{ name: 'new-notebook' }"
           >
             Create New
           </router-link>
@@ -24,45 +24,33 @@
     </div>
 
     <div class="table-responsive" id="printMe">
-      <base-table thead-classes="thead-light" :data="items">
+      <base-table
+        thead-classes="thead-light"
+        :data="items"
+        @row-click="onSelectNote"
+      >
         <template v-slot:columns>
-          <th>Receipt No</th>
-          <th>Customer</th>
-          <th>Total</th>
-          <th>Status</th>
+          <th>No</th>
+          <th>Description</th>
           <th>Create Date</th>
           <th>Updated Date</th>
           <th>Action</th>
         </template>
 
         <template v-slot:default="row">
-          <th scope="row">
+          <th scope="row" class="align-middle">
             <router-link
               :to="{
-                name: 'edit-receipt',
-                params: { receiptId: row.item.id },
+                name: 'edit-notebook',
+                params: { notebookId: row.item.id },
               }"
               ><span class="font-weight-700">
-                {{ row.item.receipt_number }}
+                {{ row.item.id }}
               </span></router-link
             >
           </th>
-          <td>
-            {{ row.item.customer }}
-          </td>
-          <td>${{ row.item.total }}.00</td>
-          <td>
-            <span
-              class="badge badge-pill badge-md"
-              :class="`badge-${
-                row.item.status === 'paid'
-                  ? 'success'
-                  : row.item.status === 'partial-billed'
-                  ? 'info'
-                  : 'danger'
-              }`"
-              >{{ row.item.status }}</span
-            >
+          <td class="truncate">
+            {{ row.item.description }}
           </td>
           <td>
             {{
@@ -76,16 +64,11 @@
           </td>
           <td>
             <base-button
-              @click="onEditReceipt(row.item.id)"
+              @click="onEditNotebook(row.item.id)"
               type="default"
               size="sm"
             >
               <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button type="default" size="sm">
-              <router-link to="/receipts/preview" target="_blank">
-                <i style="color: #fff" class="fas fa-print"></i>
-              </router-link>
             </base-button>
             <base-button
               @click.prevent="onDeleteClick(row.item.id)"
@@ -100,7 +83,17 @@
     </div>
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
   </div>
-
+  <div class="row mt-auto">
+    <div class="col-lg-12 form-group">
+      <label class="form-control-label">Description</label>
+      <textarea
+        class="form-control form-control-alternative"
+        rows="5"
+        readonly="true"
+        v-model="selectedNoteBook"
+      ></textarea>
+    </div>
+  </div>
   <modal
     v-model:show="deleteAlert"
     gradient="danger"
@@ -111,12 +104,12 @@
     </template>
     <div class="py-3 text-center">
       <i class="fas fa-trash fa-3x"></i>
-      <h4 class="heading mt-4">Are you sure, To delete this Receipt?</h4>
+      <h4 class="heading mt-4">Are you sure, To delete this Note Book?</h4>
       <p>Click OK to delete</p>
     </div>
 
     <template v-slot:footer>
-      <base-button @click="deleteReceipt" type="white">Ok, Got it</base-button>
+      <base-button @click="deleteNotebook" type="white">Ok, Got it</base-button>
       <base-button
         type="link"
         text-color="white"
@@ -129,7 +122,7 @@
   </modal>
 </template>
 <script>
-import ReceiptService from "../../services/receipt.service";
+import NoteBookService from "../../services/notebook.service";
 import moment from "moment";
 
 export default {
@@ -138,12 +131,16 @@ export default {
     return {
       isLoading: true,
       deleteAlert: false,
+      selectedNoteBook: "",
     };
   },
   methods: {
-    getAllReceipts(options) {
+    onSelectNote(value) {
+      this.selectedNoteBook = value.description;
+    },
+    getAllNotebooks(options) {
       this.isLoading = true;
-      ReceiptService.getReceipts(options).then(
+      NoteBookService.getNoteBooks(options).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
@@ -154,20 +151,20 @@ export default {
         }
       );
     },
-    onDeleteClick(receiptId) {
+    onDeleteClick(notebookId) {
       this.deleteAlert = true;
-      this.isDeletingId = receiptId;
+      this.isDeletingId = notebookId;
     },
-    deleteReceipt() {
-      ReceiptService.deleteReceipt(this.isDeletingId).then(() => {
+    deleteNotebook() {
+      NoteBookService.deleteNoteBook(this.isDeletingId).then(() => {
         this.deleteAlert = false;
-        this.getAllReceipts();
+        this.getAllNotebooks();
       });
     },
-    onEditReceipt(receiptId) {
+    onEditNotebook(notebookId) {
       this.$router.push({
-        name: "edit-receipt",
-        params: { receiptId: receiptId },
+        name: "edit-notebook",
+        params: { notebookId: notebookId },
       });
     },
   },
@@ -175,8 +172,15 @@ export default {
     this.moment = moment;
   },
   mounted() {
-    this.getAllReceipts();
+    this.getAllNotebooks();
   },
 };
 </script>
-<style></style>
+<style scoped>
+.truncate {
+  max-width: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

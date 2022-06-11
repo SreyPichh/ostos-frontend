@@ -8,7 +8,11 @@
       </tr>
     </thead>
     <tbody :class="tbodyClasses">
-      <tr v-for="(item, index) in data" :key="index">
+      <tr
+        v-for="(item, index) in data"
+        :key="index"
+        @click.prevent="onRowClick(item)"
+      >
         <slot :item="item">
           <td v-for="column in columns" :key="column">
             <template v-if="hasValue(item, column)">
@@ -61,6 +65,9 @@ export default {
     },
   },
   methods: {
+    onRowClick(item) {
+      this.$emit("row-click", item);
+    },
     hasValue(item, column) {
       return item[column.toLowerCase()] !== "undefined";
     },

@@ -26,6 +26,12 @@ import Quote from "../views/Quote/Quote.vue";
 
 import Receipt from "../views/Receipt/Receipt.vue";
 
+import Purchase from "../views/Purchase/Purchase.vue";
+
+import NoteBook from "../views/NoteBook/NoteBook.vue";
+import NewNoteBook from "../views/NoteBook/NewNoteBook.vue";
+import EditNoteBook from "../views/NoteBook/EditNoteBook.vue";
+
 import Profile from "../views/UserProfile.vue";
 
 import Login from "../views/Login.vue";
@@ -133,12 +139,32 @@ const routes = [
       {
         path: "/purchases",
         name: "purchases",
-        components: { default: Employee },
+        components: { default: Purchase },
+      },
+      {
+        path: "/purchases/:purchaseId",
+        name: "edit-purchase",
+        components: { default: EditEmployee },
+      },
+      {
+        path: "/purchases/new",
+        name: "new-purchase",
+        components: { default: NewEmployee },
       },
       {
         path: "/notebooks",
         name: "notebooks",
-        components: { default: Employee },
+        components: { default: NoteBook },
+      },
+      {
+        path: "/notebooks/:notebookId",
+        name: "edit-notebook",
+        components: { default: EditNoteBook },
+      },
+      {
+        path: "/notebooks/new",
+        name: "new-notebook",
+        components: { default: NewNoteBook },
       },
       {
         path: "/profile",

@@ -37,7 +37,7 @@
         </template>
 
         <template v-slot:default="row">
-          <th scope="row">
+          <th scope="row" class="align-middle">
             <router-link
               :to="{ name: 'edit-business', params: { Bid: row.item.id } }"
               ><span class="font-weight-700">

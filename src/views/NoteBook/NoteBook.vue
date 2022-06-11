@@ -14,7 +14,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import NoteBookTable from "./NoteBookTable";
 
 export default {

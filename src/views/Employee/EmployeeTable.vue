@@ -41,7 +41,7 @@
           </template>
 
           <template v-slot:default="row">
-            <th scope="row">
+            <th scope="row" class="align-middle">
               <router-link
                 :to="{ name: 'edit-employee', params: { UserId: row.item.id } }"
                 ><span class="font-weight-700">

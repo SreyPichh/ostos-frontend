@@ -36,7 +36,7 @@
         </template>
 
         <template v-slot:default="row">
-          <th scope="row">
+          <th scope="row" class="align-middle">
             <router-link
               :to="{
                 name: 'edit-quote',

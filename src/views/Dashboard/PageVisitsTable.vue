@@ -21,7 +21,7 @@
         </template>
 
         <template v-slot:default="row">
-          <th scope="row">
+          <th scope="row" class="align-middle">
             {{ row.item.page }}
           </th>
           <td>

@@ -39,7 +39,7 @@
                 <template v-slot="{ inputValue, inputEvents, togglePopover }">
                   <div class="d-flex items-center">
                     <button
-                      class="px-2 border bg-red rounded-left"
+                      class="px-2 border bg-default rounded-left"
                       @click="togglePopover()"
                     >
                       <i class="fa fa-calendar-alt fa-md text-white"></i>
@@ -53,7 +53,7 @@
                 </template>
               </v-date-picker>
             </div>
-            <base-button type="success" @click.prevent="onFilterInvoice"
+            <base-button type="default" @click.prevent="onFilterInvoice"
               >Filter</base-button
             >
           </div>
@@ -76,7 +76,7 @@
                 v-model="inputSearch"
               />
               <button
-                class="px-3 border bg-red rounded-right"
+                class="px-3 border bg-default rounded-right"
                 @click="getAllInvoices({ search: inputSearch })"
               >
                 <i class="fa fa-search text-white"></i>
@@ -108,7 +108,7 @@
           </template>
 
           <template v-slot:default="row" v-if="!isSearcing">
-            <th scope="row">
+            <th scope="row" class="align-middle">
               <router-link
                 :to="{
                   name: 'edit-invoice',
@@ -130,10 +130,10 @@
             <td>${{ row.item.total }}.00</td>
             <td>
               <span
-                class="badge badge-pill badge-md"
+                class="badge"
                 :class="`badge-${
                   row.item.status === 'Paid'
-                    ? 'success'
+                    ? 'default'
                     : row.item.status === 'Partial Billed'
                     ? 'info'
                     : 'danger'
@@ -194,10 +194,7 @@
     </div>
     <div
       v-if="
-        isPagination &&
-        !items.length !== 0 &&
-        items.length <= 10 &&
-        this.pagination.total_pages !== 1
+        isPagination && !items.length !== 0 && this.pagination.total_pages !== 1
       "
     >
       <base-pagination

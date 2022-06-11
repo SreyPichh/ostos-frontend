@@ -308,7 +308,10 @@ export default {
         logo: "",
         qr_code: "",
         digital_sign: "",
+        invoice_note: "",
       },
+      invoice_note_kh: "",
+      invoice_note_en: "",
       selectedFile: null,
       logoUrl: "",
       qrimageUrl: "",
@@ -328,7 +331,8 @@ export default {
         .then((img) => console.log(img));
     },
     createNewBusiness() {
-      this.business.logo = this.selectedFile;
+      this.business.invoice_note =
+        this.invoice_note_kh + "\n" + this.invoice_note_en;
       BusinessService.postBusiness(this.business).then(
         () => {
           if (this.selectedFile) {
@@ -356,7 +360,6 @@ export default {
       this.$refs[imgRef].click();
     },
     onFileSelected(event, target) {
-      // this.selectedFile = event.target.files[0];
       const file = event.target.files;
       let fileName = file[0].name;
       console.log(fileName);
@@ -378,4 +381,3 @@ export default {
   },
 };
 </script>
-<!-- <style src="@vueform/multiselect/themes/default.css"></style> -->

@@ -8,7 +8,7 @@
       :href="'#' + link.path"
     >
       <i :class="link.icon"></i>
-      <span class="nav-link-text">{{ link.name }}</span>
+      <span class="nav-link-text text-white">{{ link.name }}</span>
     </router-link>
   </li>
 </template>

@@ -10,12 +10,12 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h4 class="mb-0">Receipt List</h4>
+          <h4 class="mb-0">Purchase List</h4>
         </div>
         <div class="col text-right">
           <router-link
             class="btn btn-sm btn-default"
-            :to="{ name: 'new-receipt' }"
+            :to="{ name: 'new-purchase' }"
           >
             Create New
           </router-link>
@@ -26,24 +26,24 @@
     <div class="table-responsive" id="printMe">
       <base-table thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th>Receipt No</th>
-          <th>Customer</th>
+          <th>No</th>
+          <th>Suplier</th>
+          <th>Description</th>
           <th>Total</th>
           <th>Status</th>
           <th>Create Date</th>
-          <th>Updated Date</th>
           <th>Action</th>
         </template>
 
         <template v-slot:default="row">
-          <th scope="row">
+          <th scope="row" class="align-middle">
             <router-link
               :to="{
-                name: 'edit-receipt',
-                params: { receiptId: row.item.id },
+                name: 'edit-purchase',
+                params: { purchaseId: row.item.id },
               }"
               ><span class="font-weight-700">
-                {{ row.item.receipt_number }}
+                {{ row.item.purchase_number }}
               </span></router-link
             >
           </th>
@@ -52,40 +52,17 @@
           </td>
           <td>${{ row.item.total }}.00</td>
           <td>
-            <span
-              class="badge badge-pill badge-md"
-              :class="`badge-${
-                row.item.status === 'paid'
-                  ? 'success'
-                  : row.item.status === 'partial-billed'
-                  ? 'info'
-                  : 'danger'
-              }`"
-              >{{ row.item.status }}</span
-            >
-          </td>
-          <td>
             {{
               moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
             }}
           </td>
           <td>
-            {{
-              moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
             <base-button
-              @click="onEditReceipt(row.item.id)"
+              @click="onEditPurchase(row.item.id)"
               type="default"
               size="sm"
             >
               <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button type="default" size="sm">
-              <router-link to="/receipts/preview" target="_blank">
-                <i style="color: #fff" class="fas fa-print"></i>
-              </router-link>
             </base-button>
             <base-button
               @click.prevent="onDeleteClick(row.item.id)"
@@ -111,12 +88,12 @@
     </template>
     <div class="py-3 text-center">
       <i class="fas fa-trash fa-3x"></i>
-      <h4 class="heading mt-4">Are you sure, To delete this Receipt?</h4>
+      <h4 class="heading mt-4">Are you sure, To delete this Purchase?</h4>
       <p>Click OK to delete</p>
     </div>
 
     <template v-slot:footer>
-      <base-button @click="deleteReceipt" type="white">Ok, Got it</base-button>
+      <base-button @click="deletePurchase" type="white">Ok, Got it</base-button>
       <base-button
         type="link"
         text-color="white"
@@ -129,7 +106,7 @@
   </modal>
 </template>
 <script>
-import ReceiptService from "../../services/receipt.service";
+import PurchaseService from "../../services/purchase.service";
 import moment from "moment";
 
 export default {
@@ -141,9 +118,9 @@ export default {
     };
   },
   methods: {
-    getAllReceipts(options) {
+    getAllPurchases(options) {
       this.isLoading = true;
-      ReceiptService.getReceipts(options).then(
+      PurchaseService.getPurchases(options).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
@@ -154,20 +131,20 @@ export default {
         }
       );
     },
-    onDeleteClick(receiptId) {
+    onDeleteClick(purchaseId) {
       this.deleteAlert = true;
-      this.isDeletingId = receiptId;
+      this.isDeletingId = purchaseId;
     },
-    deleteReceipt() {
-      ReceiptService.deleteReceipt(this.isDeletingId).then(() => {
+    deletePurchase() {
+      PurchaseService.deletePurchase(this.isDeletingId).then(() => {
         this.deleteAlert = false;
-        this.getAllReceipts();
+        this.getAllPurchases();
       });
     },
-    onEditReceipt(receiptId) {
+    onEditPurchase(purchaseId) {
       this.$router.push({
-        name: "edit-receipt",
-        params: { receiptId: receiptId },
+        name: "edit-purchase",
+        params: { purchaseId: purchaseId },
       });
     },
   },
@@ -175,7 +152,7 @@ export default {
     this.moment = moment;
   },
   mounted() {
-    this.getAllReceipts();
+    this.getAllPurchases();
   },
 };
 </script>

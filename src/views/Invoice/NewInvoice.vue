@@ -105,7 +105,7 @@
                   <template v-slot="{ inputValue, inputEvents, togglePopover }">
                     <div class="d-flex items-center">
                       <button
-                        class="px-3 border bg-red rounded-left"
+                        class="px-3 border bg-default rounded-left"
                         @click="togglePopover()"
                       >
                         <i class="fa fa-calendar-alt fa-lg text-white"></i>

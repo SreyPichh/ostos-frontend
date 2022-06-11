@@ -2,21 +2,20 @@ const functions = require("firebase-functions");
 const os = require("os");
 const path = require("path");
 const spawn = require("child-process-promise").spawn;
-const { object } = require("firebase-functions/v1/storage");
 const cors = require("cors")({ origin: true });
 const BusBoy = require("busboy");
 const fs = require("fs");
-const { randomFillSync } = require('crypto');
+const { randomFillSync } = require("crypto");
 
 const random = (() => {
   const buf = Buffer.alloc(16);
-  return () => randomFillSync(buf).toString('hex');
+  return () => randomFillSync(buf).toString("hex");
 })();
 
 const gcconfig = {
   projectId: "ostos-sticker-2022",
-  keyFilename: "ostos-sticker-2022-firebase-adminsdk-8hpnj-14261ff583.json"
-}
+  keyFilename: "ostos-sticker-2022-firebase-adminsdk-8hpnj-14261ff583.json",
+};
 
 const { Storage } = require("@google-cloud/storage");
 
@@ -34,15 +33,7 @@ exports.onFileChange = functions.storage.object().onFinalize((event) => {
   const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
   const metadata = { contentType: contentType };
 
-  console.log("fiile change detect");
-
-  // if(object.resourceState === 'not_exits'){
-  //   console.log('we deleted a file');
-  //   return;
-  // }
-
   if (path.basename(filePath).startsWith("resized-")) {
-    console.log("we already resized the file");
     return;
   }
 
@@ -74,13 +65,11 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
         message: "Not allowed",
       });
     }
-    const busboy = BusBoy({headers: req.headers});
+    const busboy = BusBoy({ headers: req.headers });
     let uploadData = null;
 
     busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-      console.log("--------------here-----------");
       const filepath = path.join(os.tmpdir(), `img-${random()}`);
-      console.log(filepath);
       uploadData = { file: filepath, type: mimetype };
       file.pipe(fs.createWriteStream(filepath));
     });
@@ -101,9 +90,9 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
             message: "It worked!",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           return res.status(500).json({
-            error: err
+            error: err,
           });
         });
     });

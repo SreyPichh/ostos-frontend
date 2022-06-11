@@ -9,77 +9,77 @@
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: 'ni ni-tv-2 text-red',
+            icon: 'ni ni-tv-2 text-white',
             path: '/dashboard',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Businesses',
-            icon: 'ni ni-planet text-red',
+            icon: 'ni ni-planet text-white',
             path: '/businesses',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Invoice',
-            icon: 'fa fa-file-invoice-dollar text-red',
+            icon: 'fa fa-file-invoice-dollar text-white',
             path: '/invoices',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Quote',
-            icon: 'fa fa-file-invoice text-red',
+            icon: 'fa fa-file-invoice text-white',
             path: '/quotes',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Reciept',
-            icon: 'fa fa-file-alt text-red',
+            icon: 'fa fa-file-alt text-white',
             path: '/receipts',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Product',
-            icon: 'ni ni-archive-2 text-red',
+            icon: 'ni ni-archive-2 text-white',
             path: '/products',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Employee',
-            icon: 'fa fa-users text-red',
+            icon: 'fa fa-users text-white',
             path: '/employees',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Payment',
-            icon: 'fa fa-cash-register text-red',
+            icon: 'fa fa-cash-register text-white',
             path: '/payments',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Purchase',
-            icon: 'fa fa-money-check-alt text-red',
+            icon: 'fa fa-money-check-alt text-white',
             path: '/purchases',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Note Book',
-            icon: 'fa fa-clipboard text-red',
+            icon: 'fa fa-clipboard text-white',
             path: '/notebooks',
           }"
         />
         <sidebar-item
           :link="{
             name: 'Profile',
-            icon: 'ni ni-single-02 text-red',
+            icon: 'ni ni-single-02 text-white',
             path: '/profile',
           }"
         />

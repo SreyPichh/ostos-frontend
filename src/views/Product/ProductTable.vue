@@ -30,7 +30,7 @@
               @clear="getAllProducts()"
             />
           </div>
-          <base-button type="success btn-sm" @click.prevent="onFilterProduct"
+          <base-button type="default btn-sm" @click.prevent="onFilterProduct"
             >Filter</base-button
           >
           <div class="col text-right">
@@ -56,7 +56,7 @@
           </template>
 
           <template v-slot:default="row" v-if="!isSearcing">
-            <th scope="row">
+            <th scope="row" class="align-middle">
               <router-link
                 :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
               >
@@ -123,10 +123,7 @@
     </div>
     <div
       v-if="
-        isPagination &&
-        !items.length !== 0 &&
-        items.length <= 10 &&
-        this.pagination.total_pages !== 1
+        isPagination && !items.length !== 0 && this.pagination.total_pages !== 1
       "
     >
       <base-pagination

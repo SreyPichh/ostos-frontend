@@ -34,7 +34,7 @@
         </template>
 
         <template v-slot:default="row">
-          <th scope="row">
+          <th scope="row" class="align-middle">
             <div class="media align-items-center">
               <a href="#" class="avatar rounded-circle mr-3">
                 <img alt="Image placeholder" :src="row.item.img" />

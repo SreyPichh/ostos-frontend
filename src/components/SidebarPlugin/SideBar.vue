@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white"
+    class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-color"
     id="sidenav-main"
   >
     <div class="container-fluid">
@@ -124,3 +124,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.bg-color {
+  background-color: #073958;
+}
+</style>

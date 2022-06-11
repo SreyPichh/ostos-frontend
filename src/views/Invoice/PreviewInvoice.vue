@@ -26,7 +26,7 @@
             <img
               class="logo"
               alt="ostos logo"
-              src="img/brand/ori_logo.svg"
+              src="img/invoice/ori_logo.svg"
               width="180"
               height="90"
             />
@@ -111,7 +111,7 @@
           </tr>
           <tbody>
             <tr v-for="(product, index) in invoice.product_data" :key="index">
-              <th scope="row">{{ index + 1 }}</th>
+              <th scope="row" class="align-middle">{{ index + 1 }}</th>
               <td>{{ product.product_name }}</td>
               <td v-if="selectedBusiness !== 'car'">
                 {{ product.width }} x {{ product.length }}
@@ -134,7 +134,7 @@
             <div class="d-flex">
               <img
                 alt="ostos logo"
-                src="img/brand/aba_logo.png"
+                src="img/invoice/aba_logo.png"
                 width="120"
                 height="120"
               />
@@ -181,8 +181,8 @@
 
         <div class="customer-info">
           <div class="mb-2 d-flex justify-content-between">
-            <div class="w-75">
-              <img alt="ostos logo" src="img/brand/aba_qr.jpg" width="170" />
+            <div class="w-50">
+              <img alt="ostos logo" src="img/invoice/aba_qr.png" width="170" />
             </div>
             <div class="text-left">
               <div class="d-flex">
@@ -202,18 +202,28 @@
         </div>
 
         <div class="customer-info">
-          <div class="mb-2 d-flex justify-content-between">
+          <div
+            class="d-flex justify-content-between"
+            :class="{ 'mb-7': !invoice.signature }"
+          >
             <div class="text-align-center">
-              <p class="mb-0 ml-2">SCAN HERE TO PAY</p>
-              <h4 class="mb-0 ml-3">{{ business.aba_name.toUpperCase() }}</h4>
+              <h4 class="mb-0 ml-2">SCAN HERE TO PAY</h4>
+              <h4 class="mb-0 ml-4">{{ business.aba_name.toUpperCase() }}</h4>
             </div>
             <div class="text-center">
               <h3 class="mb-0 ml-2">ហត្ថលេខាអ្នកទិញ</h3>
               <h3 class="mb-0 ml-2">Customer Signature</h3>
             </div>
             <div class="text-center">
-              <h3 class="mb-0 ml-2">ហត្ថលេខាអ្នកទិញ</h3>
-              <h3 class="mb-0 ml-2">Customer Signature</h3>
+              <h3 class="mb-0 ml-2">ហត្ថាលេខាអ្នកលក់</h3>
+              <h3 class="mb-0 ml-2">Seller Signature</h3>
+              <div v-if="invoice.signature">
+                <img
+                  alt="ostos logo"
+                  src="img/invoice/signature.png"
+                  width="120"
+                />
+              </div>
             </div>
           </div>
         </div>

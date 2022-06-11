@@ -13,10 +13,14 @@ export default {
   props: {
     type: {
       type: String,
-      default: "gradient-danger",
+      default: "header-color",
       description: "Header background type",
     },
   },
 };
 </script>
-<style></style>
+<style>
+.bg-header-color {
+  background-color: #e54e49;
+}
+</style>
