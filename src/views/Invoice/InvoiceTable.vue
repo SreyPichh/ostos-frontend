@@ -160,16 +160,13 @@
               >
                 <i class="fas fa-pencil-alt"></i>
               </base-button>
-              <base-button type="info" size="sm">
-                <router-link
-                  :to="{
-                    name: 'preview-invoice',
-                    params: { invoiceId: row.item.id },
-                  }"
-                  target="_blank"
-                >
-                  <i style="color: #fff" class="fas fa-print"></i>
-                </router-link>
+
+              <base-button
+                type="info"
+                size="sm"
+                @click="openPreview(row.item.id)"
+              >
+                <i style="color: #fff" class="fas fa-print"></i>
               </base-button>
               <base-button
                 @click.prevent="onDeleteClick(row.item.id)"
@@ -275,6 +272,13 @@ export default {
     });
   },
   methods: {
+    openPreview(invoiceId) {
+      const routeData = this.$router.resolve({
+        name: "preview-invoice",
+        params: { invoiceId: invoiceId },
+      });
+      window.open(routeData.href, "_blank");
+    },
     onPaginationClicked(value) {
       this.getAllInvoices({ page: value });
     },
