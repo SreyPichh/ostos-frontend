@@ -28,12 +28,12 @@
     <div class="table-responsive table-sm">
       <base-table thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th>ID</th>
+          <th class="col-1">ID</th>
           <th>Name</th>
-          <th>Logo</th>
-          <th>Created Date</th>
-          <th>Updated Date</th>
-          <th>Action</th>
+          <th class="col-1">Logo</th>
+          <th class="col-2">Created Date</th>
+          <th class="col-2">Updated Date</th>
+          <th class="col-1">Action</th>
         </template>
 
         <template v-slot:default="row">

@@ -9,7 +9,7 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="container-fluid mt--5 mb-5" v-if="!isLoading && invoice">
+  <div class="container-fluid mt--5 mb-5" v-if="!isLoading">
     <div class="row">
       <div class="col-xl-12 order-xl-1">
         <card shadow type="secondary" bodyClasses="pb-0">
@@ -42,6 +42,7 @@
                 v-model="invoice.customer_email"
               />
             </div>
+
             <div class="col-lg-3">
               <base-input
                 label="Phone Number 1"
@@ -86,7 +87,6 @@
                 @keypress="isNumber($event)"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative px-2"
-                disabled="true"
                 v-model="invoice.invoice_number"
               />
             </div>
@@ -113,7 +113,7 @@
                       <input
                         :value="inputValue"
                         v-on="inputEvents"
-                        class="px-2 border rounded-0 form-control bg-white"
+                        class="px-2 border date-control form-control bg-white"
                       />
                     </div>
                   </template>
@@ -136,7 +136,7 @@
                 <Multiselect
                   v-model="invoice.status"
                   :options="['Paid', 'Unpaid', 'Partial Billed']"
-                  @change="onChangeStatus"
+                  @change="onChangeStatus($event)"
                 />
               </div>
             </div>
@@ -181,11 +181,8 @@
             </div>
           </template>
 
-          <div
-            class="table-responsive pb-7"
-            v-if="invoice.business_id && productList"
-          >
-            <table class="table tablesorter thead-light table-sm">
+          <div class="table-responsive pb-7" v-if="invoice.business_id">
+            <table class="table">
               <thead>
                 <th
                   :class="selectedBusiness !== 'car' ? 'col-sm-4' : 'col-sm-5'"
@@ -205,6 +202,7 @@
                 <th>Total</th>
                 <th></th>
               </thead>
+
               <tbody v-for="(product, index) in products" :key="index">
                 <td>
                   <Multiselect
@@ -220,7 +218,6 @@
                     <div class="text-center">
                       <input
                         @change="onCoverALlClick(index, $event)"
-                        :value="product.coverAll"
                         type="checkbox"
                         v-model="product.coverAll"
                       />
@@ -282,7 +279,7 @@
                 </td>
               </tbody>
             </table>
-            <div class="row px-3 align-items-center justify-content-between">
+            <div class="row p-3 align-items-baseline justify-content-between">
               <button
                 @click.prevent="addProduct"
                 type="button"
@@ -346,18 +343,18 @@
       </div>
       <div class="col-lg-5 text-right">
         <button
-          @click.prevent="updateInvoice(true)"
+          @click.prevent="createNewInvoice(true)"
           type="button"
           class="btn btn-default"
         >
-          Update & Print
+          Create & Print
         </button>
         <button
-          @click.prevent="updateInvoice()"
+          @click.prevent="createNewInvoice()"
           type="button"
           class="btn btn-default"
         >
-          Update
+          Create
         </button>
       </div>
     </div>
@@ -379,7 +376,7 @@
       >
       <base-button
         type="danger"
-        @click.prevent="onBusinessSelected(invoice.business_id, true)"
+        @click.prevent="onBusinessSelected(invoice.business_id)"
         >Change</base-button
       >
     </template>
@@ -392,16 +389,20 @@ import ProductService from "../../services/product.service";
 import UserService from "../../services/user.service";
 import InvoiceService from "../../services/invoice.service";
 import Multiselect from "@vueform/multiselect";
+import moment from "moment";
 
 export default {
   components: {
     Multiselect,
   },
-  name: "edit-invoice",
+  name: "new-quote",
   data() {
     return {
       isLoading: true,
-      invoice: {},
+      invoice: {
+        date: moment(new Date()).format("YYYY-MM-DD"),
+        total: 0,
+      },
       modelConfig: {
         type: "string",
         mask: "YYYY-MM-DD",
@@ -410,47 +411,38 @@ export default {
         input: "DD-MM-YYYY",
       },
       selectedBusiness: "",
+      employees: [],
       businesses: [],
+      employeeOptions: [],
       productList: [],
       allProductLists: [],
-      employeeOptions: [],
-      employees: [],
       products: [],
       warningAlert: false,
     };
   },
   mounted() {
     this.isLoading = true;
-    this.invoiceId = this.$route.params.invoiceId;
-    // Get All Businesses
+    InvoiceService.getLastInvoiceId().then((item) => {
+      const invoiceId = item.data.data.length !== 0 ? item.data.data.id : 0;
+      this.invoice.invoice_number = String(invoiceId + 1).padStart(6, "0");
+    });
     BusinessService.getBusinesses().then((items) => {
+      this.isLoading = false;
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
       });
     });
 
-    // Get ALl Employeese
+    ProductService.getProducts({ limit: 0 }).then((items) => {
+      this.isLoading = false;
+      this.allProductLists = items.data.data;
+    });
+
     UserService.getUsers().then((items) => {
+      this.isLoading = false;
       this.employeesList = items.data.data;
       this.employeeOptions = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
-      });
-    });
-
-    InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
-      const invoice = item.data.data;
-
-      invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
-      invoice.signature = invoice.signature ? true : false;
-      this.employees = invoice.employee_data.map((emp) => emp.employee_id);
-      this.products = invoice.product_data;
-      this.invoice = invoice;
-
-      // Get All Products
-      ProductService.getProducts({ limit: 0 }).then((items) => {
-        this.allProductLists = items.data.data;
-        this.onBusinessSelected(invoice.business_id, false);
-        this.isLoading = false;
       });
     });
   },
@@ -465,10 +457,10 @@ export default {
       if (this.invoice.business_id) {
         this.warningAlert = true;
       } else {
-        this.onBusinessSelected(id, true);
+        this.onBusinessSelected(id);
       }
     },
-    onBusinessSelected(id, isReset) {
+    onBusinessSelected(id) {
       this.warningAlert = false;
       if (id) {
         this.selectedBusiness = this.businesses
@@ -476,10 +468,8 @@ export default {
           .label.toLowerCase()
           .trim();
 
-        if (isReset) {
-          this.onResetProducts();
-          this.onAutoSetStatus(this.selectedBusiness);
-        }
+        this.onAutoSetStatus(this.selectedBusiness);
+        this.onResetProducts();
         this.productList = this.allProductLists
           .filter((product) => product.business_id === id)
           .map((item) => {
@@ -662,10 +652,10 @@ export default {
         this.invoice.due_amount = 0;
       }
     },
-    updateInvoice(isPrint) {
+    createNewInvoice(isPrint) {
       const invoice = this.invoice;
       invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
-      if (this.employees && this.employeesList.length) {
+      if (this.employees) {
         const employee_data = this.employees.map((empId) => {
           const emp = this.employeesList.find((emp) => emp.id === empId);
           return {
@@ -677,13 +667,13 @@ export default {
       }
       invoice.product_data = this.products;
       if (this.invoice) {
-        InvoiceService.updateInvoice(this.invoiceId, this.invoice).then(
+        InvoiceService.postInvoice(this.invoice).then(
           (result) => {
             this.$router.push("/invoices");
-            if (result && isPrint) {
+            if (isPrint) {
               let resolvedRoute = this.$router.resolve({
                 name: "preview-invoice",
-                params: { invoiceId: result.data.data.id },
+                params: { invoiceId: result.data.id },
               });
               window.open(resolvedRoute.href, "_blank");
             }
@@ -709,7 +699,8 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style src="@vueform/multiselect/themes/default.css"></style>
+<style>
 .table td {
   padding: 0.5rem !important;
   vertical-align: unset !important;
@@ -727,5 +718,9 @@ export default {
 table thead {
   background-color: #1a4567;
   color: #fff;
+}
+
+.date-control {
+  border-radius: 0 0.375rem 0.375rem 0 !important;
 }
 </style>

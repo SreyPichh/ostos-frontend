@@ -23,10 +23,16 @@ import NewEmployee from "../views/Employee/NewEmployee.vue";
 import EditEmployee from "../views/Employee/EditEmployee.vue";
 
 import Quote from "../views/Quote/Quote.vue";
+import NewQuote from "../views/Quote/NewQuote.vue";
+import PreviewQuote from "../views/Quote/PreviewQuote.vue";
 
 import Receipt from "../views/Receipt/Receipt.vue";
 
+import Payment from "../views/Payment/Payment.vue";
+
 import Purchase from "../views/Purchase/Purchase.vue";
+import NewPurchase from "../views/Purchase/NewPurchase.vue";
+import EditPurchase from "../views/Purchase/EditPurchase.vue";
 
 import NoteBook from "../views/NoteBook/NoteBook.vue";
 import NewNoteBook from "../views/NoteBook/NewNoteBook.vue";
@@ -89,7 +95,7 @@ const routes = [
       {
         path: "/quotes/new",
         name: "new-quote",
-        components: { default: Quote },
+        components: { default: NewQuote },
       },
       {
         path: "/receipts",
@@ -134,7 +140,7 @@ const routes = [
       {
         path: "/payments",
         name: "payments",
-        components: { default: Employee },
+        components: { default: Payment },
       },
       {
         path: "/purchases",
@@ -144,12 +150,12 @@ const routes = [
       {
         path: "/purchases/:purchaseId",
         name: "edit-purchase",
-        components: { default: EditEmployee },
+        components: { default: EditPurchase },
       },
       {
         path: "/purchases/new",
         name: "new-purchase",
-        components: { default: NewEmployee },
+        components: { default: NewPurchase },
       },
       {
         path: "/notebooks",
@@ -185,6 +191,21 @@ const routes = [
         path: "/invoices/:invoiceId/generate-pdf/preview",
         name: "preview-invoice",
         components: { default: PreviewInvoice },
+      },
+    ],
+  },
+  {
+    path: "/quotes/preview",
+    redirect: "/quotes/:quoteId/generate-pdf/preview",
+    component: GeneratePDFLayout,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "/quotes/:quoteId/generate-pdf/preview",
+        name: "preview-quote",
+        components: { default: PreviewQuote },
       },
     ],
   },

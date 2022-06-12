@@ -55,7 +55,7 @@
             <span
               class="badge badge-pill badge-md"
               :class="`badge-${
-                row.item.status === 'paid'
+                row.item.status === 'Paid'
                   ? 'success'
                   : row.item.status === 'partial-billed'
                   ? 'info'

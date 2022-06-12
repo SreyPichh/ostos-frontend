@@ -22,5 +22,8 @@ class PurchaseService {
   deletePurchase(Bid) {
     return api.delete(API_URL + `/${Bid}`);
   }
+  getLastPurchaseId() {
+    return api.get("getLastIdPurchase");
+  }
 }
 export default new PurchaseService();

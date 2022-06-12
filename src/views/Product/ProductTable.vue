@@ -47,12 +47,12 @@
       <div class="table-responsive">
         <base-table class="table-sm" thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th>ID</th>
+            <th class="col-1">ID</th>
             <th>Name</th>
-            <th>Business</th>
-            <th>Created Date</th>
-            <th>Updated Date</th>
-            <th>Action</th>
+            <th class="col-1">Business</th>
+            <th class="col-2">Created Date</th>
+            <th class="col-2">Updated Date</th>
+            <th class="col-1">Action</th>
           </template>
 
           <template v-slot:default="row" v-if="!isSearcing">

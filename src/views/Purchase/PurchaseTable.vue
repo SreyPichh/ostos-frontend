@@ -6,77 +6,160 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card my-3" v-if="!isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col d-flex">
-          <h4 class="mb-0">Purchase List</h4>
-        </div>
-        <div class="col text-right">
-          <router-link
-            class="btn btn-sm btn-default"
-            :to="{ name: 'new-purchase' }"
-          >
-            Create New
-          </router-link>
-        </div>
+  <template v-if="!isLoading">
+    <div class="row my-3">
+      <div class="col-xl-12">
+        <card shadow type="secondary">
+          <div class="row align-items-end">
+            <div class="col-lg-3">
+              <label class="form-control-label">Status</label>
+              <Multiselect
+                v-model="searchParams.status"
+                :options="['Paid', 'Unpaid', 'Partial Billed']"
+              />
+            </div>
+            <div class="col-lg-3">
+              <label class="form-control-label">Date</label>
+              <v-date-picker
+                class="inline-block h-full"
+                v-model="searchParams.date"
+                :masks="masks"
+                :model-config="modelConfig"
+                mode="date"
+                color="red"
+              >
+                <template v-slot="{ inputValue, inputEvents, togglePopover }">
+                  <div class="d-flex items-center">
+                    <button
+                      class="px-2 border bg-default rounded-left"
+                      @click="togglePopover()"
+                    >
+                      <i class="fa fa-calendar-alt fa-md text-white"></i>
+                    </button>
+                    <input
+                      :value="inputValue"
+                      v-on="inputEvents"
+                      class="px-2 border date-control form-search-control form-control bg-white"
+                    />
+                  </div>
+                </template>
+              </v-date-picker>
+            </div>
+            <!-- <base-button type="default" @click.prevent="onFilterInvoice"
+              >Filter</base-button
+            > -->
+          </div>
+        </card>
       </div>
     </div>
-
-    <div class="table-responsive" id="printMe">
-      <base-table thead-classes="thead-light" :data="items">
-        <template v-slot:columns>
-          <th>No</th>
-          <th>Suplier</th>
-          <th>Description</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Create Date</th>
-          <th>Action</th>
-        </template>
-
-        <template v-slot:default="row">
-          <th scope="row" class="align-middle">
+    <div class="card my-3">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col-lg-3 d-flex">
+            <h3 class="mb-0">
+              Purchases List :
+              <span class="text-muted">{{ totalCount }} items</span>
+            </h3>
+          </div>
+          <div class="col-lg-5 align-items-center">
+            <div class="d-flex items-center">
+              <input
+                class="px-2 border form-control form-search-control bg-white"
+                v-model="inputSearch"
+                v-on:keyup.enter="getAllInvoices({ search: inputSearch })"
+              />
+              <button
+                class="px-3 border bg-default rounded-right"
+                @click="getAllInvoices({ search: inputSearch })"
+              >
+                <i class="fa fa-search text-white"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col text-right">
             <router-link
-              :to="{
-                name: 'edit-purchase',
-                params: { purchaseId: row.item.id },
-              }"
-              ><span class="font-weight-700">
-                {{ row.item.purchase_number }}
-              </span></router-link
+              class="btn btn-sm btn-default"
+              :to="{ name: 'new-purchase' }"
             >
-          </th>
-          <td>
-            {{ row.item.customer }}
-          </td>
-          <td>${{ row.item.total }}.00</td>
-          <td>
-            {{
-              moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            <base-button
-              @click="onEditPurchase(row.item.id)"
-              type="default"
-              size="sm"
-            >
-              <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
-              type="danger"
-              size="sm"
-            >
-              <i class="fas fa-trash"></i>
-            </base-button>
-          </td>
-        </template>
-      </base-table>
+              Create New
+            </router-link>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive" id="printMe">
+        <base-table thead-classes="thead-light" :data="items">
+          <template v-slot:columns>
+            <th class="col-1">No</th>
+            <th>Suplier</th>
+            <th class="col-1">Total</th>
+            <th class="col-1">Status</th>
+            <th class="col-2">Create Date</th>
+            <th class="col-2">Updated Date</th>
+            <th class="col-1">Action</th>
+          </template>
+
+          <template v-slot:default="row">
+            <th scope="row" class="align-middle">
+              <router-link
+                :to="{
+                  name: 'edit-purchase',
+                  params: { purchaseId: row.item.id },
+                }"
+                ><span class="font-weight-700">
+                  {{ row.item.id }}
+                </span></router-link
+              >
+            </th>
+            <td>
+              {{ row.item.supplier }}
+            </td>
+            <td>${{ row.item.total }}.00</td>
+            <td>
+              <span
+                class="badge"
+                :class="`badge-${
+                  row.item.status === 'Paid'
+                    ? 'default'
+                    : row.item.status === 'Partial Billed'
+                    ? 'info'
+                    : 'danger'
+                }`"
+                >{{ row.item.status }}</span
+              >
+            </td>
+            <td>
+              {{
+                moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              {{
+                moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              <base-button
+                @click="onEditPurchase(row.item.id)"
+                type="default"
+                size="sm"
+              >
+                <i class="fas fa-pencil-alt"></i>
+              </base-button>
+              <base-button
+                @click.prevent="onDeleteClick(row.item.id)"
+                type="danger"
+                size="sm"
+              >
+                <i class="fas fa-trash"></i>
+              </base-button>
+            </td>
+          </template>
+        </base-table>
+      </div>
+      <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
     </div>
-    <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-  </div>
+  </template>
 
   <modal
     v-model:show="deleteAlert"
@@ -108,13 +191,27 @@
 <script>
 import PurchaseService from "../../services/purchase.service";
 import moment from "moment";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   name: "purchase-table",
+  components: { Multiselect },
   data() {
     return {
       isLoading: true,
       deleteAlert: false,
+      searchParams: {},
+      totalCount: 0,
+      isSearcing: false,
+      isPagination: true,
+      inputSearch: "",
+      modelConfig: {
+        type: "string",
+        mask: "YYYY-MM-DD",
+      },
+      masks: {
+        input: "DD-MM-YYYY",
+      },
     };
   },
   methods: {
@@ -124,6 +221,7 @@ export default {
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          this.totalCount = this.pagination.total;
           this.isLoading = false;
         },
         (error) => {

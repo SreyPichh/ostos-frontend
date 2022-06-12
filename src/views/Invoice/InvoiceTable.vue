@@ -98,14 +98,14 @@
       <div class="table-responsive" id="printMe" v-if="businesses.length">
         <base-table thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th>Invoice No</th>
+            <th class="col-1">Invoice No</th>
             <th>Customer</th>
-            <th>Business</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Create Date</th>
-            <th>Updated Date</th>
-            <th>Action</th>
+            <th class="col-1">Business</th>
+            <th class="col-1">Total</th>
+            <th class="col-1">Status</th>
+            <th class="col-2">Create Date</th>
+            <th class="col-2">Updated Date</th>
+            <th class="col-1">Action</th>
           </template>
 
           <template v-slot:default="row" v-if="!isSearcing">
@@ -128,7 +128,7 @@
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
             </td>
-            <td>${{ row.item.total }}.00</td>
+            <td>${{ row.item.total }}</td>
             <td>
               <span
                 class="badge"
@@ -160,7 +160,6 @@
               >
                 <i class="fas fa-pencil-alt"></i>
               </base-button>
-
               <base-button
                 type="info"
                 size="sm"

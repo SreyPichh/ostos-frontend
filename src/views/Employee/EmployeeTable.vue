@@ -31,13 +31,13 @@
       <div class="table-responsive">
         <base-table class="table-sm" thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th>ID</th>
+            <th class="col-1">ID</th>
             <th>First Name & Last Name</th>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Created Date</th>
-            <th>Updated Date</th>
-            <th>Action</th>
+            <th class="col-2">Name</th>
+            <th class="col-1">Gender</th>
+            <th class="col-2">Created Date</th>
+            <th class="col-21">Updated Date</th>
+            <th class="col-1">Action</th>
           </template>
 
           <template v-slot:default="row">

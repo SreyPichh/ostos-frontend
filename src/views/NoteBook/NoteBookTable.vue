@@ -30,15 +30,15 @@
         @row-click="onSelectNote"
       >
         <template v-slot:columns>
-          <th>No</th>
+          <th class="col-1">No</th>
           <th>Title</th>
-          <th>Create Date</th>
-          <th>Updated Date</th>
-          <th>Action</th>
+          <th class="col-2">Create Date</th>
+          <th class="col-2">Updated Date</th>
+          <th class="col-1">Action</th>
         </template>
 
         <template v-slot:default="row">
-          <th scope="row" class="align-middle">
+          <th scope="row" class="align-middle col-1">
             <router-link
               :to="{
                 name: 'edit-notebook',
@@ -86,7 +86,7 @@
   <div class="row mt-auto">
     <div class="col-lg-12 form-group">
       <label class="form-control-label"
-        >Description Of No: <span>{{ selectedNoteBook.id }}</span></label
+        >Description Of Note: <span>{{ selectedNoteBook.id }}</span></label
       >
       <textarea
         class="form-control form-control-alternative"

@@ -10,90 +10,44 @@
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
-          <h4 class="mb-0">Receipt List</h4>
-        </div>
-        <div class="col text-right">
-          <router-link
-            class="btn btn-sm btn-default"
-            :to="{ name: 'new-receipt' }"
-          >
-            Create New
-          </router-link>
+          <h4 class="mb-0">Payment Report</h4>
         </div>
       </div>
     </div>
 
-    <div class="table-responsive" id="printMe">
+    <div class="table-responsive" v-if="businesses.length">
       <base-table thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th>Receipt No</th>
+          <th>No</th>
           <th>Customer</th>
+          <th>Business</th>
           <th>Total</th>
           <th>Status</th>
-          <th>Create Date</th>
-          <th>Updated Date</th>
-          <th>Action</th>
         </template>
 
         <template v-slot:default="row">
           <th scope="row" class="align-middle">
-            <router-link
-              :to="{
-                name: 'edit-receipt',
-                params: { receiptId: row.item.id },
-              }"
-              ><span class="font-weight-700">
-                {{ row.item.receipt_number }}
-              </span></router-link
-            >
+            {{ row.item.id }}
           </th>
           <td>
-            {{ row.item.customer }}
+            {{ row.item.customer_name }}
           </td>
-          <td>${{ row.item.total }}.00</td>
+          <td>
+            {{ getBusinessesLabel(row.item.business_id) }}
+          </td>
+          <td>${{ row.item.total }}</td>
           <td>
             <span
-              class="badge badge-pill badge-md"
+              class="badge"
               :class="`badge-${
-                row.item.status === 'paid'
-                  ? 'success'
-                  : row.item.status === 'partial-billed'
+                row.item.status === 'Paid'
+                  ? 'default'
+                  : row.item.status === 'Partial Billed'
                   ? 'info'
                   : 'danger'
               }`"
               >{{ row.item.status }}</span
             >
-          </td>
-          <td>
-            {{
-              moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            {{
-              moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            <base-button
-              @click="onEditReceipt(row.item.id)"
-              type="default"
-              size="sm"
-            >
-              <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button type="default" size="sm">
-              <router-link to="/receipts/preview" target="_blank">
-                <i style="color: #fff" class="fas fa-print"></i>
-              </router-link>
-            </base-button>
-            <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
-              type="danger"
-              size="sm"
-            >
-              <i class="fas fa-trash"></i>
-            </base-button>
           </td>
         </template>
       </base-table>
@@ -129,53 +83,98 @@
   </modal>
 </template>
 <script>
-import ReceiptService from "../../services/receipt.service";
+import InvoiceService from "../../services/invoice.service";
+import BusinessService from "../../services/business.service";
 import moment from "moment";
 
 export default {
   name: "payment-table",
+  mounted() {
+    this.getAllReceipts();
+    BusinessService.getBusinesses().then((items) => {
+      this.businesses = items.data.data.map((item) => {
+        return { label: item.name, value: item.id };
+      });
+      this.businesses.unshift({ label: "ALL", value: "" });
+    });
+  },
   data() {
     return {
       isLoading: true,
       deleteAlert: false,
+      paymentReport: {},
+      businesses: [],
     };
   },
   methods: {
     getAllReceipts(options) {
       this.isLoading = true;
-      ReceiptService.getReceipts(options).then(
+      InvoiceService.getInvoices(options).then(
         (res) => {
-          this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
           this.isLoading = false;
+          let index = 1;
+
+          this.items = this.groupByInvoice(res.data.data, function (item) {
+            return [item.customer_name, item.business_id, item.status];
+          }).filter((item) => {
+            if (item.status !== "Paid") {
+              item.id = index++;
+              return item;
+            }
+          });
         },
         (error) => {
           alert("error to get data", error);
         }
       );
     },
-    onDeleteClick(receiptId) {
+    getBusinessesLabel(bId) {
+      if (this.businesses) {
+        const business = this.businesses.find((b) => b.value === bId);
+        return business.label;
+      }
+    },
+    groupByInvoice(array, f) {
+      var groups = {};
+      array.forEach(function (o) {
+        var group = JSON.stringify(f(o));
+        groups[group] = groups[group] || [];
+        groups[group].push(o);
+      });
+      return Object.keys(groups).map((group) => {
+        const invoice = groups[group][0];
+        const total = groups[group]
+          .map((item) => Number(item.total))
+          .reduce((prev, next) => prev + next);
+        return {
+          customer_name: invoice.customer_name,
+          business_id: invoice.business_id,
+          total: total,
+          status: invoice.status,
+          items: groups[group],
+        };
+      });
+    },
+    onDeleteClick(paymentId) {
       this.deleteAlert = true;
-      this.isDeletingId = receiptId;
+      this.isDeletingId = paymentId;
     },
     deleteReceipt() {
-      ReceiptService.deleteReceipt(this.isDeletingId).then(() => {
+      InvoiceService.deleteInvoice(this.isDeletingId).then(() => {
         this.deleteAlert = false;
         this.getAllReceipts();
       });
     },
-    onEditReceipt(receiptId) {
+    onEditReceipt(paymentId) {
       this.$router.push({
-        name: "edit-receipt",
-        params: { receiptId: receiptId },
+        name: "edit-payment",
+        params: { paymentId: paymentId },
       });
     },
   },
   created() {
     this.moment = moment;
-  },
-  mounted() {
-    this.getAllReceipts();
   },
 };
 </script>
