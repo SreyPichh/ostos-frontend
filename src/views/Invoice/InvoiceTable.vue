@@ -74,6 +74,7 @@
               <input
                 class="px-2 border form-control form-search-control bg-white"
                 v-model="inputSearch"
+                v-on:keyup.enter="getAllInvoices({ search: inputSearch })"
               />
               <button
                 class="px-3 border bg-default rounded-right"
@@ -159,7 +160,7 @@
               >
                 <i class="fas fa-pencil-alt"></i>
               </base-button>
-              <base-button type="default" size="sm">
+              <base-button type="info" size="sm">
                 <router-link
                   :to="{
                     name: 'preview-invoice',

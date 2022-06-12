@@ -18,6 +18,15 @@
 
           <form>
             <div class="row">
+              <div class="col-lg-6">
+                <base-input
+                  label="Title"
+                  input-classes="form-control-alternative"
+                  v-model="notebook.title"
+                />
+              </div>
+            </div>
+            <div class="row">
               <div class="col-lg-12 form-group">
                 <label class="form-control-label">Description</label>
                 <textarea
@@ -52,6 +61,7 @@ export default {
   data() {
     return {
       notebook: {
+        title: "",
         description: "",
       },
     };

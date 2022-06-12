@@ -90,7 +90,7 @@ export default {
   props: {
     logo: {
       type: String,
-      default: "img/brand/ori_logo.svg",
+      default: "img/brand/LOGO_White_Color.png",
       description: "Sidebar app logo",
     },
     autoClose: {

@@ -31,7 +31,7 @@
       >
         <template v-slot:columns>
           <th>No</th>
-          <th>Description</th>
+          <th>Title</th>
           <th>Create Date</th>
           <th>Updated Date</th>
           <th>Action</th>
@@ -50,7 +50,7 @@
             >
           </th>
           <td class="truncate">
-            {{ row.item.description }}
+            {{ row.item.title }}
           </td>
           <td>
             {{
@@ -85,12 +85,14 @@
   </div>
   <div class="row mt-auto">
     <div class="col-lg-12 form-group">
-      <label class="form-control-label">Description</label>
+      <label class="form-control-label"
+        >Description Of No: <span>{{ selectedNoteBook.id }}</span></label
+      >
       <textarea
         class="form-control form-control-alternative"
         rows="5"
         readonly="true"
-        v-model="selectedNoteBook"
+        v-model="selectedNoteBook.description"
       ></textarea>
     </div>
   </div>
@@ -136,7 +138,7 @@ export default {
   },
   methods: {
     onSelectNote(value) {
-      this.selectedNoteBook = value.description;
+      this.selectedNoteBook = value;
     },
     getAllNotebooks(options) {
       this.isLoading = true;
