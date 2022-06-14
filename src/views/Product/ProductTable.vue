@@ -8,12 +8,12 @@
   </div>
 
   <template v-if="!isLoading">
-    <div class="card my-3" v-if="businesses.length == 0">
+    <div class="card mb-3" v-if="businesses.length == 0">
       <div class="text-center p-5">
         There is no Business, Please create business at least 1
       </div>
     </div>
-    <div class="card my-3" v-if="businesses.length">
+    <div class="card mb-3" v-if="businesses.length">
       <div class="card-header border-0">
         <div class="row align-items-center">
           <div class="col-lg-2 d-flex">

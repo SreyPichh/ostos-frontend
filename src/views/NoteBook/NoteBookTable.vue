@@ -6,7 +6,7 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card my-3" v-if="!isLoading">
+  <div class="card mb-3" v-if="!isLoading">
     <div class="card-header border-0">
       <div class="row align-items-center">
         <div class="col d-flex">
@@ -90,7 +90,7 @@
       >
       <textarea
         class="form-control form-control-alternative"
-        rows="5"
+        rows="3"
         readonly="true"
         v-model="selectedNoteBook.description"
       ></textarea>

@@ -297,8 +297,10 @@ export default {
     this.businessId = this.$route.params.Bid;
     BusinessService.getBusinessById(this.businessId).then((item) => {
       this.business = item.data.data;
-      this.invoice_note_kh = this.business.invoice_note.split("\n")[0];
-      this.invoice_note_en = this.business.invoice_note.split("\n")[1];
+      if (this.business.invoice_note) {
+        this.invoice_note_kh = this.business.invoice_note.split("\n")[0];
+        this.invoice_note_en = this.business.invoice_note.split("\n")[1];
+      }
       this.isLoading = false;
     });
   },

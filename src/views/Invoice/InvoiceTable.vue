@@ -8,7 +8,7 @@
   </div>
 
   <template v-if="!isLoading">
-    <div class="row my-3">
+    <div class="row mb-3">
       <div class="col-xl-12">
         <card shadow type="secondary">
           <div class="row align-items-end">
@@ -96,7 +96,11 @@
       </div>
 
       <div class="table-responsive" id="printMe" v-if="businesses.length">
-        <base-table thead-classes="thead-light" :data="items">
+        <base-table
+          thead-classes="thead-light"
+          :data="items"
+          @row-click="onItemSelected"
+        >
           <template v-slot:columns>
             <th class="col-1">Invoice No</th>
             <th>Customer</th>
@@ -108,7 +112,7 @@
             <th class="col-1">Action</th>
           </template>
 
-          <template v-slot:default="row" v-if="!isSearcing">
+          <template v-slot:default="row" v-if="!isSearching">
             <th scope="row" class="align-middle">
               <router-link
                 :to="{
@@ -178,14 +182,14 @@
           </template>
         </base-table>
       </div>
-      <div v-if="isSearcing" class="d-flex justify-content-center p-5">
+      <div v-if="isSearching" class="d-flex justify-content-center p-5">
         <scaling-squares-spinner
           :animation-duration="1250"
           :size="45"
           :color="'#ff1d5e'"
         />
       </div>
-      <div v-if="items.length == 0 && !isSearcing" class="text-center p-5">
+      <div v-if="items.length == 0 && !isSearching" class="text-center p-5">
         Empty Data
       </div>
     </div>
@@ -202,6 +206,24 @@
         align="center"
         size="sm"
       ></base-pagination>
+    </div>
+    <div class="row mt-auto">
+      <div class="col-lg-12 form-group">
+        <label class="form-control-label"
+          >Invoice Note Of :
+          {{
+            itemSelected
+              ? `INV-` + String(itemSelected.invoice_number).padStart(6, "0")
+              : ""
+          }}</label
+        >
+        <textarea
+          class="form-control form-control-alternative"
+          rows="3"
+          readonly="true"
+          v-model="itemSelected.invoice_note"
+        ></textarea>
+      </div>
     </div>
   </template>
   <modal
@@ -249,8 +271,9 @@ export default {
       inputSearch: "",
       businesses: [],
       searchParams: {},
+      itemSelected: "",
       totalCount: 0,
-      isSearcing: false,
+      isSearching: false,
       isPagination: true,
       modelConfig: {
         type: "string",
@@ -271,6 +294,9 @@ export default {
     });
   },
   methods: {
+    onItemSelected(value) {
+      this.itemSelected = value;
+    },
     openPreview(invoiceId) {
       const routeData = this.$router.resolve({
         name: "preview-invoice",
@@ -319,7 +345,7 @@ export default {
     },
     onFilterInvoice() {
       if (this.searchParams) {
-        this.isSearcing = true;
+        this.isSearching = true;
         this.inputSearch = "";
         const searchParams =
           "?search=" +

@@ -1,4 +1,7 @@
 <template>
+  <base-header
+    class="header pt-5 pt-lg-8 d-flex align-items-center"
+  ></base-header>
   <div v-if="isLoading" class="d-flex justify-content-center mt-9">
     <scaling-squares-spinner
       :animation-duration="1250"
@@ -6,51 +9,60 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card my-3" v-if="!isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col d-flex">
-          <h4 class="mb-0">Payment Report</h4>
-        </div>
+
+  <div v-if="!isLoading" class="container-fluid mt--5 mb-5">
+    <div class="row mb-3">
+      <div class="col-xl-12 order-xl-1">
+        <card shadow type="secondary" bodyClasses="p-0">
+          <template v-slot:header>
+            <div class="bg-white border-0">
+              <div class="row justify-content-between">
+                <div class="col">
+                  <h3 class="mb-0">Payment Lists</h3>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <div class="table-responsive" v-if="businesses.length">
+            <base-table thead-classes="thead-light" :data="items">
+              <template v-slot:columns>
+                <th>No</th>
+                <th>Customer</th>
+                <th>Business</th>
+                <th>Total</th>
+                <th>Status</th>
+              </template>
+
+              <template v-slot:default="row">
+                <th scope="row" class="align-middle">
+                  {{ row.item.id }}
+                </th>
+                <td>
+                  {{ row.item.customer_name }}
+                </td>
+                <td>
+                  {{ getBusinessesLabel(row.item.business_id) }}
+                </td>
+                <td>${{ row.item.total }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    :class="`badge-${
+                      row.item.status === 'Paid'
+                        ? 'default'
+                        : row.item.status === 'Partial Billed'
+                        ? 'info'
+                        : 'danger'
+                    }`"
+                    >{{ row.item.status }}</span
+                  >
+                </td>
+              </template>
+            </base-table>
+          </div>
+        </card>
       </div>
-    </div>
-
-    <div class="table-responsive" v-if="businesses.length">
-      <base-table thead-classes="thead-light" :data="items">
-        <template v-slot:columns>
-          <th>No</th>
-          <th>Customer</th>
-          <th>Business</th>
-          <th>Total</th>
-          <th>Status</th>
-        </template>
-
-        <template v-slot:default="row">
-          <th scope="row" class="align-middle">
-            {{ row.item.id }}
-          </th>
-          <td>
-            {{ row.item.customer_name }}
-          </td>
-          <td>
-            {{ getBusinessesLabel(row.item.business_id) }}
-          </td>
-          <td>${{ row.item.total }}</td>
-          <td>
-            <span
-              class="badge"
-              :class="`badge-${
-                row.item.status === 'Paid'
-                  ? 'default'
-                  : row.item.status === 'Partial Billed'
-                  ? 'info'
-                  : 'danger'
-              }`"
-              >{{ row.item.status }}</span
-            >
-          </td>
-        </template>
-      </base-table>
     </div>
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
   </div>
@@ -85,11 +97,13 @@
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
-import moment from "moment";
 
 export default {
-  name: "payment-table",
+  name: "payment-list-table",
   mounted() {
+    this.status = this.$route.params;
+    console.log(this.status);
+
     this.getAllReceipts();
     BusinessService.getBusinesses().then((items) => {
       this.businesses = items.data.data.map((item) => {
@@ -156,25 +170,6 @@ export default {
         };
       });
     },
-    onDeleteClick(paymentId) {
-      this.deleteAlert = true;
-      this.isDeletingId = paymentId;
-    },
-    deleteReceipt() {
-      InvoiceService.deleteInvoice(this.isDeletingId).then(() => {
-        this.deleteAlert = false;
-        this.getAllReceipts();
-      });
-    },
-    onEditReceipt(paymentId) {
-      this.$router.push({
-        name: "edit-payment",
-        params: { paymentId: paymentId },
-      });
-    },
-  },
-  created() {
-    this.moment = moment;
   },
 };
 </script>

@@ -6,7 +6,7 @@
     <!--Tables-->
     <div class="row mt-5">
       <div class="col-xl-12 mb-5 mb-xl-0">
-        <payment-table></payment-table>
+        <payment-report-table></payment-report-table>
       </div>
     </div>
     <!--End tables-->
@@ -15,10 +15,10 @@
 
 <script>
 // @ is an alias to /src
-import PaymentTable from "./PaymentTable";
+import PaymentReportTable from "./PaymentReportTable";
 
 export default {
   name: "payment",
-  components: { PaymentTable },
+  components: { PaymentReportTable },
 };
 </script>

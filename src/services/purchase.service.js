@@ -6,6 +6,9 @@ class PurchaseService {
       params: params,
     });
   }
+  getPurchasesBySearch(searchParams) {
+    return api.get(API_URL + searchParams);
+  }
   getPurchaseById(Pid, params) {
     return api.get(API_URL + `/${Pid}`, {
       params: params,

@@ -7,7 +7,7 @@
     />
   </div>
   <template v-if="!isLoading">
-    <div class="row my-3">
+    <div class="row mb-3">
       <div class="col-xl-12">
         <card shadow type="secondary">
           <div class="row align-items-end">
@@ -45,9 +45,9 @@
                 </template>
               </v-date-picker>
             </div>
-            <!-- <base-button type="default" @click.prevent="onFilterInvoice"
+            <base-button type="default" @click.prevent="onFilterPurchase"
               >Filter</base-button
-            > -->
+            >
           </div>
         </card>
       </div>
@@ -66,11 +66,11 @@
               <input
                 class="px-2 border form-control form-search-control bg-white"
                 v-model="inputSearch"
-                v-on:keyup.enter="getAllInvoices({ search: inputSearch })"
+                v-on:keyup.enter="getAllPurchases({ search: inputSearch })"
               />
               <button
                 class="px-3 border bg-default rounded-right"
-                @click="getAllInvoices({ search: inputSearch })"
+                @click="getAllPurchases({ search: inputSearch })"
               >
                 <i class="fa fa-search text-white"></i>
               </button>
@@ -88,7 +88,11 @@
       </div>
 
       <div class="table-responsive" id="printMe">
-        <base-table thead-classes="thead-light" :data="items">
+        <base-table
+          thead-classes="thead-light"
+          :data="items"
+          @row-click="onItemSelected"
+        >
           <template v-slot:columns>
             <th class="col-1">No</th>
             <th>Suplier</th>
@@ -99,7 +103,7 @@
             <th class="col-1">Action</th>
           </template>
 
-          <template v-slot:default="row">
+          <template v-slot:default="row" v-if="!isSearching">
             <th scope="row" class="align-middle">
               <router-link
                 :to="{
@@ -157,7 +161,29 @@
           </template>
         </base-table>
       </div>
-      <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
+      <div v-if="isSearching" class="d-flex justify-content-center p-5">
+        <scaling-squares-spinner
+          :animation-duration="1250"
+          :size="45"
+          :color="'#ff1d5e'"
+        />
+      </div>
+      <div v-if="items.length == 0 && !isSearching" class="text-center p-5">
+        Empty Data
+      </div>
+    </div>
+    <div class="row mt-auto">
+      <div class="col-lg-12 form-group">
+        <label class="form-control-label"
+          >Purchase Note Of : <span>{{ itemSelected.id }}</span></label
+        >
+        <textarea
+          class="form-control form-control-alternative"
+          rows="3"
+          readonly="true"
+          v-model="itemSelected.note"
+        ></textarea>
+      </div>
     </div>
   </template>
 
@@ -201,8 +227,9 @@ export default {
       isLoading: true,
       deleteAlert: false,
       searchParams: {},
+      itemSelected: "",
       totalCount: 0,
-      isSearcing: false,
+      isSearching: false,
       isPagination: true,
       inputSearch: "",
       modelConfig: {
@@ -215,6 +242,9 @@ export default {
     };
   },
   methods: {
+    onItemSelected(value) {
+      this.itemSelected = value;
+    },
     getAllPurchases(options) {
       this.isLoading = true;
       PurchaseService.getPurchases(options).then(
@@ -244,6 +274,30 @@ export default {
         name: "edit-purchase",
         params: { purchaseId: purchaseId },
       });
+    },
+    onFilterPurchase() {
+      if (this.searchParams) {
+        this.isSearching = true;
+        this.inputSearch = "";
+        const searchParams =
+          "?search=" +
+          Object.entries(this.searchParams)
+            // eslint-disable-next-line no-unused-vars
+            .filter(([key, value]) => !!value)
+            .map(([key, value]) => {
+              if (value) {
+                return `${key}:${encodeURIComponent(value)}`;
+              }
+            })
+            .join(";") +
+          "&searchJoin=and";
+        PurchaseService.getPurchasesBySearch(searchParams).then((invoices) => {
+          this.isSearching = false;
+          this.items = invoices.data.data;
+          this.pagination = invoices.data.meta.pagination;
+          this.totalCount = this.items.length;
+        });
+      }
     },
   },
   created() {

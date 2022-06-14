@@ -29,6 +29,7 @@ import PreviewQuote from "../views/Quote/PreviewQuote.vue";
 import Receipt from "../views/Receipt/Receipt.vue";
 
 import Payment from "../views/Payment/Payment.vue";
+import PaymentList from "../views/Payment/PaymentListTable.vue";
 
 import Purchase from "../views/Purchase/Purchase.vue";
 import NewPurchase from "../views/Purchase/NewPurchase.vue";
@@ -141,6 +142,11 @@ const routes = [
         path: "/payments",
         name: "payments",
         components: { default: Payment },
+      },
+      {
+        path: "/payments/:paymentId",
+        name: "payment-list",
+        components: { default: PaymentList },
       },
       {
         path: "/purchases",

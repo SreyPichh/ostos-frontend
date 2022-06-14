@@ -8,7 +8,7 @@
   </div>
 
   <template v-if="!isLoading">
-    <div class="row my-3">
+    <div class="row mb-3">
       <div class="col-xl-12">
         <card shadow type="secondary">
           <div class="row align-items-end">
