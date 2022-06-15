@@ -188,7 +188,9 @@
     </div>
     <div class="float-right">
       <span class="h3">Total : </span>
-      <span class="bg-gradient-neutral px-4 py-2">${{ totalAmount }}</span>
+      <span class="bg-gradient-neutral px-4 py-2"
+        >${{ items.length != 0 ? totalAmount : 0 }}</span
+      >
     </div>
     <div class="row mt-auto">
       <div class="col-lg-6 pl-0 form-group">
