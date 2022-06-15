@@ -18,45 +18,22 @@
 
           <form>
             <div class="row">
-              <div class="col-lg-2">
-                <base-input
-                  label="First Name"
-                  input-classes="form-control-alternative"
-                  v-model="employee.f_name"
-                />
-              </div>
-              <div class="col-lg-2">
-                <base-input
-                  label="Last Name"
-                  input-classes="form-control-alternative"
-                  v-model="employee.l_name"
-                />
-              </div>
               <div class="col-lg-3">
                 <base-input
                   label="UserName"
-                  input-classes="form-control-alternative"
-                  v-model="employee.name"
-                />
-              </div>
-              <div class="col-lg-3">
-                <base-input
-                  label="Email"
-                  addonLeftIcon="fa fa-envelope"
+                  addonLeftIcon="fa fa-user"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
-                  v-model="employee.email"
+                  v-model="employee.name"
                 />
               </div>
               <div class="col-lg-2">
                 <label class="form-control-label">Gender</label>
                 <Multiselect
                   v-model="employee.gender"
-                  :options="['Male', 'Female']"
+                  :options="['Male', 'Female', 'Other']"
                 />
               </div>
-            </div>
-            <div class="row">
               <div class="col-lg-3">
                 <div class="form-group">
                   <label class="form-control-label">Birth Of Date</label>
@@ -79,7 +56,7 @@
                         </button>
                         <input
                           :value="inputValue"
-                          class="px-2 border rounded-0 form-control bg-white"
+                          class="px-2 border date-control form-search-control form-control bg-white"
                           readonly
                         />
                       </div>
@@ -96,6 +73,8 @@
                   v-model="employee.phone_number"
                 />
               </div>
+            </div>
+            <div class="row">
               <div class="col-lg-3">
                 <base-input
                   label="Notional ID"
@@ -105,19 +84,17 @@
                   v-model="employee.national_id"
                 />
               </div>
-            </div>
-            <!-- <div class="row">
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <base-input
-                  label="Password"
-                  label-classes="form-control-range"
+                  label="Profile"
+                  disabled="true"
+                  placeholder="will fix soon..."
                   input-classes="form-control-alternative"
-                  addon-left-icon="fa fa-lock"
-                  v-model="employee.password"
-                >
-                </base-input>
+                  label-classes="form-control-range"
+                  v-model="employee.profile_img"
+                />
               </div>
-            </div> -->
+            </div>
             <div class="row">
               <div class="col-lg-12 form-group">
                 <label class="form-control-label">Address</label>
@@ -146,7 +123,7 @@
 
 <script>
 import Multiselect from "@vueform/multiselect";
-import UserService from "../../services/user.service";
+import EmployeeService from "../../services/employee.service";
 import moment from "moment";
 
 export default {
@@ -170,8 +147,7 @@ export default {
   mounted() {},
   methods: {
     createEmployee() {
-      this.employee.password = "test@123";
-      UserService.createUser(this.employee).then(
+      EmployeeService.createEmployee(this.employee).then(
         () => {
           this.$router.push("/employees");
         },
@@ -194,4 +170,3 @@ export default {
   },
 };
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>

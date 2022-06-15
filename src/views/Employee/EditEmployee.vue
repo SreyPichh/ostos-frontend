@@ -26,22 +26,6 @@
 
           <form>
             <div class="row">
-              <div class="col-lg-2">
-                <base-input
-                  label="First Name"
-                  placeholder="Men"
-                  input-classes="form-control-alternative"
-                  v-model="employee.f_name"
-                />
-              </div>
-              <div class="col-lg-2">
-                <base-input
-                  label="Last Name"
-                  placeholder="Ratana"
-                  input-classes="form-control-alternative"
-                  v-model="employee.l_name"
-                />
-              </div>
               <div class="col-lg-3">
                 <base-input
                   label="UserName"
@@ -50,25 +34,13 @@
                   v-model="employee.name"
                 />
               </div>
-              <div class="col-lg-3">
-                <base-input
-                  label="Email"
-                  addonLeftIcon="fa fa-envelope"
-                  placeholder="jesse@example.com"
-                  input-classes="form-control-alternative"
-                  label-classes="form-control-range"
-                  v-model="employee.email"
-                />
-              </div>
               <div class="col-lg-2">
                 <label class="form-control-label">Gender</label>
                 <Multiselect
                   v-model="employee.gender"
-                  :options="['Male', 'Female']"
+                  :options="['Male', 'Female', 'Other']"
                 />
               </div>
-            </div>
-            <div class="row">
               <div class="col-lg-3">
                 <div class="form-group">
                   <label class="form-control-label">Birth Of Date</label>
@@ -105,16 +77,28 @@
                   addonLeftIcon="fa fa-phone"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
-                  v-model="employee.phone"
+                  v-model="employee.phone_number"
                 />
               </div>
+            </div>
+            <div class="row">
               <div class="col-lg-3">
                 <base-input
                   label="Notional ID"
                   addonLeftIcon="fa fa-address-card"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
-                  v-model="employee.phone"
+                  v-model="employee.national_id"
+                />
+              </div>
+              <div class="col-lg-3">
+                <base-input
+                  label="Profile"
+                  disabled="true"
+                  placeholder="will fix soon..."
+                  input-classes="form-control-alternative"
+                  label-classes="form-control-range"
+                  v-model="employee.profile_img"
                 />
               </div>
             </div>
@@ -126,11 +110,6 @@
                   rows="5"
                   v-model="employee.first_address"
                 ></textarea>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12 form-group">
-                <a href="#">Request Change Password</a>
               </div>
             </div>
           </form>
@@ -151,7 +130,7 @@
 
 <script>
 import Multiselect from "@vueform/multiselect";
-import UserService from "../../services/user.service";
+import EmployeeService from "../../services/employee.service";
 // import moment from "moment";
 
 export default {
@@ -159,8 +138,8 @@ export default {
   name: "edit-employee",
   mounted() {
     this.isLoading = true;
-    this.userId = this.$route.params.UserId;
-    UserService.getUserById(this.userId).then((item) => {
+    this.employeeId = this.$route.params.employeeId;
+    EmployeeService.getEmployeeById(this.employeeId).then((item) => {
       this.employee = item.data.data;
       this.isLoading = false;
     });
@@ -180,7 +159,7 @@ export default {
   },
   methods: {
     updateEmployee() {
-      UserService.updateUser(this.userId, this.employee).then(
+      EmployeeService.updateEmployee(this.employeeId, this.employee).then(
         () => {
           this.$router.push("/employees");
         },

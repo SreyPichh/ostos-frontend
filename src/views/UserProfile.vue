@@ -27,27 +27,7 @@
             <h6 class="heading-small text-muted mb-4">User information</h6>
             <div class="pl-lg-4">
               <div class="row">
-                <div class="col-lg-6">
-                  <base-input
-                    alternative=""
-                    label="Username"
-                    placeholder="Username"
-                    input-classes="form-control-alternative"
-                    v-model="userProfile.name"
-                  />
-                </div>
-                <div class="col-lg-6">
-                  <base-input
-                    alternative=""
-                    label="Email address"
-                    placeholder="jesse@example.com"
-                    input-classes="form-control-alternative"
-                    v-model="userProfile.email"
-                  />
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <base-input
                     alternative=""
                     label="First name"
@@ -56,7 +36,7 @@
                     v-model="userProfile.firstName"
                   />
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <base-input
                     alternative=""
                     label="Last name"
@@ -64,6 +44,67 @@
                     input-classes="form-control-alternative"
                     v-model="userProfile.lastName"
                   />
+                </div>
+                <div class="col-lg-3">
+                  <base-input
+                    label="Username"
+                    addonLeftIcon="fa fa-user"
+                    label-classes="form-control-range"
+                    input-classes="form-control-alternative"
+                    v-model="userProfile.name"
+                  />
+                </div>
+                <div class="col-lg-3">
+                  <base-input
+                    alternative=""
+                    label="Email address"
+                    addonLeftIcon="fa fa-envelope"
+                    label-classes="form-control-range"
+                    input-classes="form-control-alternative"
+                    v-model="userProfile.email"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-3">
+                  <label class="form-control-label">Gender</label>
+                  <Multiselect
+                    v-model="userProfile.gender"
+                    :options="['Male', 'Female']"
+                  />
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label">Birth Of Date</label>
+                    <v-date-picker
+                      class="inline-block h-full"
+                      :masks="masks"
+                      :model-config="modelConfig"
+                      is-required
+                      mode="date"
+                      color="red"
+                      v-model="userProfile.birth"
+                    >
+                      <template
+                        v-slot="{ inputValue, inputEvents, togglePopover }"
+                      >
+                        <div class="d-flex items-center">
+                          <button
+                            class="px-2 border bg-default rounded-left"
+                            @click="togglePopover()"
+                          >
+                            <i class="fa fa-calendar-alt fa-lg text-white"></i>
+                          </button>
+                          <input
+                            :value="inputValue"
+                            v-on="inputEvents"
+                            class="px-2 border date-control form-search-control form-control bg-white"
+                            readonly
+                          />
+                        </div>
+                      </template>
+                    </v-date-picker>
+                  </div>
                 </div>
               </div>
             </div>
@@ -143,12 +184,26 @@
 </template>
 <script>
 import userProfile from "../services/userProfile.service";
+import Multiselect from "@vueform/multiselect";
+import moment from "moment";
+
 export default {
+  components: { Multiselect },
   name: "user-profile",
   data() {
     return {
-      userProfile: {},
+      userProfile: {
+        gender: "Male",
+        birth: moment(new Date()).format("YYYY-MM-DD"),
+      },
       isLoading: true,
+      modelConfig: {
+        type: "string",
+        mask: "YYYY-MM-DD",
+      },
+      masks: {
+        input: "WWWW, DD-MM-YYYY",
+      },
     };
   },
   mounted() {

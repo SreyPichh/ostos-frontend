@@ -385,7 +385,7 @@
 <script>
 import BusinessService from "../../services/business.service";
 import ProductService from "../../services/product.service";
-import UserService from "../../services/user.service";
+import EmployeeService from "../../services/employee.service";
 import QuoteService from "../../services/quote.service";
 import Multiselect from "@vueform/multiselect";
 import moment from "moment";
@@ -437,7 +437,7 @@ export default {
       this.allProductLists = items.data.data;
     });
 
-    UserService.getUsers().then((items) => {
+    EmployeeService.getEmployees().then((items) => {
       this.isLoading = false;
       this.employeesList = items.data.data;
       this.employeeOptions = items.data.data.map((item) => {

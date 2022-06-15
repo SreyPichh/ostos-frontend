@@ -208,7 +208,7 @@
       ></base-pagination>
     </div>
     <div class="row mt-auto">
-      <div class="col-lg-12 form-group">
+      <div class="col-lg-6 form-group">
         <label class="form-control-label"
           >Invoice Note Of :
           {{

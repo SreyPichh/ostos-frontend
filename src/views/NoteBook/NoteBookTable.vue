@@ -84,7 +84,7 @@
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
   </div>
   <div class="row mt-auto">
-    <div class="col-lg-12 form-group">
+    <div class="col-lg-6 form-group">
       <label class="form-control-label"
         >Description Of Note: <span>{{ selectedNoteBook.id }}</span></label
       >

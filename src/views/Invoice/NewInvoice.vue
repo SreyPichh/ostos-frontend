@@ -230,7 +230,7 @@
                       addonRightText="CM"
                       :disabled="product.coverAll"
                       @keypress="isNumber($event)"
-                      @change="onProductCalculate(index, $event)"
+                      @change="onProductCalculate(index)"
                       input-classes="form-control-alternative"
                       v-model="product.width"
                     />
@@ -240,7 +240,7 @@
                       addonRightText="CM"
                       :disabled="product.coverAll"
                       @keypress="isNumber($event)"
-                      @change="onProductCalculate(index, $event)"
+                      @change="onProductCalculate(index)"
                       input-classes="form-control-alternative"
                       v-model="product.length"
                     />
@@ -253,7 +253,7 @@
                     <base-input
                       addonLeftText="Qty"
                       @keypress="isNumber($event)"
-                      @change="onProductCalculate(index, $event)"
+                      @change="onProductCalculate(index, 'quantity')"
                       :name="`products[${index}][quantity]`"
                       input-classes="form-control-alternative"
                       v-model="product.quantity"
@@ -264,7 +264,7 @@
                   <base-input
                     addonLeftText="$"
                     @keypress="isNumber($event)"
-                    @change="onProductCalculate(index, $event)"
+                    @change="onProductCalculate(index, 'unitPrice')"
                     placeholder="Unit Price"
                     input-classes="form-control-alternative"
                     v-model="product.unit_price"
@@ -386,7 +386,7 @@
 <script>
 import BusinessService from "../../services/business.service";
 import ProductService from "../../services/product.service";
-import UserService from "../../services/user.service";
+import EmployeeService from "../../services/employee.service";
 import InvoiceService from "../../services/invoice.service";
 import Multiselect from "@vueform/multiselect";
 import moment from "moment";
@@ -438,7 +438,7 @@ export default {
       this.allProductLists = items.data.data;
     });
 
-    UserService.getUsers().then((items) => {
+    EmployeeService.getEmployees().then((items) => {
       this.isLoading = false;
       this.employeesList = items.data.data;
       this.employeeOptions = items.data.data.map((item) => {
@@ -545,7 +545,7 @@ export default {
       product.quantity = "";
       this.onProductCalculate(index);
     },
-    onProductCalculate(index) {
+    onProductCalculate(index, target) {
       const product = this.products[index];
       const isCoverAll = product.coverAll;
       const unit_price = product.unit_price;
@@ -563,9 +563,11 @@ export default {
           this.products[index].total_price = unit_price * qty;
         }
       } else if (this.selectedBusiness === "ktv") {
-        this.products[index].unit_price = this.ktvPriceM2(
-          (width * length) / 10000
-        );
+        if (target !== "unitPrice" && target !== "quantity") {
+          this.products[index].unit_price = this.ktvPriceM2(
+            (width * length) / 10000
+          );
+        }
         this.products[index].total_price =
           this.products[index].unit_price * qty;
       }
@@ -613,7 +615,7 @@ export default {
         unit_price = 10;
       } else if (size >= 1.06 && size < 1.11) {
         unit_price = 10.5;
-      } else if ((size >= 1, 11 && size < 1.16)) {
+      } else if (size >= 1.11 && size < 1.16) {
         unit_price = 11;
       } else if (size >= 1.16 && size < 1.21) {
         unit_price = 11.5;

@@ -84,18 +84,18 @@
               }}
             </td>
             <td>
-              <!-- <base-button
-              @click="onSetFavorite(row.item.id, row.item.isFavorite)"
-              type="secondary"
-              size="sm"
-              ><i
-                :class="
-                  row.item.isFavorite
-                    ? 'fa fa-star text-danger'
-                    : 'far fa-star text-danger'
-                "
-              ></i
-            ></base-button> -->
+              <base-button
+                @click="onSetFavorite(row.item.id, row.item.isFavorite)"
+                type="secondary"
+                size="sm"
+                ><i
+                  :class="
+                    row.item.isFavorite
+                      ? 'fa fa-star text-danger'
+                      : 'far fa-star text-danger'
+                  "
+                ></i
+              ></base-button>
               <base-button
                 @click.prevent="onEditProduct(row.item.id)"
                 type="default"

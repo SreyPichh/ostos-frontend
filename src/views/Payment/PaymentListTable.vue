@@ -36,7 +36,18 @@
 
               <template v-slot:default="row">
                 <th scope="row" class="align-middle">
-                  {{ row.item.id }}
+                  <router-link
+                    :to="{
+                      name: 'edit-invoice',
+                      params: { invoiceId: row.item.id },
+                    }"
+                    ><span class="font-weight-700">
+                      {{
+                        `INV-` +
+                        String(row.item.invoice_number).padStart(6, "0")
+                      }}
+                    </span></router-link
+                  >
                 </th>
                 <td>
                   {{ row.item.customer_name }}
@@ -65,34 +76,11 @@
       </div>
     </div>
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-  </div>
-
-  <modal
-    v-model:show="deleteAlert"
-    gradient="danger"
-    modal-classes="modal-danger modal-dialog-centered"
-  >
-    <template v-slot:header>
-      <h4 class="modal-title" id="modal-title-notification">Warning</h4>
-    </template>
-    <div class="py-3 text-center">
-      <i class="fas fa-trash fa-3x"></i>
-      <h4 class="heading mt-4">Are you sure, To delete this Receipt?</h4>
-      <p>Click OK to delete</p>
+    <div class="float-right">
+      <span class="h3">Total : </span>
+      <span class="bg-gradient-neutral px-4 py-2">${{ totalAmount }}</span>
     </div>
-
-    <template v-slot:footer>
-      <base-button @click="deleteReceipt" type="white">Ok, Got it</base-button>
-      <base-button
-        type="link"
-        text-color="white"
-        class="ml-auto"
-        @click="deleteAlert = false"
-      >
-        Close
-      </base-button>
-    </template>
-  </modal>
+  </div>
 </template>
 <script>
 import InvoiceService from "../../services/invoice.service";
@@ -100,9 +88,26 @@ import BusinessService from "../../services/business.service";
 
 export default {
   name: "payment-list-table",
+  data() {
+    return {
+      isLoading: true,
+      totalAmount: 0,
+      items: [],
+      params: {},
+      businesses: [],
+    };
+  },
   mounted() {
-    this.status = this.$route.params;
-    console.log(this.status);
+    this.params = this.$route.params;
+    if (
+      !(
+        this.params.customer_name &&
+        this.params.business_id &&
+        this.params.status
+      )
+    ) {
+      this.$router.push("/payments");
+    }
 
     this.getAllReceipts();
     BusinessService.getBusinesses().then((items) => {
@@ -112,31 +117,16 @@ export default {
       this.businesses.unshift({ label: "ALL", value: "" });
     });
   },
-  data() {
-    return {
-      isLoading: true,
-      deleteAlert: false,
-      paymentReport: {},
-      businesses: [],
-    };
-  },
   methods: {
-    getAllReceipts(options) {
+    getAllReceipts() {
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      InvoiceService.getInvoices().then(
         (res) => {
           this.pagination = res.data.meta.pagination;
-          this.isLoading = false;
-          let index = 1;
-
           this.items = this.groupByInvoice(res.data.data, function (item) {
             return [item.customer_name, item.business_id, item.status];
-          }).filter((item) => {
-            if (item.status !== "Paid") {
-              item.id = index++;
-              return item;
-            }
           });
+          this.totalCalculate(this.items);
         },
         (error) => {
           alert("error to get data", error);
@@ -149,26 +139,26 @@ export default {
         return business.label;
       }
     },
-    groupByInvoice(array, f) {
-      var groups = {};
-      array.forEach(function (o) {
-        var group = JSON.stringify(f(o));
+    groupByInvoice(items, f) {
+      const groups = {};
+      const params = [
+        this.params.customer_name,
+        Number(this.params.business_id),
+        this.params.status,
+      ];
+      items.forEach((item) => {
+        const group = JSON.stringify(f(item));
         groups[group] = groups[group] || [];
-        groups[group].push(o);
+        groups[group].push(item);
       });
-      return Object.keys(groups).map((group) => {
-        const invoice = groups[group][0];
-        const total = groups[group]
-          .map((item) => Number(item.total))
-          .reduce((prev, next) => prev + next);
-        return {
-          customer_name: invoice.customer_name,
-          business_id: invoice.business_id,
-          total: total,
-          status: invoice.status,
-          items: groups[group],
-        };
-      });
+      return groups[JSON.stringify(params)];
+    },
+    totalCalculate(items) {
+      console.log(items);
+      this.totalAmount = items
+        .map((item) => Number(item.total))
+        .reduce((prev, next) => prev + next);
+      this.isLoading = false;
     },
   },
 };

@@ -191,7 +191,7 @@
       <span class="bg-gradient-neutral px-4 py-2">${{ totalAmount }}</span>
     </div>
     <div class="row mt-auto">
-      <div class="col-lg-12 form-group">
+      <div class="col-lg-6 pl-0 form-group">
         <label class="form-control-label"
           >Purchase Note Of : <span>{{ itemSelected.id }}</span></label
         >

@@ -90,16 +90,15 @@ export default {
   data() {
     return {
       isLoading: true,
-      deleteAlert: false,
       totalAmount: 0,
       paymentReport: {},
       businesses: [],
     };
   },
   methods: {
-    getAllInvoices(options) {
+    getAllInvoices() {
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      InvoiceService.getInvoices().then(
         (res) => {
           this.pagination = res.data.meta.pagination;
           this.isLoading = false;
@@ -129,14 +128,13 @@ export default {
       this.totalAmount = items
         .map((item) => Number(item.total))
         .reduce((prev, next) => prev + next);
-      console.log(this.totalAmount);
     },
-    groupByInvoice(array, f) {
+    groupByInvoice(items, f) {
       var groups = {};
-      array.forEach(function (o) {
-        var group = JSON.stringify(f(o));
+      items.forEach((item) => {
+        var group = JSON.stringify(f(item));
         groups[group] = groups[group] || [];
-        groups[group].push(o);
+        groups[group].push(item);
       });
       return Object.keys(groups).map((group) => {
         const invoice = groups[group][0];

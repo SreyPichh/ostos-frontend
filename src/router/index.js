@@ -131,7 +131,7 @@ const routes = [
         components: { default: Employee },
       },
       {
-        path: "/employees/:UserId",
+        path: "/employees/:employeeId",
         name: "edit-employee",
         components: { default: EditEmployee },
       },

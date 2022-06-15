@@ -32,24 +32,25 @@
         <base-table class="table-sm" thead-classes="thead-light" :data="items">
           <template v-slot:columns>
             <th class="col-1">ID</th>
-            <th>First Name & Last Name</th>
-            <th class="col-2">Name</th>
+            <th>Name</th>
             <th class="col-1">Gender</th>
             <th class="col-2">Created Date</th>
-            <th class="col-21">Updated Date</th>
+            <th class="col-2">Updated Date</th>
             <th class="col-1">Action</th>
           </template>
 
           <template v-slot:default="row">
             <th scope="row" class="align-middle">
               <router-link
-                :to="{ name: 'edit-employee', params: { UserId: row.item.id } }"
+                :to="{
+                  name: 'edit-employee',
+                  params: { employeeId: row.item.id },
+                }"
                 ><span class="font-weight-700">
                   {{ row.item.id }}
                 </span></router-link
               >
             </th>
-            <td>{{ row.item.f_name }} {{ row.item.l_name }}</td>
             <td>
               {{ row.item.name }}
             </td>
@@ -125,7 +126,7 @@
 </template>
 
 <script>
-import UserService from "../../services/user.service";
+import EmployeeService from "../../services/employee.service";
 import moment from "moment";
 
 export default {
@@ -150,7 +151,7 @@ export default {
     },
     getAllUsers(options) {
       this.isLoading = true;
-      UserService.getUsers(options).then(
+      EmployeeService.getEmployees(options).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
@@ -166,13 +167,16 @@ export default {
       this.isDeletingId = productId;
     },
     deleteProduct() {
-      UserService.deleteUser(this.isDeletingId).then(() => {
+      EmployeeService.deleteEmployee(this.isDeletingId).then(() => {
         this.deleteAlert = false;
         this.getAllUsers();
       });
     },
-    onEditEmployee(userId) {
-      this.$router.push({ name: "edit-employee", params: { UserId: userId } });
+    onEditEmployee(employeeId) {
+      this.$router.push({
+        name: "edit-employee",
+        params: { employeeId: employeeId },
+      });
     },
   },
 };
