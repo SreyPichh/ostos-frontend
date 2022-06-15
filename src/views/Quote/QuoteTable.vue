@@ -53,7 +53,7 @@
                 </template>
               </v-date-picker>
             </div>
-            <base-button type="default" @click.prevent="onFilterInvoice"
+            <base-button type="default" @click.prevent="onFilterQuote"
               >Filter</base-button
             >
           </div>
@@ -65,7 +65,7 @@
         <div class="row align-items-center">
           <div class="col-lg-2 d-flex">
             <h3 class="mb-0">
-              Invoices :
+              Quotes :
               <span class="text-muted">{{ totalCount }} items</span>
             </h3>
           </div>
@@ -74,11 +74,11 @@
               <input
                 class="px-2 border form-control form-search-control bg-white"
                 v-model="inputSearch"
-                v-on:keyup.enter="getAllInvoices({ search: inputSearch })"
+                v-on:keyup.enter="getAllQuotes({ search: inputSearch })"
               />
               <button
                 class="px-3 border bg-default rounded-right"
-                @click="getAllInvoices({ search: inputSearch })"
+                @click="getAllQuotes({ search: inputSearch })"
               >
                 <i class="fa fa-search text-white"></i>
               </button>
@@ -87,7 +87,7 @@
           <div class="col text-right">
             <router-link
               class="btn btn-sm btn-default"
-              :to="{ name: 'new-invoice' }"
+              :to="{ name: 'new-quote' }"
             >
               Create New
             </router-link>
@@ -262,7 +262,7 @@ export default {
     };
   },
   mounted() {
-    this.getAllInvoices();
+    this.getAllQuotes();
     BusinessService.getBusinesses().then((items) => {
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
@@ -279,9 +279,9 @@ export default {
       window.open(routeData.href, "_blank");
     },
     onPaginationClicked(value) {
-      this.getAllInvoices({ page: value });
+      this.getAllQuotes({ page: value });
     },
-    getAllInvoices(options) {
+    getAllQuotes(options) {
       this.isLoading = true;
       QuoteService.getQuotes(options).then(
         (res) => {
@@ -302,7 +302,7 @@ export default {
     deleteInvoice() {
       QuoteService.deleteQuote(this.isDeletingId).then(() => {
         this.deleteAlert = false;
-        this.getAllInvoices();
+        this.getAllQuotes();
       });
     },
     onEditInvoice(invoiceId) {
@@ -317,7 +317,7 @@ export default {
         return business.label;
       }
     },
-    onFilterInvoice() {
+    onFilterQuote() {
       if (this.searchParams) {
         this.isSearcing = true;
         this.inputSearch = "";

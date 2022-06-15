@@ -313,6 +313,7 @@ export default {
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          this.searchParams = {};
           this.totalCount = this.pagination.total;
           this.isLoading = false;
         },
@@ -360,7 +361,7 @@ export default {
             .join(";") +
           "&searchJoin=and";
         InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
-          this.isSearcing = false;
+          this.isSearching = false;
           this.items = invoices.data.data;
           this.pagination = invoices.data.meta.pagination;
           this.totalCount = this.items.length;

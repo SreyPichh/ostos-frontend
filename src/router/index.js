@@ -41,6 +41,8 @@ import EditNoteBook from "../views/NoteBook/EditNoteBook.vue";
 
 import Profile from "../views/UserProfile.vue";
 
+import Activity from "../views/Activity/Activity.vue";
+
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 
@@ -182,6 +184,11 @@ const routes = [
         path: "/profile",
         name: "profile",
         components: { default: Profile },
+      },
+      {
+        path: "/activity",
+        name: "activity",
+        components: { default: Activity },
       },
     ],
   },

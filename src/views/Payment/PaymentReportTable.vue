@@ -67,6 +67,10 @@
     </div>
     <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
   </div>
+  <div class="float-right">
+    <span class="h3">Total : </span>
+    <span class="bg-gradient-neutral px-4 py-2">${{ totalAmount }}</span>
+  </div>
 </template>
 <script>
 import InvoiceService from "../../services/invoice.service";
@@ -87,6 +91,7 @@ export default {
     return {
       isLoading: true,
       deleteAlert: false,
+      totalAmount: 0,
       paymentReport: {},
       businesses: [],
     };
@@ -107,6 +112,7 @@ export default {
               return item;
             }
           });
+          this.totalCalculate(this.items);
         },
         (error) => {
           alert("error to get data", error);
@@ -118,6 +124,12 @@ export default {
         const business = this.businesses.find((b) => b.value === bId);
         return business.label;
       }
+    },
+    totalCalculate(items) {
+      this.totalAmount = items
+        .map((item) => Number(item.total))
+        .reduce((prev, next) => prev + next);
+      console.log(this.totalAmount);
     },
     groupByInvoice(array, f) {
       var groups = {};

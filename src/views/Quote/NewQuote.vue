@@ -30,7 +30,7 @@
                 addonLeftIcon="fa fa-user"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_name"
+                v-model="quote.customer_name"
               />
             </div>
             <div class="col-lg-3">
@@ -39,7 +39,7 @@
                 addonLeftIcon="fa fa-envelope"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_email"
+                v-model="quote.customer_email"
               />
             </div>
 
@@ -49,7 +49,7 @@
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_phone_number"
+                v-model="quote.customer_phone_number"
               />
             </div>
             <div class="col-lg-3">
@@ -58,7 +58,7 @@
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_phone_number2"
+                v-model="quote.customer_phone_number2"
               />
             </div>
           </div>
@@ -68,7 +68,7 @@
               <textarea
                 class="form-control form-control-alternative"
                 rows="2"
-                v-model="invoice.customer_address1"
+                v-model="quote.customer_address1"
               ></textarea>
             </div>
           </div>
@@ -83,11 +83,11 @@
             <div class="col-lg-2">
               <base-input
                 addonLeftText="#INV-"
-                label="Invoice No"
+                label="quote No"
                 @keypress="isNumber($event)"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative px-2"
-                v-model="invoice.invoice_number"
+                v-model="quote.quote_number"
               />
             </div>
             <div class="col-lg-3">
@@ -100,7 +100,7 @@
                   is-required
                   mode="date"
                   color="red"
-                  v-model="invoice.date"
+                  v-model="quote.date"
                 >
                   <template v-slot="{ inputValue, inputEvents, togglePopover }">
                     <div class="d-flex items-center">
@@ -123,7 +123,7 @@
             <div class="col-lg-3">
               <label class="form-control-label">Businesses</label>
               <Multiselect
-                v-model="invoice.business_id"
+                v-model="quote.business_id"
                 placeholder="Business Type"
                 @change="onChangeBusiness"
                 :searchable="true"
@@ -134,13 +134,13 @@
               <div class="form-group">
                 <label class="form-control-label">Status</label>
                 <Multiselect
-                  v-model="invoice.status"
+                  v-model="quote.status"
                   :options="['Paid', 'Unpaid', 'Partial Billed']"
                   @change="onChangeStatus($event)"
                 />
               </div>
             </div>
-            <div class="col-lg-2" v-if="invoice.status === 'Partial Billed'">
+            <div class="col-lg-2" v-if="quote.status === 'Partial Billed'">
               <base-input
                 addonLeftText="$"
                 addonRightText=".00"
@@ -148,7 +148,7 @@
                 label="Due Amount"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.due_amount"
+                v-model="quote.due_amount"
               />
             </div>
           </div>
@@ -163,7 +163,7 @@
             <div class="bg-white border-0">
               <div class="row align-items-center justify-content-between">
                 <div class="col">
-                  <h3 class="mb-0">Invoices Items</h3>
+                  <h3 class="mb-0">Quotes Items</h3>
                 </div>
                 <div class="col-lg-5">
                   <label class="form-control-label">Employees</label>
@@ -181,7 +181,7 @@
             </div>
           </template>
 
-          <div class="table-responsive pb-7" v-if="invoice.business_id">
+          <div class="table-responsive pb-7" v-if="quote.business_id">
             <table class="table">
               <thead>
                 <th
@@ -291,31 +291,30 @@
                 <h4>
                   សរុប/Total :
                   <span class="px-3 py-1"
-                    >${{ invoice.total
-                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
+                    >${{ quote.total }}{{ quote.total >= 1 ? ".00" : "" }}</span
                   >
                 </h4>
                 <h4>
                   ប្រាក់កក់/Deposite :
                   <span class="px-3 py-1"
-                    >${{ invoice.due_amount
-                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
+                    >${{ quote.due_amount
+                    }}{{ quote.total >= 1 ? ".00" : "" }}</span
                   >
                 </h4>
                 <h4>
                   នៅខ្វះ/Balance :
                   <span
                     class="bg-pink px-3 py-1 text-red"
-                    v-if="invoice.due_amount - invoice.total < 0"
-                    >${{ (invoice.due_amount - invoice.total) * -1
-                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
+                    v-if="quote.due_amount - quote.total < 0"
+                    >${{ (quote.due_amount - quote.total) * -1
+                    }}{{ quote.total >= 1 ? ".00" : "" }}</span
                   >
                 </h4>
               </div>
             </div>
           </div>
 
-          <div v-if="!invoice.business_id" class="text-center pt-3 pb-5">
+          <div v-if="!quote.business_id" class="text-center pt-3 pb-5">
             Please select business type
           </div>
         </card>
@@ -323,11 +322,11 @@
     </div>
     <div class="row justify-content-between mb-3">
       <div class="col-lg-6 form-group">
-        <label class="form-control-label">Invoice Note.</label>
+        <label class="form-control-label">quote Note.</label>
         <textarea
           class="form-control form-control-alternative"
           rows="4"
-          v-model="invoice.invoice_note"
+          v-model="quote.quote_note"
         ></textarea>
       </div>
       <div class="col-lg-1 form-group">
@@ -335,7 +334,7 @@
           <input
             class="form-check-input"
             type="checkbox"
-            v-model="invoice.signature"
+            v-model="quote.signature"
             id="signature"
           />
           <label class="form-check-label" for="signature">Signature</label>
@@ -343,14 +342,14 @@
       </div>
       <div class="col-lg-5 text-right">
         <button
-          @click.prevent="createNewInvoice(true)"
+          @click.prevent="createNewQuote(true)"
           type="button"
           class="btn btn-default"
         >
           Create & Print
         </button>
         <button
-          @click.prevent="createNewInvoice()"
+          @click.prevent="createNewQuote()"
           type="button"
           class="btn btn-default"
         >
@@ -376,7 +375,7 @@
       >
       <base-button
         type="danger"
-        @click.prevent="onBusinessSelected(invoice.business_id)"
+        @click.prevent="onBusinessSelected(quote.business_id)"
         >Change</base-button
       >
     </template>
@@ -387,7 +386,7 @@
 import BusinessService from "../../services/business.service";
 import ProductService from "../../services/product.service";
 import UserService from "../../services/user.service";
-import InvoiceService from "../../services/invoice.service";
+import QuoteService from "../../services/quote.service";
 import Multiselect from "@vueform/multiselect";
 import moment from "moment";
 
@@ -399,7 +398,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      invoice: {
+      quote: {
         date: moment(new Date()).format("YYYY-MM-DD"),
         total: 0,
       },
@@ -422,9 +421,9 @@ export default {
   },
   mounted() {
     this.isLoading = true;
-    InvoiceService.getLastInvoiceId().then((item) => {
-      const invoiceId = item.data.data.length !== 0 ? item.data.data.id : 0;
-      this.invoice.invoice_number = String(invoiceId + 1).padStart(6, "0");
+    QuoteService.getLastQuoteId().then((item) => {
+      const quoteId = item.data.data.length !== 0 ? item.data.data.id : 0;
+      this.quote.quote_number = String(quoteId + 1).padStart(6, "0");
     });
     BusinessService.getBusinesses().then((items) => {
       this.isLoading = false;
@@ -450,11 +449,11 @@ export default {
     // On Change Business Type
     onCancelChangeBusiness() {
       this.warningAlert = false;
-      this.invoice.business_id = this.previousBid;
+      this.quote.business_id = this.previousBid;
     },
     onChangeBusiness(id) {
-      this.previousBid = this.invoice.business_id;
-      if (this.invoice.business_id) {
+      this.previousBid = this.quote.business_id;
+      if (this.quote.business_id) {
         this.warningAlert = true;
       } else {
         this.onBusinessSelected(id);
@@ -479,9 +478,9 @@ export default {
     },
     onAutoSetStatus(business) {
       if (business === "car") {
-        this.invoice.status = "Paid";
+        this.quote.status = "Paid";
       } else {
-        this.invoice.status = "Unpaid";
+        this.quote.status = "Unpaid";
       }
     },
     onResetProducts() {
@@ -497,7 +496,7 @@ export default {
           total_price: 0,
         },
       ];
-      this.invoice.due_amount = 0;
+      this.quote.due_amount = 0;
       this.totalALlProducts();
     },
     onCoverALlClick(index, isChecked) {
@@ -635,26 +634,26 @@ export default {
       return unit_price;
     },
     totalALlProducts() {
-      this.invoice.total = this.products.length
+      this.quote.total = this.products.length
         ? this.products
             .map((item) => Number(item.total_price))
             .reduce((prev, next) => prev + next)
         : 0;
 
-      if (this.invoice.status === "Paid") {
-        this.invoice.due_amount = this.invoice.total;
+      if (this.quote.status === "Paid") {
+        this.quote.due_amount = this.quote.total;
       }
     },
     onChangeStatus(status) {
       if (status === "Paid") {
-        this.invoice.due_amount = this.invoice.total;
+        this.quote.due_amount = this.quote.total;
       } else {
-        this.invoice.due_amount = 0;
+        this.quote.due_amount = 0;
       }
     },
-    createNewInvoice(isPrint) {
-      const invoice = this.invoice;
-      invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
+    createNewQuote(isPrint) {
+      const quote = this.quote;
+      quote.quote_number = quote.quote_number.replace(/^0+/, "");
       if (this.employees) {
         const employee_data = this.employees.map((empId) => {
           const emp = this.employeesList.find((emp) => emp.id === empId);
@@ -663,17 +662,17 @@ export default {
             employee_name: emp.name,
           };
         });
-        invoice.employee_data = employee_data;
+        quote.employee_data = employee_data;
       }
-      invoice.product_data = this.products;
-      if (this.invoice) {
-        InvoiceService.postInvoice(this.invoice).then(
+      quote.product_data = this.products;
+      if (this.quote) {
+        QuoteService.postQuote(this.quote).then(
           (result) => {
-            this.$router.push("/invoices");
+            this.$router.push("/quotes");
             if (isPrint) {
               let resolvedRoute = this.$router.resolve({
-                name: "preview-invoice",
-                params: { invoiceId: result.data.id },
+                name: "preview-quote",
+                params: { quoteId: result.data.id },
               });
               window.open(resolvedRoute.href, "_blank");
             }

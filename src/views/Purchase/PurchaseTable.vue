@@ -118,7 +118,7 @@
             <td>
               {{ row.item.supplier }}
             </td>
-            <td>${{ row.item.total }}.00</td>
+            <td>${{ row.item.total }}</td>
             <td>
               <span
                 class="badge"
@@ -171,6 +171,24 @@
       <div v-if="items.length == 0 && !isSearching" class="text-center p-5">
         Empty Data
       </div>
+    </div>
+    <div
+      v-if="
+        isPagination && !items.length !== 0 && this.pagination.total_pages !== 1
+      "
+    >
+      <base-pagination
+        :total="pagination.total"
+        :perPage="pagination.per_page"
+        :value="pagination.current_page"
+        @input="onPaginationClicked"
+        align="center"
+        size="sm"
+      ></base-pagination>
+    </div>
+    <div class="float-right">
+      <span class="h3">Total : </span>
+      <span class="bg-gradient-neutral px-4 py-2">${{ totalAmount }}</span>
     </div>
     <div class="row mt-auto">
       <div class="col-lg-12 form-group">
@@ -229,6 +247,7 @@ export default {
       searchParams: {},
       itemSelected: "",
       totalCount: 0,
+      totalAmount: 0,
       isSearching: false,
       isPagination: true,
       inputSearch: "",
@@ -250,6 +269,8 @@ export default {
       PurchaseService.getPurchases(options).then(
         (res) => {
           this.items = res.data.data;
+          this.totalCalculate(this.items);
+          this.searchParams = {};
           this.pagination = res.data.meta.pagination;
           this.totalCount = this.pagination.total;
           this.isLoading = false;
@@ -294,10 +315,17 @@ export default {
         PurchaseService.getPurchasesBySearch(searchParams).then((invoices) => {
           this.isSearching = false;
           this.items = invoices.data.data;
+          this.totalCalculate(this.items);
           this.pagination = invoices.data.meta.pagination;
           this.totalCount = this.items.length;
         });
       }
+    },
+    totalCalculate(items) {
+      this.totalAmount = items
+        .map((item) => Number(item.total))
+        .reduce((prev, next) => prev + next);
+      console.log(this.totalAmount);
     },
   },
   created() {

@@ -16,10 +16,10 @@
     <div class="card mb-3" v-if="businesses.length">
       <div class="card-header border-0">
         <div class="row align-items-center">
-          <div class="col-lg-2 d-flex">
+          <div class="col-lg-3 d-flex">
             <h3 class="mb-0">
               All Products :
-              <span class="text-muted">{{ totalCount }}</span>
+              <span class="text-muted">{{ totalCount }} items</span>
             </h3>
           </div>
           <div class="col-lg-3 d-flex align-items-center">
@@ -49,6 +49,7 @@
           <template v-slot:columns>
             <th class="col-1">ID</th>
             <th>Name</th>
+            <th class="col-1">Price</th>
             <th class="col-1">Business</th>
             <th class="col-2">Created Date</th>
             <th class="col-2">Updated Date</th>
@@ -68,6 +69,7 @@
             <td>
               {{ row.item.name }}
             </td>
+            <td>{{ row.item.price > 0 ? `$${row.item.price}` : "-" }}</td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
             </td>

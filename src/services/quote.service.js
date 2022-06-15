@@ -22,5 +22,8 @@ class QuoteService {
   deleteQuote(QuoteId) {
     return api.delete(API_URL + `/${QuoteId}`);
   }
+  getLastQuoteId() {
+    return api.get("get_last_id");
+  }
 }
 export default new QuoteService();

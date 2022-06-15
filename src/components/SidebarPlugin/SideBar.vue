@@ -35,7 +35,7 @@
               <i class="ni ni-single-02"></i>
               <span>My profile</span>
             </router-link>
-            <router-link to="/profile" class="dropdown-item">
+            <router-link to="/activity" class="dropdown-item">
               <i class="ni ni-calendar-grid-58"></i>
               <span>Activity</span>
             </router-link>
