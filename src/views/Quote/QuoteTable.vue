@@ -244,6 +244,7 @@ export default {
   components: { Multiselect },
   data() {
     return {
+      items: [],
       isLoading: true,
       deleteAlert: false,
       inputSearch: "",

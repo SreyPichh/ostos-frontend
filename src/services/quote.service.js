@@ -5,7 +5,6 @@ class QuoteService {
     return api.get(API_URL);
   }
   getQuotesBySearch(searchParams) {
-    console.log(searchParams);
     return api.get(API_URL + searchParams);
   }
   getQuoteById(QuoteId) {

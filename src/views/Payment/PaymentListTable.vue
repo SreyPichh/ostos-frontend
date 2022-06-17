@@ -156,7 +156,6 @@ export default {
       return groups[JSON.stringify(params)];
     },
     totalCalculate(items) {
-      console.log(items);
       this.totalAmount = items
         .map((item) => Number(item.total))
         .reduce((prev, next) => prev + next);

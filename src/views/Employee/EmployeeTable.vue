@@ -134,6 +134,7 @@ export default {
   components: {},
   data() {
     return {
+      items: [],
       isLoading: true,
       isPagination: true,
       deleteAlert: false,

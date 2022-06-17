@@ -5,7 +5,6 @@ class PaymentService {
     return api.get(API_URL);
   }
   getPaymentsBySearch(searchParams) {
-    console.log(searchParams);
     return api.get(API_URL + searchParams);
   }
   getPaymentById(PaymentId) {

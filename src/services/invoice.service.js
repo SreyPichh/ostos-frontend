@@ -7,7 +7,6 @@ class InvoiceService {
     });
   }
   getInvoicesBySearch(searchParams) {
-    console.log(searchParams);
     return api.get(API_URL + searchParams);
   }
   getInvoiceById(InvoiceId) {

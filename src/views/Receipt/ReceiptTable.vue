@@ -136,6 +136,7 @@ export default {
   name: "receipt-table",
   data() {
     return {
+      items: [],
       isLoading: true,
       deleteAlert: false,
     };

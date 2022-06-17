@@ -115,7 +115,11 @@
                 </span></router-link
               >
             </th>
-            <td>
+            <td
+              data-toggle="tooltip"
+              data-placement="left"
+              :title="row.item.note"
+            >
               {{ row.item.supplier }}
             </td>
             <td>${{ row.item.total }}</td>
@@ -244,6 +248,7 @@ export default {
   components: { Multiselect },
   data() {
     return {
+      items: [],
       isLoading: true,
       deleteAlert: false,
       searchParams: {},
@@ -327,7 +332,6 @@ export default {
       this.totalAmount = items
         .map((item) => Number(item.total))
         .reduce((prev, next) => prev + next);
-      console.log(this.totalAmount);
     },
   },
   created() {

@@ -65,6 +65,7 @@ export default {
   name: "activity-table",
   data() {
     return {
+      items: [],
       isLoading: true,
     };
   },

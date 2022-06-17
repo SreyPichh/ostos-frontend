@@ -49,7 +49,12 @@
               </span></router-link
             >
           </th>
-          <td class="truncate">
+          <td
+            class="truncate"
+            data-toggle="tooltip"
+            data-placement="left"
+            :title="row.item.description"
+          >
             {{ row.item.title }}
           </td>
           <td>
@@ -131,6 +136,7 @@ export default {
   name: "note-book-table",
   data() {
     return {
+      items: [],
       isLoading: true,
       deleteAlert: false,
       selectedNoteBook: "",

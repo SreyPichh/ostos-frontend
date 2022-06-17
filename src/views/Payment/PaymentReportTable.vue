@@ -93,7 +93,7 @@ export default {
     return {
       isLoading: true,
       totalAmount: 0,
-      paymentReport: {},
+      items: [],
       businesses: [],
     };
   },

@@ -362,7 +362,6 @@ export default {
     onFileSelected(event, target) {
       const file = event.target.files;
       let fileName = file[0].name;
-      console.log(fileName);
       if (fileName.lastIndexOf(".") <= 0) {
         return alert("invalid file format");
       }

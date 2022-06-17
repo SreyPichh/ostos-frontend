@@ -115,6 +115,7 @@ export default {
   components: {},
   data() {
     return {
+      items: [],
       isLoading: true,
       deleteAlert: false,
     };

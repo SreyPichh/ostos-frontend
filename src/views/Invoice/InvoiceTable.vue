@@ -126,7 +126,11 @@
                 </span></router-link
               >
             </th>
-            <td>
+            <td
+              data-toggle="tooltip"
+              data-placement="left"
+              :title="row.item.invoice_note"
+            >
               {{ row.item.customer_name ? row.item.customer_name : "-----" }}
             </td>
             <td>
@@ -266,6 +270,7 @@ export default {
   components: { Multiselect },
   data() {
     return {
+      items: [],
       isLoading: true,
       deleteAlert: false,
       inputSearch: "",
