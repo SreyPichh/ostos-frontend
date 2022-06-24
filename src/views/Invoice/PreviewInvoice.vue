@@ -32,7 +32,7 @@
             />
           </div>
           <div class="text-right w-50 align-self-lg-end">
-            <sapn class="p24-px">
+            <sapn class="p21-px">
               {{ business.invoice_toptext }}
             </sapn>
           </div>
@@ -55,10 +55,8 @@
         <div class="mb-2 d-flex justify-content-between">
           <div class="w-75 d-flex align-items-start flex-column">
             <!-- <h2>AT :</h2> -->
-            <h2 v-if="invoice.customer_name">
-              To : {{ invoice.customer_name }}
-            </h2>
-            <h2>
+            <p v-if="invoice.customer_name">To : {{ invoice.customer_name }}</p>
+            <p>
               Tel :
               <span
                 class="p"
@@ -74,10 +72,10 @@
                     : ""
                 }}
               </span>
-            </h2>
-            <h2 v-if="invoice.customer_email">
+            </p>
+            <p v-if="invoice.customer_email">
               Email : <span class="p">{{ invoice.customer_email }}</span>
-            </h2>
+            </p>
           </div>
           <div class="text-right">
             <p class="mb-0">
@@ -98,20 +96,22 @@
         </div>
       </div>
 
-      <div class="invoice-items">
+      <div id="invoice-items">
         <table class="table table-sm">
-          <tr class="invoiceListHeading">
-            <th>NO.</th>
-            <th>DESCRIPTION</th>
-            <th v-if="selectedBusiness !== 'car'">Size CM</th>
-            <th v-if="selectedBusiness == 'printing'">M&sup2;</th>
-            <th v-if="selectedBusiness !== 'car'">QUANTITY</th>
-            <th>Unit Price</th>
-            <th>Total</th>
-          </tr>
+          <thead>
+            <tr>
+              <th>NO.</th>
+              <th>DESCRIPTION</th>
+              <th v-if="selectedBusiness !== 'car'">Size CM</th>
+              <th v-if="selectedBusiness == 'printing'">M&sup2;</th>
+              <th v-if="selectedBusiness !== 'car'">QUANTITY</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
           <tbody>
             <tr v-for="(product, index) in invoice.product_data" :key="index">
-              <th scope="row" class="align-middle">{{ index + 1 }}</th>
+              <td scope="row" class="align-middle">{{ index + 1 }}</td>
               <td>{{ product.product_name }}</td>
               <td v-if="selectedBusiness !== 'car'">
                 {{ product.width }} x {{ product.length }}
@@ -132,22 +132,17 @@
         <div class="bank-info mb-2 d-flex justify-content-between">
           <div class="w-75">
             <div class="d-flex">
-              <img
-                alt="ostos logo"
-                src="img/invoice/aba_logo.png"
-                width="120"
-                height="120"
-              />
+              <img alt="ostos logo" src="img/invoice/aba_logo.png" width="80" />
               <div class="ml-2">
-                <p class="mr-2 mb-0 p24-px">លេខគណនីធនាគារ : <span>ABA</span></p>
-                <p class="mr-2 mb-0 p24-px">
+                <h3 class="mr-2 mb-0">លេខគណនីធនាគារ : <span>ABA</span></h3>
+                <h3 class="mr-2 mb-0">
                   លេខកុង :
                   <span>{{ business.acc_number }}</span>
-                </p>
-                <p class="mr-2 mb-0 p24-px">
+                </h3>
+                <h3 class="mr-2 mb-0">
                   ឈ្មេាះ :
                   <span>{{ business.aba_name }}</span>
-                </p>
+                </h3>
               </div>
             </div>
           </div>
@@ -166,10 +161,8 @@
             </div>
             <div class="d-flex align-items-baseline">
               <h3 class="col-sm-8 text-right">នៅខ្វះ/Balance</h3>
-              <h3 class="col-sm-4 bg-pink">
-                <span
-                  class="py-1 text-red"
-                  v-if="invoice.due_amount - invoice.total < 0"
+              <h3 class="col-sm-4 total-bg-color">
+                <span class="py-1" v-if="invoice.due_amount - invoice.total < 0"
                   >${{ (invoice.due_amount - invoice.total) * -1
                   }}{{ invoice.total >= 1 ? ".00" : "" }}</span
                 >
@@ -287,7 +280,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 html,
 *,
 *::before,
@@ -297,17 +290,16 @@ html,
 }
 
 @font-face {
-  font-family: Battambang !important;
-  src: url("/static/invoice/fonts/Battambang/Battambang-Regular.ttf") !important;
+  font-family: "kh-content";
+  src: local("kh-content"), url(../../fonts/kh-content.ttf);
 }
-
 @font-face {
-  font-family: Opensans !important;
-  src: url("/static/invoice/fonts/OpenSans-Regular.ttf") !important;
+  font-family: "trebuc";
+  src: local("trebuc"), url(../../fonts/trebuc.ttf);
 }
 
 body {
-  font-family: "Battambang", "Opensans", sans-serif !important;
+  font-family: "kh-content", "trebuc", "Opensans", sans-serif !important;
   font-size: 16px !important;
 }
 
@@ -331,12 +323,18 @@ tr.invoiceListHeading {
   color: #fff;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
-  font-weight: normal !important;
+table tr th {
+  font-size: 18px !important;
+}
+
+table tr td {
+  font-size: 18px !important;
+}
+
+.table th {
+  background-color: #1a4567 !important;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
 }
 
 @media print {
@@ -344,32 +342,16 @@ h5 {
     display: none;
   }
 
-  body {
-    background-color: #fff !important;
-    -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    font-family: "Battambang", "Opensans", sans-serif !important;
-    font-size: 16px !important;
-  }
-
-  table tr th {
-    font-size: 24px !important;
-  }
-
-  table tr td {
-    font-size: 24px !important;
-  }
-
-  .p24-px {
-    font-size: 24px !important;
+  .p21-px {
+    font-size: 21px !important;
   }
 
   p {
-    font-size: 20px !important;
+    font-size: 18px !important;
   }
 
   h3 {
-    font-size: 20px !important;
+    font-size: 18px !important;
   }
 
   h2 {
@@ -384,19 +366,16 @@ h5 {
     font-weight: normal !important;
   }
 
-  tr.invoiceListHeading {
-    background-color: #1a4567 !important;
-    color: #525f7f !important;
+  body {
+    background-color: #fff !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
+    font-family: "kh-content", "Opensans", sans-serif !important;
   }
 
   @page {
     size: a4 portrait;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: 1cm;
-    margin-right: 1cm;
+    margin: 1cm 0 1cm 0 !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
   }

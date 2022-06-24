@@ -9,15 +9,25 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="container-fluid mt--5 mb-5" v-if="!isLoading && invoice">
+  <div
+    class="container-fluid mt--5 mb-5"
+    v-if="!isLoading && invoice && customerInfo"
+  >
     <div class="row">
       <div class="col-xl-12 order-xl-1">
         <card shadow type="secondary" bodyClasses="pb-0">
           <template v-slot:header>
             <div class="bg-white border-0">
-              <div class="row align-items-center">
-                <div class="col-7">
-                  <h3 class="mb-0">Customer Information</h3>
+              <div class="row align-items-center justify-content-between">
+                <h3 class="mb-0">Customer Information</h3>
+                <div class="col-lg-3">
+                  <label class="form-control-label">Exist Customer</label>
+                  <Multiselect
+                    v-model="invoice.customer_id"
+                    @change="onChangeCustomer"
+                    :searchable="true"
+                    :options="customerOptions"
+                  />
                 </div>
               </div>
             </div>
@@ -30,7 +40,8 @@
                 addonLeftIcon="fa fa-user"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_name"
+                :disabled="disableCustomer"
+                v-model="customerInfo.customer_name"
               />
             </div>
             <div class="col-lg-3">
@@ -39,7 +50,16 @@
                 addonLeftIcon="fa fa-envelope"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_email"
+                :disabled="disableCustomer"
+                v-model="customerInfo.customer_email"
+              />
+            </div>
+            <div class="col-lg-2">
+              <label class="form-control-label">Gender</label>
+              <Multiselect
+                :disabled="disableCustomer"
+                v-model="customerInfo.gender"
+                :options="['Male', 'Female', 'Other']"
               />
             </div>
             <div class="col-lg-3">
@@ -48,16 +68,37 @@
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_phone_number"
+                :disabled="disableCustomer"
+                v-model="customerInfo.customer_phone_number"
               />
             </div>
+          </div>
+          <div class="row">
             <div class="col-lg-3">
               <base-input
                 label="Phone Number 2"
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
-                v-model="invoice.customer_phone_number2"
+                :disabled="disableCustomer"
+                v-model="customerInfo.customer_phone_number2"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input
+                label="Customer Company"
+                addonLeftIcon="fa fa-building"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                :disabled="disableCustomer"
+                v-model="customerInfo.company"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input
+                label="PO"
+                :disabled="disableCustomer"
+                v-model="customerInfo.po"
               />
             </div>
           </div>
@@ -67,7 +108,8 @@
               <textarea
                 class="form-control form-control-alternative"
                 rows="2"
-                v-model="invoice.customer_address1"
+                :disabled="disableCustomer"
+                v-model="customerInfo.customer_address1"
               ></textarea>
             </div>
           </div>
@@ -143,7 +185,6 @@
             <div class="col-lg-2" v-if="invoice.status === 'Partial Billed'">
               <base-input
                 addonLeftText="$"
-                addonRightText=".00"
                 @keypress="isNumber($event)"
                 label="Due Amount"
                 label-classes="form-control-range"
@@ -196,12 +237,12 @@
                   <th>ម៉ៅផ្ដាច់</th>
                 </template>
                 <template v-if="selectedBusiness !== 'car'">
-                  <th>width</th>
-                  <th>length</th>
+                  <th>width (CM)</th>
+                  <th>length (CM)</th>
                   <th v-if="selectedBusiness == 'printing'">M&sup2;</th>
                   <th>quantity</th>
                 </template>
-                <th>Unit Price</th>
+                <th>Unit Price ($)</th>
                 <th>Total</th>
                 <th></th>
               </thead>
@@ -210,6 +251,7 @@
                   <Multiselect
                     v-model="product.product_id"
                     :searchable="true"
+                    :create-option="true"
                     placeholder="Choose Product"
                     @change="onProductChange(index, $event)"
                     :options="productList"
@@ -230,7 +272,6 @@
                 <template v-if="selectedBusiness !== 'car'">
                   <td>
                     <base-input
-                      addonRightText="CM"
                       :disabled="product.coverAll"
                       @keypress="isNumber($event)"
                       @change="onProductCalculate(index)"
@@ -240,7 +281,6 @@
                   </td>
                   <td>
                     <base-input
-                      addonRightText="CM"
                       :disabled="product.coverAll"
                       @keypress="isNumber($event)"
                       @change="onProductCalculate(index)"
@@ -249,12 +289,16 @@
                     />
                   </td>
                   <td v-if="selectedBusiness == 'printing'">
-                    <span>{{ (product.width * product.length) / 10000 }}</span>
+                    <span>
+                      =
+                      {{
+                        ((product.width * product.length) / 10000).toFixed(2)
+                      }}</span
+                    >
                     m&sup2;
                   </td>
                   <td>
                     <base-input
-                      addonLeftText="Qty"
                       @keypress="isNumber($event)"
                       @change="onProductCalculate(index, 'quantity')"
                       :name="`products[${index}][quantity]`"
@@ -265,7 +309,6 @@
                 </template>
                 <td>
                   <base-input
-                    addonLeftText="$"
                     @keypress="isNumber($event)"
                     @change="onProductCalculate(index, 'unitPrice')"
                     placeholder="Unit Price"
@@ -285,6 +328,7 @@
             <div class="row px-3 align-items-center justify-content-between">
               <button
                 @click.prevent="addProduct"
+                :disabled="products.length === 13"
                 type="button"
                 class="btn btn-warning btn-sm ml-2"
               >
@@ -293,25 +337,18 @@
               <div class="text-left">
                 <h4>
                   សរុប/Total :
-                  <span class="px-3 py-1"
-                    >${{ invoice.total
-                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
-                  >
+                  <span class="px-3 py-1">${{ invoice.total }}</span>
                 </h4>
                 <h4>
                   ប្រាក់កក់/Deposite :
-                  <span class="px-3 py-1"
-                    >${{ invoice.due_amount
-                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
-                  >
+                  <span class="px-3 py-1">${{ invoice.due_amount }}</span>
                 </h4>
                 <h4>
                   នៅខ្វះ/Balance :
                   <span
                     class="bg-pink px-3 py-1 text-red"
                     v-if="invoice.due_amount - invoice.total < 0"
-                    >${{ (invoice.due_amount - invoice.total) * -1
-                    }}{{ invoice.total >= 1 ? ".00" : "" }}</span
+                    >${{ (invoice.due_amount - invoice.total) * -1 }}</span
                   >
                 </h4>
               </div>
@@ -347,6 +384,7 @@
       <div class="col-lg-5 text-right">
         <button
           @click.prevent="updateInvoice(true)"
+          :disabled="invalid"
           type="button"
           class="btn btn-default"
         >
@@ -354,6 +392,7 @@
         </button>
         <button
           @click.prevent="updateInvoice()"
+          :disabled="invalid"
           type="button"
           class="btn btn-default"
         >
@@ -390,6 +429,7 @@
 import BusinessService from "../../services/business.service";
 import ProductService from "../../services/product.service";
 import EmployeeService from "../../services/employee.service";
+import CustomerService from "../../services/customer.service";
 import InvoiceService from "../../services/invoice.service";
 import Multiselect from "@vueform/multiselect";
 
@@ -411,12 +451,16 @@ export default {
       },
       selectedBusiness: "",
       businesses: [],
+      customerOptions: [],
+      customers: [],
+      customerInfo: {},
       productList: [],
       allProductLists: [],
       employeeOptions: [],
       employees: [],
       products: [],
       warningAlert: false,
+      disableCustomer: false,
     };
   },
   mounted() {
@@ -439,6 +483,19 @@ export default {
 
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
       const invoice = item.data.data;
+      CustomerService.getCustomers().then((customers) => {
+        this.customers = customers.data.data;
+        this.customerOptions = customers.data.data.map((item) => {
+          const phoneNumber = item.customer_phone_number;
+          return {
+            label: `${item.customer_name} (${
+              phoneNumber ? phoneNumber : "NO"
+            })`,
+            value: item.id,
+          };
+        });
+        this.onChangeCustomer(invoice.customer_id);
+      });
 
       invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
       invoice.signature = invoice.signature ? true : false;
@@ -454,7 +511,43 @@ export default {
       });
     });
   },
+  computed: {
+    invalid() {
+      const invoice = this.invoice;
+      return (
+        this.products.length === 0 ||
+        !invoice ||
+        !invoice.status ||
+        !invoice.business_id ||
+        !invoice.invoice_number ||
+        !this.customerInfo.customer_name
+      );
+    },
+  },
   methods: {
+    onChangeCustomer(customerId) {
+      const customer = this.customers.find((item) => item.id === customerId);
+      console.log(customerId, customer);
+
+      if (customer) {
+        this.disableCustomer = true;
+        this.customerInfo = {
+          customer_name: customer.customer_name,
+          customer_email: customer.customer_email,
+          gender: customer.gender,
+          customer_phone_number: customer.customer_phone_number,
+          customer_phone_number2: customer.customer_phone_number2,
+          company: customer.company,
+          po: customer.po,
+          customer_address1: customer.customer_address1,
+        };
+      } else {
+        this.disableCustomer = false;
+        this.customerInfo = {
+          gender: "Male",
+        };
+      }
+    },
     // On Change Business Type
     onCancelChangeBusiness() {
       this.warningAlert = false;
@@ -549,10 +642,6 @@ export default {
       } else {
         product.unit_price = "";
       }
-      product.total_price = 0;
-      product.width = "";
-      product.length = "";
-      product.quantity = "";
       this.onProductCalculate(index);
     },
     onProductCalculate(index, target) {
@@ -564,22 +653,19 @@ export default {
       const length = product.length;
       // Set Total Price
       if (this.selectedBusiness === "car") {
-        this.products[index].total_price = unit_price;
+        product.total_price = unit_price.toFixed(2);
       } else if (this.selectedBusiness === "printing") {
         if (!isCoverAll) {
           const m2 = (width * length) / 10000;
-          this.products[index].total_price = m2 * unit_price * qty;
+          product.total_price = (m2 * unit_price * qty).toFixed(2);
         } else {
-          this.products[index].total_price = unit_price * qty;
+          product.total_price = (unit_price * qty).toFixed(2);
         }
       } else if (this.selectedBusiness === "ktv") {
         if (target !== "unitPrice" && target !== "quantity") {
-          this.products[index].unit_price = this.ktvPriceM2(
-            (width * length) / 10000
-          );
+          product.unit_price = this.ktvPriceM2((width * length) / 10000);
         }
-        this.products[index].total_price =
-          this.products[index].unit_price * qty;
+        product.total_price = (product.unit_price * qty).toFixed(2);
       }
       this.totalALlProducts();
     },
@@ -678,7 +764,7 @@ export default {
         invoice.employee_data = employee_data;
       }
       invoice.product_data = this.products;
-      if (this.invoice) {
+      if (invoice.customer_id) {
         InvoiceService.updateInvoice(this.invoiceId, this.invoice).then(
           (result) => {
             this.$router.push("/invoices");
@@ -694,6 +780,25 @@ export default {
             alert("error to get data", error);
           }
         );
+      } else {
+        CustomerService.createCustomer(this.customerInfo).then((item) => {
+          invoice.customer_id = item.data.id;
+          InvoiceService.updateInvoice(this.invoiceId, this.invoice).then(
+            (result) => {
+              this.$router.push("/invoices");
+              if (result && isPrint) {
+                let resolvedRoute = this.$router.resolve({
+                  name: "preview-invoice",
+                  params: { invoiceId: result.data.data.id },
+                });
+                window.open(resolvedRoute.href, "_blank");
+              }
+            },
+            (error) => {
+              alert("error to get data", error);
+            }
+          );
+        });
       }
     },
 

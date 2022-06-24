@@ -53,7 +53,6 @@
               <div class="col-lg-2">
                 <base-input
                   addonLeftText="$"
-                  addonRightText=".00"
                   @keypress="isNumber($event)"
                   label="Price"
                   label-classes="form-control-range"

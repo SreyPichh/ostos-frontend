@@ -143,7 +143,6 @@
             <div class="col-lg-2" v-if="quote.status === 'Partial Billed'">
               <base-input
                 addonLeftText="$"
-                addonRightText=".00"
                 @keypress="isNumber($event)"
                 label="Due Amount"
                 label-classes="form-control-range"
@@ -698,8 +697,7 @@ export default {
   },
 };
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
-<style>
+<style scoped>
 .table td {
   padding: 0.5rem !important;
   vertical-align: unset !important;

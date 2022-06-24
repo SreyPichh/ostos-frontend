@@ -32,6 +32,9 @@
                 <th>Business</th>
                 <th>Total</th>
                 <th>Status</th>
+                <th>Created Date</th>
+                <th>Updated Date</th>
+                <th>Action</th>
               </template>
 
               <template v-slot:default="row">
@@ -69,6 +72,43 @@
                     >{{ row.item.status }}</span
                   >
                 </td>
+                <td>
+                  {{
+                    moment(row.item.created_at).format(
+                      "DD/MM/YYYY [&nbsp;] HH:mm"
+                    )
+                  }}
+                </td>
+                <td>
+                  {{
+                    moment(row.item.updated_at).format(
+                      "DD/MM/YYYY [&nbsp;] HH:mm"
+                    )
+                  }}
+                </td>
+                <td>
+                  <base-button
+                    @click="onEditInvoice(row.item.id)"
+                    type="default"
+                    size="sm"
+                  >
+                    <i class="fas fa-pencil-alt"></i>
+                  </base-button>
+                  <base-button
+                    type="info"
+                    size="sm"
+                    @click="openPreview(row.item.id)"
+                  >
+                    <i style="color: #fff" class="fas fa-print"></i>
+                  </base-button>
+                  <base-button
+                    @click.prevent="onDeleteClick(row.item.id)"
+                    type="danger"
+                    size="sm"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </base-button>
+                </td>
               </template>
             </base-table>
           </div>
@@ -83,13 +123,45 @@
       >
     </div>
   </div>
+  <modal
+    v-model:show="deleteAlert"
+    gradient="danger"
+    modal-classes="modal-danger modal-dialog-centered"
+  >
+    <template v-slot:header>
+      <h4 class="modal-title" id="modal-title-notification">Warning</h4>
+    </template>
+    <div class="py-3 text-center">
+      <i class="fas fa-trash fa-3x"></i>
+      <h4 class="heading mt-4">Are you sure, To delete this Invoice?</h4>
+      <p>Click OK to delete</p>
+    </div>
+
+    <template v-slot:footer>
+      <base-button @click.prevent="deleteInvoice" type="white"
+        >Ok, Got it</base-button
+      >
+      <base-button
+        type="link"
+        text-color="white"
+        class="ml-auto"
+        @click="deleteAlert = false"
+      >
+        Close
+      </base-button>
+    </template>
+  </modal>
 </template>
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
+import moment from "moment";
 
 export default {
   name: "payment-list-table",
+  created() {
+    this.moment = moment;
+  },
   data() {
     return {
       isLoading: true,
@@ -97,6 +169,7 @@ export default {
       items: [],
       params: {},
       businesses: [],
+      deleteAlert: false,
     };
   },
   mounted() {
@@ -156,10 +229,35 @@ export default {
       return groups[JSON.stringify(params)];
     },
     totalCalculate(items) {
-      this.totalAmount = items
-        .map((item) => Number(item.total))
-        .reduce((prev, next) => prev + next);
       this.isLoading = false;
+      if (items.length) {
+        this.totalAmount = items
+          .map((item) => Number(item.total))
+          .reduce((prev, next) => prev + next);
+      }
+    },
+    onEditInvoice(invoiceId) {
+      this.$router.push({
+        name: "edit-invoice",
+        params: { invoiceId: invoiceId },
+      });
+    },
+    openPreview(invoiceId) {
+      const routeData = this.$router.resolve({
+        name: "preview-invoice",
+        params: { invoiceId: invoiceId },
+      });
+      window.open(routeData.href, "_blank");
+    },
+    onDeleteClick(invoiceId) {
+      this.deleteAlert = true;
+      this.isDeletingId = invoiceId;
+    },
+    deleteInvoice() {
+      InvoiceService.deleteInvoice(this.isDeletingId).then(() => {
+        this.deleteAlert = false;
+        this.getAllInvoices();
+      });
     },
   },
 };

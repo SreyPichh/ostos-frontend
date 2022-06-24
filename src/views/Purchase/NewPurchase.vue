@@ -114,7 +114,6 @@
             <div class="col-lg-2" v-if="purchase.status === 'Partial Billed'">
               <base-input
                 addonLeftText="$"
-                addonRightText=".00"
                 @keypress="isNumber($event)"
                 label="Due Amount"
                 label-classes="form-control-range"
@@ -222,6 +221,7 @@
       <div class="col-lg-5 text-right">
         <button
           @click.prevent="createNewPurchase()"
+          :disabled="invalid"
           type="button"
           class="btn btn-default"
         >
@@ -248,6 +248,7 @@ export default {
       purchase: {
         date: moment(new Date()).format("YYYY-MM-DD"),
         total: 0,
+        status: "Paid",
       },
       modelConfig: {
         type: "string",
@@ -270,6 +271,15 @@ export default {
       );
       this.isLoading = false;
     });
+  },
+  computed: {
+    invalid() {
+      return (
+        this.products.length === 0 ||
+        !this.purchase.status ||
+        !this.purchase.supplier_invoice_number
+      );
+    },
   },
   methods: {
     // Products
@@ -337,7 +347,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .table td {
   padding: 0.5rem !important;
   vertical-align: unset !important;

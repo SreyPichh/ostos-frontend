@@ -50,8 +50,15 @@
         />
         <sidebar-item
           :link="{
+            name: 'Customer',
+            icon: 'fa fa-user-secret text-white',
+            path: '/customers',
+          }"
+        />
+        <sidebar-item
+          :link="{
             name: 'Employee',
-            icon: 'fa fa-users text-white',
+            icon: 'fa fa-restroom text-white',
             path: '/employees',
           }"
         />
@@ -76,6 +83,13 @@
             path: '/notebooks',
           }"
         />
+        <!-- <sidebar-item
+          :link="{
+            name: 'User',
+            icon: 'fa fa-users text-white',
+            path: '/users',
+          }"
+        /> -->
         <sidebar-item
           :link="{
             name: 'Profile',

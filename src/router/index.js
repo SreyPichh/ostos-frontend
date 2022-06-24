@@ -18,6 +18,10 @@ import Product from "../views/Product/Product.vue";
 import NewProduct from "../views/Product/NewProduct.vue";
 import EditProduct from "../views/Product/EditProduct.vue";
 
+import Customer from "../views/Customer/Customer.vue";
+import NewCustomer from "../views/Customer/NewCustomer.vue";
+import EditCustomer from "../views/Customer/EditCustomer.vue";
+
 import Employee from "../views/Employee/Employee.vue";
 import NewEmployee from "../views/Employee/NewEmployee.vue";
 import EditEmployee from "../views/Employee/EditEmployee.vue";
@@ -124,6 +128,21 @@ const routes = [
         path: "/products/new",
         name: "new-product",
         components: { default: NewProduct },
+      },
+      {
+        path: "/customers",
+        name: "customers",
+        components: { default: Customer },
+      },
+      {
+        path: "/customers/:customerId",
+        name: "edit-customer",
+        components: { default: EditCustomer },
+      },
+      {
+        path: "/customers/new",
+        name: "new-customer",
+        components: { default: NewCustomer },
       },
       {
         path: "/employees",

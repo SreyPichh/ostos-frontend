@@ -320,18 +320,21 @@ export default {
             .join(";") +
           "&searchJoin=and";
         PurchaseService.getPurchasesBySearch(searchParams).then((invoices) => {
-          this.isSearching = false;
           this.items = invoices.data.data;
           this.totalCalculate(this.items);
           this.pagination = invoices.data.meta.pagination;
-          this.totalCount = this.items.length;
+          console.log(invoices.data.data.length);
+          this.totalCount = invoices.data.data.length;
         });
       }
     },
     totalCalculate(items) {
-      this.totalAmount = items
-        .map((item) => Number(item.total))
-        .reduce((prev, next) => prev + next);
+      this.isSearching = false;
+      if (items.length) {
+        this.totalAmount = items
+          .map((item) => Number(item.total))
+          .reduce((prev, next) => prev + next);
+      }
     },
   },
   created() {

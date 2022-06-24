@@ -131,7 +131,7 @@
               data-placement="left"
               :title="row.item.invoice_note"
             >
-              {{ row.item.customer_name ? row.item.customer_name : "-----" }}
+              {{ getCustomerName(row.item.customer_id) }}
             </td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
@@ -262,6 +262,7 @@
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
+import CustomerService from "../../services/customer.service";
 import moment from "moment";
 import Multiselect from "@vueform/multiselect";
 
@@ -275,6 +276,7 @@ export default {
       deleteAlert: false,
       inputSearch: "",
       businesses: [],
+      customers: [],
       searchParams: {},
       itemSelected: "",
       totalCount: 0,
@@ -291,6 +293,9 @@ export default {
   },
   mounted() {
     this.getAllInvoices();
+    CustomerService.getCustomers().then((items) => {
+      this.customers = items.data.data;
+    });
     BusinessService.getBusinesses().then((items) => {
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
@@ -343,8 +348,16 @@ export default {
         params: { invoiceId: invoiceId },
       });
     },
+    getCustomerName(customerId) {
+      if (this.customers.length) {
+        const customer = this.customers.find(
+          (customer) => customer.id === customerId
+        );
+        return customer.customer_name;
+      }
+    },
     getBusinessesLabel(bId) {
-      if (this.businesses) {
+      if (this.businesses.length) {
         const business = this.businesses.find((b) => b.value === bId);
         return business.label;
       }

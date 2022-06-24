@@ -6,67 +6,109 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card mb-3" v-if="!isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col d-flex">
-          <h4 class="mb-0">Payment Report</h4>
-        </div>
+  <template v-if="!isLoading">
+    <div class="row mb-3">
+      <div class="col-xl-12">
+        <card shadow type="secondary">
+          <div class="row align-items-end">
+            <div class="col-lg-3">
+              <label class="form-control-label">Business</label>
+              <Multiselect
+                :options="businesses"
+                v-model="searchParams.business_id"
+              />
+            </div>
+            <div class="col-lg-3">
+              <label class="form-control-label">Status</label>
+              <Multiselect
+                v-model="searchParams.status"
+                :options="['Unpaid', 'Partial Billed']"
+              />
+            </div>
+            <base-button type="default" @click.prevent="onFilterPurchase"
+              >Filter</base-button
+            >
+          </div>
+        </card>
       </div>
     </div>
+    <div class="card my-3">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col-lg-2 d-flex">
+            <h3 class="mb-0">Payment Report</h3>
+          </div>
+          <div class="col-lg-5 align-items-center">
+            <div class="d-flex items-center">
+              <input
+                class="px-2 border form-control form-search-control bg-white"
+                v-model="inputSearch"
+                v-on:keyup.enter="getAllInvoices({ search: inputSearch })"
+              />
+              <button
+                class="px-3 border bg-default rounded-right"
+                @click="getAllInvoices({ search: inputSearch })"
+              >
+                <i class="fa fa-search text-white"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div class="table-responsive" v-if="businesses.length">
-      <base-table thead-classes="thead-light" :data="items">
-        <template v-slot:columns>
-          <th>No</th>
-          <th>Customer</th>
-          <th>Business</th>
-          <th>Total</th>
-          <th>Status</th>
-        </template>
+      <div class="table-responsive" v-if="businesses.length">
+        <base-table thead-classes="thead-light" :data="items">
+          <template v-slot:columns>
+            <th>No</th>
+            <th>Customer</th>
+            <th>Business</th>
+            <th>Total</th>
+            <th>Status</th>
+          </template>
 
-        <template v-slot:default="row">
-          <th scope="row" class="align-middle">
-            <router-link
-              :to="{
-                name: 'payment-list',
-                params: {
-                  paymentId: row.item.id,
-                  customer_name: row.item.customer_name,
-                  business_id: row.item.business_id,
-                  status: row.item.status,
-                },
-              }"
-              ><span class="font-weight-700">
-                {{ row.item.id }}
-              </span></router-link
-            >
-          </th>
-          <td>
-            {{ row.item.customer_name }}
-          </td>
-          <td>
-            {{ getBusinessesLabel(row.item.business_id) }}
-          </td>
-          <td>${{ row.item.total }}</td>
-          <td>
-            <span
-              class="badge"
-              :class="`badge-${
-                row.item.status === 'Paid'
-                  ? 'default'
-                  : row.item.status === 'Partial Billed'
-                  ? 'info'
-                  : 'danger'
-              }`"
-              >{{ row.item.status }}</span
-            >
-          </td>
-        </template>
-      </base-table>
+          <template v-slot:default="row">
+            <th scope="row" class="align-middle">
+              <router-link
+                :to="{
+                  name: 'payment-list',
+                  params: {
+                    paymentId: row.item.id,
+                    customer_name: row.item.customer_name,
+                    business_id: row.item.business_id,
+                    status: row.item.status,
+                  },
+                }"
+                ><span class="font-weight-700">
+                  {{ row.item.id }}
+                </span></router-link
+              >
+            </th>
+            <td>
+              {{ row.item.customer_name }}
+            </td>
+            <td>
+              {{ getBusinessesLabel(row.item.business_id) }}
+            </td>
+            <td>${{ row.item.total }}</td>
+            <td>
+              <span
+                class="badge"
+                :class="`badge-${
+                  row.item.status === 'Paid'
+                    ? 'default'
+                    : row.item.status === 'Partial Billed'
+                    ? 'info'
+                    : 'danger'
+                }`"
+                >{{ row.item.status }}</span
+              >
+            </td>
+          </template>
+        </base-table>
+      </div>
+      <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
     </div>
-    <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-  </div>
+  </template>
   <div class="float-right">
     <span class="h3">Total : </span>
     <span class="bg-gradient-neutral px-4 py-2"
@@ -77,9 +119,11 @@
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   name: "payment-report-table",
+  components: { Multiselect },
   mounted() {
     this.getAllInvoices();
     BusinessService.getBusinesses().then((items) => {
@@ -94,18 +138,20 @@ export default {
       isLoading: true,
       totalAmount: 0,
       items: [],
+      filterItems: [],
       businesses: [],
+      searchParams: {},
+      isSearching: false,
+      inputSearch: "",
     };
   },
   methods: {
-    getAllInvoices() {
+    getAllInvoices(options) {
       this.isLoading = true;
-      InvoiceService.getInvoices().then(
-        (res) => {
-          this.pagination = res.data.meta.pagination;
-          this.isLoading = false;
+      InvoiceService.getInvoices(options).then(
+        (invoices) => {
           let index = 1;
-          this.items = this.groupByInvoice(res.data.data, function (item) {
+          this.items = this.groupByInvoice(invoices.data.data, function (item) {
             return [item.customer_name, item.business_id, item.status];
           }).filter((item) => {
             if (item.status !== "Paid") {
@@ -114,6 +160,8 @@ export default {
             }
           });
           this.totalCalculate(this.items);
+          this.totalCount = this.items.length;
+          this.isLoading = false;
         },
         (error) => {
           alert("error to get data", error);
@@ -127,9 +175,11 @@ export default {
       }
     },
     totalCalculate(items) {
-      this.totalAmount = items
-        .map((item) => Number(item.total))
-        .reduce((prev, next) => prev + next);
+      if (items.length) {
+        this.totalAmount = items
+          .map((item) => Number(item.total))
+          .reduce((prev, next) => prev + next);
+      }
     },
     groupByInvoice(items, f) {
       var groups = {};
@@ -151,6 +201,38 @@ export default {
           items: groups[group],
         };
       });
+    },
+    onFilterPurchase() {
+      if (this.searchParams) {
+        this.isSearching = true;
+        this.inputSearch = "";
+        const searchParams =
+          "?search=" +
+          Object.entries(this.searchParams)
+            // eslint-disable-next-line no-unused-vars
+            .filter(([key, value]) => !!value)
+            .map(([key, value]) => {
+              if (value) {
+                return `${key}:${encodeURIComponent(value)}`;
+              }
+            })
+            .join(";") +
+          "&searchJoin=and";
+        InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
+          let index = 1;
+          this.items = this.groupByInvoice(invoices.data.data, function (item) {
+            return [item.customer_name, item.business_id, item.status];
+          }).filter((item) => {
+            if (item.status !== "Paid") {
+              item.id = index++;
+              return item;
+            }
+          });
+          this.totalCalculate(this.items);
+          this.isSearching = false;
+          this.totalCount = this.items.length;
+        });
+      }
     },
   },
 };

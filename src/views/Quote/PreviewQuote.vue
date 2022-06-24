@@ -256,21 +256,6 @@ html,
   padding: 0;
 }
 
-@font-face {
-  font-family: Battambang !important;
-  src: url("/static/quote/fonts/Battambang/Battambang-Regular.ttf") !important;
-}
-
-@font-face {
-  font-family: Opensans !important;
-  src: url("/static/quote/fonts/OpenSans-Regular.ttf") !important;
-}
-
-body {
-  font-family: "Battambang", "Opensans", sans-serif !important;
-  font-size: 16px !important;
-}
-
 .logo {
   height: 160px;
   width: auto;
@@ -308,7 +293,6 @@ h5 {
     background-color: #fff !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
-    font-family: "Battambang", "Opensans", sans-serif !important;
     font-size: 16px !important;
   }
 

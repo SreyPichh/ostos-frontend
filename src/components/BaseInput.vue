@@ -22,7 +22,7 @@
       v-if="addonLeftIcon || $slots.addonLeft || addonLeftText"
       class="input-group-prepend"
     >
-      <span class="input-group-text">
+      <span class="input-group-text addon-disabled">
         <slot name="addonLeft">
           <i v-if="addonLeftIcon" :class="addonLeftIcon"></i>
           <span v-if="addonLeftText">{{ addonLeftText }}</span>
@@ -34,7 +34,7 @@
         :value="modelValue"
         v-bind="$attrs"
         v-on="listeners"
-        class="form-control"
+        class="form-control pl-2"
         :type="inputType"
         :class="[
           { 'is-valid': valid === true },
@@ -168,4 +168,9 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped>
+.addon-disabled {
+  background-color: #e9ecef;
+  opacity: 1;
+}
+</style>
