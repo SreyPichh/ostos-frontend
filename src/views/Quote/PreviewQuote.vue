@@ -57,18 +57,8 @@
             <h2 v-if="quote.customer_name">To : {{ quote.customer_name }}</h2>
             <h2>
               Tel :
-              <span
-                class="p"
-                v-if="
-                  quote.customer_phone_number || quote.customer_phone_number2
-                "
-              >
+              <span class="p" v-if="quote.customer_phone_number">
                 {{ quote.customer_phone_number }}
-                {{
-                  quote.customer_phone_number2
-                    ? `| ${quote.customer_phone_number2}`
-                    : ""
-                }}
               </span>
             </h2>
             <h2 v-if="quote.customer_email">

@@ -1,6 +1,11 @@
 <template>
   <li class="nav-item">
+    <span v-if="isDisabled" class="nav-link"
+      ><i :class="link.icon"></i>
+      <span class="text-white">{{ link.name }} (Fixing...)</span>
+    </span>
     <router-link
+      v-if="!isDisabled"
       :to="link.path"
       @click="linkClick"
       class="nav-link"
@@ -16,6 +21,10 @@
 export default {
   name: "sidebar-item",
   props: {
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     link: {
       type: Object,
       default: () => {
@@ -53,3 +62,4 @@ export default {
   },
 };
 </script>
+<style scoped></style>

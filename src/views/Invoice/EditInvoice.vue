@@ -20,7 +20,7 @@
             <div class="bg-white border-0">
               <div class="row align-items-center justify-content-between">
                 <h3 class="mb-0">Customer Information</h3>
-                <div class="col-lg-3">
+                <div class="col-lg-6">
                   <label class="form-control-label">Exist Customer</label>
                   <Multiselect
                     v-model="invoice.customer_id"
@@ -64,7 +64,7 @@
             </div>
             <div class="col-lg-3">
               <base-input
-                label="Phone Number 1"
+                label="Phone Number"
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
@@ -74,16 +74,6 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-3">
-              <base-input
-                label="Phone Number 2"
-                addonLeftIcon="fa fa-phone"
-                label-classes="form-control-range"
-                input-classes="form-control-alternative"
-                :disabled="disableCustomer"
-                v-model="customerInfo.customer_phone_number2"
-              />
-            </div>
             <div class="col-lg-3">
               <base-input
                 label="Customer Company"
@@ -536,7 +526,6 @@ export default {
           customer_email: customer.customer_email,
           gender: customer.gender,
           customer_phone_number: customer.customer_phone_number,
-          customer_phone_number2: customer.customer_phone_number2,
           company: customer.company,
           po: customer.po,
           customer_address1: customer.customer_address1,

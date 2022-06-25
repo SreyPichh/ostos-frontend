@@ -33,7 +33,7 @@
                     label="First name"
                     placeholder="First name"
                     input-classes="form-control-alternative"
-                    v-model="userProfile.firstName"
+                    v-model="userProfile.f_name"
                   />
                 </div>
                 <div class="col-lg-3">
@@ -42,7 +42,7 @@
                     label="Last name"
                     placeholder="Last name"
                     input-classes="form-control-alternative"
-                    v-model="userProfile.lastName"
+                    v-model="userProfile.l_name"
                   />
                 </div>
                 <div class="col-lg-3">
@@ -70,7 +70,7 @@
                   <label class="form-control-label">Gender</label>
                   <Multiselect
                     v-model="userProfile.gender"
-                    :options="['Male', 'Female']"
+                    :options="['Male', 'Female', 'Other']"
                   />
                 </div>
                 <div class="col-lg-3">
@@ -113,58 +113,14 @@
             <h6 class="heading-small text-muted mb-4">Contact information</h6>
             <div class="pl-lg-4">
               <div class="row">
-                <div class="col-md-12">
-                  <base-input
-                    alternative=""
-                    label="Address"
-                    placeholder="Home Address"
-                    input-classes="form-control-alternative"
-                    v-model="userProfile.address"
-                  />
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-4">
-                  <base-input
-                    alternative=""
-                    label="City"
-                    placeholder="City"
-                    input-classes="form-control-alternative"
-                    v-model="userProfile.city"
-                  />
-                </div>
-                <div class="col-lg-4">
-                  <base-input
-                    alternative=""
-                    label="Country"
-                    placeholder="Country"
-                    input-classes="form-control-alternative"
-                    v-model="userProfile.country"
-                  />
-                </div>
-                <div class="col-lg-4">
-                  <base-input
-                    alternative=""
-                    label="Postal code"
-                    placeholder="Postal code"
-                    input-classes="form-control-alternative"
-                    v-model="userProfile.zipCode"
-                  />
-                </div>
-              </div>
-            </div>
-            <hr class="my-4" />
-            <!-- Description -->
-            <h6 class="heading-small text-muted mb-4">About me</h6>
-            <div class="pl-lg-4">
-              <div class="form-group">
-                <base-input alternative="" label="About Me">
+                <div class="col-md-12 form-group">
+                  <label class="form-control-label">Address</label>
                   <textarea
-                    rows="4"
                     class="form-control form-control-alternative"
-                    placeholder="A few words about you ..."
+                    rows="5"
+                    v-model="userProfile.first_address"
                   ></textarea>
-                </base-input>
+                </div>
               </div>
             </div>
           </form>
@@ -173,7 +129,7 @@
     </div>
     <div class="float-right my-3">
       <button
-        @click.prevent="createEmployee()"
+        @click.prevent="updateProfile()"
         type="button"
         class="btn btn-default"
       >
@@ -183,19 +139,15 @@
   </div>
 </template>
 <script>
-import userProfile from "../services/userProfile.service";
+import User from "../services/user.service";
 import Multiselect from "@vueform/multiselect";
-import moment from "moment";
 
 export default {
   components: { Multiselect },
   name: "user-profile",
   data() {
     return {
-      userProfile: {
-        gender: "Male",
-        birth: moment(new Date()).format("YYYY-MM-DD"),
-      },
+      userProfile: {},
       isLoading: true,
       modelConfig: {
         type: "string",
@@ -207,11 +159,23 @@ export default {
     };
   },
   mounted() {
-    this.isLoading = true;
-    userProfile.getUserProfile().then((item) => {
+    User.getUserProfile().then((item) => {
       this.userProfile = item.data.data;
+      console.log(this.userProfile);
       this.isLoading = false;
     });
+  },
+  methods: {
+    updateProfile() {
+      User.updateProfile(this.userProfile.id, this.userProfile).then(
+        () => {
+          this.$router.push("/profile");
+        },
+        (error) => {
+          alert("error to get data", error);
+        }
+      );
+    },
   },
 };
 </script>

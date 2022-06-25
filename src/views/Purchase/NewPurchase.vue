@@ -35,7 +35,7 @@
             </div>
             <div class="col-lg-3">
               <base-input
-                label="Phone Number 1"
+                label="Phone Number"
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"

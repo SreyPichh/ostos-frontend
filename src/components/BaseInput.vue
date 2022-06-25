@@ -22,7 +22,7 @@
       v-if="addonLeftIcon || $slots.addonLeft || addonLeftText"
       class="input-group-prepend"
     >
-      <span class="input-group-text addon-disabled">
+      <span class="input-group-text addon-disabled rounded-left">
         <slot name="addonLeft">
           <i v-if="addonLeftIcon" :class="addonLeftIcon"></i>
           <span v-if="addonLeftText">{{ addonLeftText }}</span>

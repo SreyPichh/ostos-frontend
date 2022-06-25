@@ -63,6 +63,7 @@
           }"
         />
         <sidebar-item
+          :isDisabled="true"
           :link="{
             name: 'Payment',
             icon: 'fa fa-cash-register text-white',
@@ -83,13 +84,13 @@
             path: '/notebooks',
           }"
         />
-        <!-- <sidebar-item
+        <sidebar-item
           :link="{
             name: 'User',
             icon: 'fa fa-users text-white',
             path: '/users',
           }"
-        /> -->
+        />
         <sidebar-item
           :link="{
             name: 'Profile',

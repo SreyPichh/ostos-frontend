@@ -45,20 +45,11 @@
 
             <div class="col-lg-3">
               <base-input
-                label="Phone Number 1"
+                label="Phone Number"
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
                 v-model="quote.customer_phone_number"
-              />
-            </div>
-            <div class="col-lg-3">
-              <base-input
-                label="Phone Number 2"
-                addonLeftIcon="fa fa-phone"
-                label-classes="form-control-range"
-                input-classes="form-control-alternative"
-                v-model="quote.customer_phone_number2"
               />
             </div>
           </div>

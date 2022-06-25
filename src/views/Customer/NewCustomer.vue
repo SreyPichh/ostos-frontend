@@ -44,7 +44,7 @@
               </div>
               <div class="col-lg-3">
                 <base-input
-                  label="Phone Number 1"
+                  label="Phone Number"
                   addonLeftIcon="fa fa-phone"
                   input-classes="form-control-alternative"
                   label-classes="form-control-range"
@@ -53,15 +53,6 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-lg-3">
-                <base-input
-                  label="Phone Number 2"
-                  addonLeftIcon="fa fa-phone"
-                  input-classes="form-control-alternative"
-                  label-classes="form-control-range"
-                  v-model="customer.phone_number"
-                />
-              </div>
               <div class="col-lg-3">
                 <base-input
                   label="Customer Company"

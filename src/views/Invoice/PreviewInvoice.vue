@@ -58,19 +58,8 @@
             <p v-if="invoice.customer_name">To : {{ invoice.customer_name }}</p>
             <p>
               Tel :
-              <span
-                class="p"
-                v-if="
-                  invoice.customer_phone_number ||
-                  invoice.customer_phone_number2
-                "
-              >
+              <span class="p" v-if="invoice.customer_phone_number">
                 {{ invoice.customer_phone_number }}
-                {{
-                  invoice.customer_phone_number2
-                    ? `| ${invoice.customer_phone_number2}`
-                    : ""
-                }}
               </span>
             </p>
             <p v-if="invoice.customer_email">
@@ -129,7 +118,7 @@
       </div>
 
       <div class="invoice-footer mt-auto">
-        <div class="bank-info mb-2 d-flex justify-content-between">
+        <div class="bank-info d-flex justify-content-between">
           <div class="w-75">
             <div class="d-flex">
               <img alt="ostos logo" src="img/invoice/aba_logo.png" width="80" />
@@ -148,25 +137,25 @@
           </div>
           <div class="w-50">
             <div class="d-flex align-items-baseline">
-              <h3 class="col-sm-8 text-right">សរុប/Total</h3>
-              <h3 class="col-sm-4 total-bg-color">
+              <span class="col-sm-8 p20-px text-right">សរុប/Total</span>
+              <span class="col-sm-4 p20-px total-bg-color">
                 ${{ invoice.total }}{{ invoice.total >= 1 ? ".00" : "" }}
-              </h3>
+              </span>
             </div>
             <div class="d-flex align-items-baseline">
-              <h3 class="col-sm-8 text-right">ប្រាក់កក់/Deposite</h3>
-              <h3 class="col-sm-4">
+              <span class="col-sm-8 p20-px text-right">ប្រាក់កក់/Deposite</span>
+              <span class="col-sm-4 p20-px">
                 ${{ invoice.due_amount }}{{ invoice.total >= 1 ? ".00" : "" }}
-              </h3>
+              </span>
             </div>
             <div class="d-flex align-items-baseline">
-              <h3 class="col-sm-8 text-right">នៅខ្វះ/Balance</h3>
-              <h3 class="col-sm-4 total-bg-color">
+              <span class="col-sm-8 p20-px text-right">នៅខ្វះ/Balance</span>
+              <span class="col-sm-4 p20-px total-bg-color">
                 <span class="py-1" v-if="invoice.due_amount - invoice.total < 0"
                   >${{ (invoice.due_amount - invoice.total) * -1
                   }}{{ invoice.total >= 1 ? ".00" : "" }}</span
                 >
-              </h3>
+              </span>
             </div>
           </div>
         </div>
@@ -197,34 +186,31 @@
         <div class="customer-info">
           <div
             class="d-flex justify-content-between"
-            :class="{ 'mb-7': !invoice.signature }"
+            :class="{ 'mb-5': !invoice.signature }"
           >
             <div class="text-align-center">
               <h4 class="mb-0 ml-2">SCAN HERE TO PAY</h4>
               <h4 class="mb-0 ml-4">{{ business.aba_name.toUpperCase() }}</h4>
             </div>
-            <div class="text-center">
+            <div class="text-center mt--4">
               <h3 class="mb-0 ml-2">ហត្ថលេខាអ្នកទិញ</h3>
               <h3 class="mb-0 ml-2">Customer Signature</h3>
             </div>
-            <div class="text-center">
+            <div class="text-center mt--4">
               <h3 class="mb-0 ml-2">ហត្ថាលេខាអ្នកលក់</h3>
               <h3 class="mb-0 ml-2">Seller Signature</h3>
               <div v-if="invoice.signature">
                 <img
                   alt="ostos logo"
                   src="img/invoice/signature.png"
-                  width="120"
+                  width="110"
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="text-center mb-0">
-        <p style="font-size: 10px">OSTOS EXCELLENT STICKER Since 2010</p>
-      </div>
+      <p class="p8-px text-left">OSTOS EXCELLENT STICKER Since 2010</p>
     </div>
   </body>
 </template>
@@ -258,9 +244,8 @@ export default {
     this.invoiceId = this.$route.params.invoiceId;
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
       const invoice = item.data.data;
-
       invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
-      invoice.date = moment(invoice.date).format("dddd, Do MMMM, YYYY");
+      invoice.date = moment(invoice.date).format("ddd DD-MM-YYYY");
       this.employees = invoice.employee_data.map((emp) => emp.employee_id);
       this.products = invoice.product_data;
       this.invoice = invoice;
@@ -291,15 +276,16 @@ html,
 
 @font-face {
   font-family: "kh-content";
-  src: local("kh-content"), url(../../fonts/kh-content.ttf);
+  src: local("kh-content"), url(../../fonts/kh-content.ttf) format("truetype");
 }
 @font-face {
   font-family: "trebuc";
-  src: local("trebuc"), url(../../fonts/trebuc.ttf);
+  src: local("trebuc"), url(../../fonts/trebuc.ttf) format("truetype");
+  unicode-range: U+0B02-CD;
 }
 
 body {
-  font-family: "kh-content", "trebuc", "Opensans", sans-serif !important;
+  font-family: "kh-content", sans-serif !important;
   font-size: 16px !important;
 }
 
@@ -324,11 +310,11 @@ tr.invoiceListHeading {
 }
 
 table tr th {
-  font-size: 18px !important;
+  font-size: 21px !important;
 }
 
 table tr td {
-  font-size: 18px !important;
+  font-size: 21px !important;
 }
 
 .table th {
@@ -337,13 +323,20 @@ table tr td {
   padding: 0.2rem 0.5rem;
 }
 
+.p21-px {
+  font-size: 21px !important;
+}
+
+.p20-px {
+  font-size: 20px !important;
+}
+
 @media print {
   #noPrint {
     display: none;
   }
-
-  .p21-px {
-    font-size: 21px !important;
+  .p8-px {
+    font-size: 8px !important;
   }
 
   p {

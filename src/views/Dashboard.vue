@@ -77,7 +77,7 @@ export default {
   name: "User",
   components: {},
   mounted() {
-    UserService.getUserBoard().then(
+    UserService.getUserProfile().then(
       () => {},
       (error) => {
         this.content =

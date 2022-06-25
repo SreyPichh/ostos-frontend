@@ -52,7 +52,7 @@
   </base-nav>
 </template>
 <script>
-import UserProfileService from "../services/userProfile.service";
+import User from "../services/user.service";
 
 export default {
   data() {
@@ -72,7 +72,7 @@ export default {
     // },
   },
   mounted() {
-    UserProfileService.getUserProfile().then((user) => {
+    User.getUserProfile().then((user) => {
       this.currentUser = user.data.data;
     });
   },

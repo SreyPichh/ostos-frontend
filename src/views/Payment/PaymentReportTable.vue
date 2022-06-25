@@ -25,7 +25,7 @@
                 :options="['Unpaid', 'Partial Billed']"
               />
             </div>
-            <base-button type="default" @click.prevent="onFilterPurchase"
+            <base-button type="default" @click.prevent="onFilterPayment"
               >Filter</base-button
             >
           </div>
@@ -202,7 +202,7 @@ export default {
         };
       });
     },
-    onFilterPurchase() {
+    onFilterPayment() {
       if (this.searchParams) {
         this.isSearching = true;
         this.inputSearch = "";

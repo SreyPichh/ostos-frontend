@@ -43,6 +43,7 @@ import NoteBook from "../views/NoteBook/NoteBook.vue";
 import NewNoteBook from "../views/NoteBook/NewNoteBook.vue";
 import EditNoteBook from "../views/NoteBook/EditNoteBook.vue";
 
+import User from "../views/User/User.vue";
 import Profile from "../views/UserProfile.vue";
 
 import Activity from "../views/Activity/Activity.vue";
@@ -198,6 +199,11 @@ const routes = [
         path: "/notebooks/new",
         name: "new-notebook",
         components: { default: NewNoteBook },
+      },
+      {
+        path: "/users",
+        name: "users",
+        components: { default: User },
       },
       {
         path: "/profile",
