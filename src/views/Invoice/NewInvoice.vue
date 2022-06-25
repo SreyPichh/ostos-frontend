@@ -6,376 +6,380 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="row mb-5" v-if="!isLoading">
-    <div class="col-xl-12 order-xl-1">
-      <card shadow type="secondary" bodyClasses="pb-0">
-        <template v-slot:header>
-          <div class="bg-white border-0">
-            <div class="row align-items-center justify-content-between">
-              <h3 class="mb-0">Customer Information</h3>
-              <div class="col-lg-6">
-                <label class="form-control-label">Exist Customer</label>
-                <Multiselect
-                  v-model="invoice.customer_id"
-                  @change="onChangeCustomer"
-                  :searchable="true"
-                  :options="customerOptions"
-                />
+  <template v-if="!isLoading">
+    <div class="row mb-3">
+      <div class="col-xl-12 order-xl-1">
+        <card shadow type="secondary" bodyClasses="pb-0">
+          <template v-slot:header>
+            <div class="bg-white border-0">
+              <div class="row align-items-center justify-content-between">
+                <h3 class="mb-0">Customer Information</h3>
+                <div class="col-lg-6">
+                  <label class="form-control-label">Exist Customer</label>
+                  <Multiselect
+                    v-model="invoice.customer_id"
+                    @change="onChangeCustomer"
+                    :searchable="true"
+                    :options="customerOptions"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </template>
+          </template>
 
-        <div class="row">
-          <div class="col-lg-3">
-            <base-input
-              label="Name"
-              addonLeftIcon="fa fa-user"
-              label-classes="form-control-range"
-              input-classes="form-control-alternative"
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.customer_name"
-            />
-          </div>
-          <div class="col-lg-3">
-            <base-input
-              label="Email"
-              addonLeftIcon="fa fa-envelope"
-              label-classes="form-control-range"
-              input-classes="form-control-alternative"
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.customer_email"
-            />
-          </div>
-          <div class="col-lg-2">
-            <label class="form-control-label">Gender</label>
-            <Multiselect
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.gender"
-              :options="['Male', 'Female', 'Other']"
-            />
-          </div>
-          <div class="col-lg-3">
-            <base-input
-              label="Phone Number"
-              addonLeftIcon="fa fa-phone"
-              label-classes="form-control-range"
-              input-classes="form-control-alternative"
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.customer_phone_number"
-            />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-3">
-            <base-input
-              label="Customer Company"
-              addonLeftIcon="fa fa-building"
-              label-classes="form-control-range"
-              input-classes="form-control-alternative"
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.company"
-            />
-          </div>
-          <div class="col-lg-3">
-            <base-input
-              label="PO"
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.po"
-            />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12 form-group">
-            <label class="form-control-label">Address</label>
-            <textarea
-              class="form-control form-control-alternative"
-              rows="2"
-              :disabled="invoice.customer_id"
-              v-model="customerInfo.customer_address1"
-            ></textarea>
-          </div>
-        </div>
-      </card>
-    </div>
-  </div>
-
-  <div class="row my-3">
-    <div class="col-xl-12">
-      <card shadow type="secondary" bodyClasses="pb-0">
-        <div class="row">
-          <div class="col-lg-2">
-            <base-input
-              addonLeftText="#INV-"
-              label="Invoice No"
-              @keypress="isNumber($event)"
-              label-classes="form-control-range"
-              input-classes="form-control-alternative px-2"
-              v-model="invoice.invoice_number"
-            />
-          </div>
-          <div class="col-lg-3">
-            <div class="form-group">
-              <label class="form-control-label">Date</label>
-              <v-date-picker
-                class="inline-block h-full"
-                :masks="masks"
-                :model-config="modelConfig"
-                is-required
-                mode="date"
-                color="red"
-                v-model="invoice.date"
-              >
-                <template v-slot="{ inputValue, inputEvents, togglePopover }">
-                  <div class="d-flex items-center">
-                    <button
-                      class="px-3 border bg-default rounded-left"
-                      @click="togglePopover()"
-                    >
-                      <i class="fa fa-calendar-alt fa-lg text-white"></i>
-                    </button>
-                    <input
-                      :value="inputValue"
-                      v-on="inputEvents"
-                      class="px-2 border date-control form-control bg-white"
-                    />
-                  </div>
-                </template>
-              </v-date-picker>
+          <div class="row">
+            <div class="col-lg-3">
+              <base-input
+                label="Name"
+                addonLeftIcon="fa fa-user"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.customer_name"
+              />
             </div>
-          </div>
-          <div class="col-lg-3">
-            <label class="form-control-label">Businesses</label>
-            <Multiselect
-              v-model="invoice.business_id"
-              placeholder="Business Type"
-              @change="onChangeBusiness"
-              :searchable="true"
-              :options="businesses"
-            />
-          </div>
-          <div class="col-lg-2">
-            <div class="form-group">
-              <label class="form-control-label">Status</label>
+            <div class="col-lg-3">
+              <base-input
+                label="Email"
+                addonLeftIcon="fa fa-envelope"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.customer_email"
+              />
+            </div>
+            <div class="col-lg-2">
+              <label class="form-control-label">Gender</label>
               <Multiselect
-                v-model="invoice.status"
-                :options="['Paid', 'Unpaid', 'Partial Billed']"
-                @change="onChangeStatus($event)"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.gender"
+                :options="['Male', 'Female', 'Other']"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input
+                label="Phone Number"
+                addonLeftIcon="fa fa-phone"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.customer_phone_number"
               />
             </div>
           </div>
-          <div class="col-lg-2" v-if="invoice.status === 'Partial Billed'">
-            <base-input
-              addonLeftText="$"
-              @keypress="isNumber($event)"
-              label="Due Amount"
-              label-classes="form-control-range"
-              input-classes="form-control-alternative"
-              v-model="invoice.due_amount"
-            />
-          </div>
-        </div>
-      </card>
-    </div>
-  </div>
-
-  <div class="row my-3">
-    <div class="col-xl-12 order-xl-2">
-      <card shadow type="secondary" bodyClasses="p-0">
-        <template v-slot:header>
-          <div class="bg-white border-0">
-            <div class="row align-items-center justify-content-between">
-              <div class="col">
-                <h3 class="mb-0">Invoices Items</h3>
-              </div>
-              <div class="col-lg-5">
-                <label class="form-control-label">Employees</label>
-                <Multiselect
-                  v-model="employees"
-                  mode="tags"
-                  placeholder="Choose employee"
-                  :searchable="true"
-                  :createTag="true"
-                  :options="employeeOptions"
-                >
-                </Multiselect>
-              </div>
+          <div class="row">
+            <div class="col-lg-3">
+              <base-input
+                label="Customer Company"
+                addonLeftIcon="fa fa-building"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.company"
+              />
+            </div>
+            <div class="col-lg-3">
+              <base-input
+                label="PO"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.po"
+              />
             </div>
           </div>
-        </template>
-
-        <div class="table-responsive pb-7" v-if="invoice.business_id">
-          <table class="table">
-            <thead>
-              <th :class="selectedBusiness !== 'car' ? 'col-sm-4' : 'col-sm-5'">
-                Product Name
-              </th>
-              <template v-if="selectedBusiness == 'printing'">
-                <th>ម៉ៅផ្ដាច់</th>
-              </template>
-              <template v-if="selectedBusiness !== 'car'">
-                <th>width (CM)</th>
-                <th>length (CM)</th>
-                <th v-if="selectedBusiness == 'printing'">M&sup2;</th>
-                <th>quantity</th>
-              </template>
-              <th>Unit Price ($)</th>
-              <th>Total</th>
-              <th></th>
-            </thead>
-
-            <tbody v-for="(product, index) in products" :key="index">
-              <td>
-                <Multiselect
-                  v-model="product.product_id"
-                  :searchable="true"
-                  :create-option="true"
-                  placeholder="Choose Product"
-                  @change="onProductChange(index, $event)"
-                  :options="productList"
-                />
-              </td>
-              <template v-if="selectedBusiness == 'printing'">
-                <td>
-                  <div class="text-center">
-                    <input
-                      @change="onCoverALlClick(index, $event)"
-                      type="checkbox"
-                      v-model="product.coverAll"
-                    />
-                  </div>
-                </td>
-              </template>
-              <template v-if="selectedBusiness !== 'car'">
-                <td>
-                  <base-input
-                    :disabled="product.coverAll"
-                    @keypress="isNumber($event)"
-                    @change="onProductCalculate(index)"
-                    input-classes="form-control-alternative"
-                    v-model="product.width"
-                  />
-                </td>
-                <td>
-                  <base-input
-                    :disabled="product.coverAll"
-                    @keypress="isNumber($event)"
-                    @change="onProductCalculate(index)"
-                    input-classes="form-control-alternative"
-                    v-model="product.length"
-                  />
-                </td>
-                <td v-if="selectedBusiness == 'printing'">
-                  <span>
-                    =
-                    {{
-                      ((product.width * product.length) / 10000).toFixed(2)
-                    }}</span
-                  >
-                  m&sup2;
-                </td>
-                <td>
-                  <base-input
-                    @keypress="isNumber($event)"
-                    @change="onProductCalculate(index, 'quantity')"
-                    :name="`products[${index}][quantity]`"
-                    input-classes="form-control-alternative"
-                    v-model="product.quantity"
-                  />
-                </td>
-              </template>
-              <td>
-                <base-input
-                  @keypress="isNumber($event)"
-                  @change="onProductCalculate(index, 'unitPrice')"
-                  placeholder="Unit Price"
-                  input-classes="form-control-alternative"
-                  v-model="product.unit_price"
-                />
-              </td>
-              <td>${{ product.total_price }}</td>
-              <td>
-                <span @click.prevent="remove(index)" class="delete-icon"
-                  ><i class="fa fa-trash"></i
-                ></span>
-              </td>
-            </tbody>
-          </table>
-          <div class="row p-3 align-items-baseline justify-content-between">
-            <button
-              @click.prevent="addProduct"
-              :disabled="products.length === 13"
-              type="button"
-              class="btn btn-warning btn-sm ml-2"
-            >
-              Add Product
-            </button>
-            <div class="text-left">
-              <h4>
-                សរុប/Total :
-                <span class="px-3 py-1">${{ invoice.total }}</span>
-              </h4>
-              <h4>
-                ប្រាក់កក់/Deposite :
-                <span class="px-3 py-1">${{ invoice.due_amount }}</span>
-              </h4>
-              <h4>
-                នៅខ្វះ/Balance :
-                <span
-                  class="bg-pink px-3 py-1 text-red"
-                  v-if="invoice.due_amount - invoice.total < 0"
-                  >${{ (invoice.due_amount - invoice.total) * -1 }}</span
-                >
-              </h4>
+          <div class="row">
+            <div class="col-lg-12 form-group">
+              <label class="form-control-label">Address</label>
+              <textarea
+                class="form-control form-control-alternative"
+                rows="2"
+                :disabled="invoice.customer_id"
+                v-model="customerInfo.customer_address1"
+              ></textarea>
             </div>
           </div>
-        </div>
-
-        <div v-if="!invoice.business_id" class="text-center pt-3 pb-5">
-          Please select business type
-        </div>
-      </card>
-    </div>
-  </div>
-  <div class="row justify-content-between mb-3">
-    <div class="col-lg-6 form-group">
-      <label class="form-control-label">Invoice Note.</label>
-      <textarea
-        class="form-control form-control-alternative"
-        rows="4"
-        v-model="invoice.invoice_note"
-      ></textarea>
-    </div>
-    <div class="col-lg-1 form-group">
-      <div class="form-check">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          v-model="invoice.signature"
-          id="signature"
-        />
-        <label class="form-check-label" for="signature">Signature</label>
+        </card>
       </div>
     </div>
-    <div class="col-lg-5 text-right">
-      <button
-        @click.prevent="createNewInvoice(true)"
-        :disabled="invalid"
-        type="button"
-        class="btn btn-default"
-      >
-        Create & Print
-      </button>
-      <button
-        @click.prevent="createNewInvoice()"
-        :disabled="invalid"
-        type="button"
-        class="btn btn-default"
-      >
-        Create
-      </button>
+
+    <div class="row my-3">
+      <div class="col-xl-12">
+        <card shadow type="secondary" bodyClasses="pb-0">
+          <div class="row">
+            <div class="col-lg-2">
+              <base-input
+                addonLeftText="#INV-"
+                label="Invoice No"
+                @keypress="isNumber($event)"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative px-2"
+                v-model="invoice.invoice_number"
+              />
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label class="form-control-label">Date</label>
+                <v-date-picker
+                  class="inline-block h-full"
+                  :masks="masks"
+                  :model-config="modelConfig"
+                  is-required
+                  mode="date"
+                  color="red"
+                  v-model="invoice.date"
+                >
+                  <template v-slot="{ inputValue, inputEvents, togglePopover }">
+                    <div class="d-flex items-center">
+                      <button
+                        class="px-3 border bg-default rounded-left"
+                        @click="togglePopover()"
+                      >
+                        <i class="fa fa-calendar-alt fa-lg text-white"></i>
+                      </button>
+                      <input
+                        :value="inputValue"
+                        v-on="inputEvents"
+                        class="px-2 border date-control form-control bg-white"
+                      />
+                    </div>
+                  </template>
+                </v-date-picker>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <label class="form-control-label">Businesses</label>
+              <Multiselect
+                v-model="invoice.business_id"
+                placeholder="Business Type"
+                @change="onChangeBusiness"
+                :searchable="true"
+                :options="businesses"
+              />
+            </div>
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label class="form-control-label">Status</label>
+                <Multiselect
+                  v-model="invoice.status"
+                  :options="['Paid', 'Unpaid', 'Partial Billed']"
+                  @change="onChangeStatus($event)"
+                />
+              </div>
+            </div>
+            <div class="col-lg-2" v-if="invoice.status === 'Partial Billed'">
+              <base-input
+                addonLeftText="$"
+                @keypress="isNumber($event)"
+                label="Due Amount"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative"
+                v-model="invoice.due_amount"
+              />
+            </div>
+          </div>
+        </card>
+      </div>
     </div>
-  </div>
+
+    <div class="row my-3">
+      <div class="col-xl-12 order-xl-2">
+        <card shadow type="secondary" bodyClasses="p-0">
+          <template v-slot:header>
+            <div class="bg-white border-0">
+              <div class="row align-items-center justify-content-between">
+                <div class="col">
+                  <h3 class="mb-0">Invoices Items</h3>
+                </div>
+                <div class="col-lg-5">
+                  <label class="form-control-label">Employees</label>
+                  <Multiselect
+                    v-model="employees"
+                    mode="tags"
+                    placeholder="Choose employee"
+                    :searchable="true"
+                    :createTag="true"
+                    :options="employeeOptions"
+                  >
+                  </Multiselect>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <div class="table-responsive pb-7" v-if="invoice.business_id">
+            <table class="table">
+              <thead>
+                <th
+                  :class="selectedBusiness !== 'car' ? 'col-sm-4' : 'col-sm-5'"
+                >
+                  Product Name
+                </th>
+                <template v-if="selectedBusiness == 'printing'">
+                  <th>ម៉ៅផ្ដាច់</th>
+                </template>
+                <template v-if="selectedBusiness !== 'car'">
+                  <th>width (CM)</th>
+                  <th>length (CM)</th>
+                  <th v-if="selectedBusiness == 'printing'">M&sup2;</th>
+                  <th>quantity</th>
+                </template>
+                <th>Unit Price ($)</th>
+                <th>Total</th>
+                <th></th>
+              </thead>
+
+              <tbody v-for="(product, index) in products" :key="index">
+                <td>
+                  <Multiselect
+                    v-model="product.product_id"
+                    :searchable="true"
+                    :create-option="true"
+                    placeholder="Choose Product"
+                    @change="onProductChange(index, $event)"
+                    :options="productList"
+                  />
+                </td>
+                <template v-if="selectedBusiness == 'printing'">
+                  <td>
+                    <div class="text-center">
+                      <input
+                        @change="onCoverALlClick(index, $event)"
+                        type="checkbox"
+                        v-model="product.coverAll"
+                      />
+                    </div>
+                  </td>
+                </template>
+                <template v-if="selectedBusiness !== 'car'">
+                  <td>
+                    <base-input
+                      :disabled="product.coverAll"
+                      @keypress="isNumber($event)"
+                      @change="onProductCalculate(index)"
+                      input-classes="form-control-alternative"
+                      v-model="product.width"
+                    />
+                  </td>
+                  <td>
+                    <base-input
+                      :disabled="product.coverAll"
+                      @keypress="isNumber($event)"
+                      @change="onProductCalculate(index)"
+                      input-classes="form-control-alternative"
+                      v-model="product.length"
+                    />
+                  </td>
+                  <td v-if="selectedBusiness == 'printing'">
+                    <span>
+                      =
+                      {{
+                        ((product.width * product.length) / 10000).toFixed(2)
+                      }}</span
+                    >
+                    m&sup2;
+                  </td>
+                  <td>
+                    <base-input
+                      @keypress="isNumber($event)"
+                      @change="onProductCalculate(index, 'quantity')"
+                      :name="`products[${index}][quantity]`"
+                      input-classes="form-control-alternative"
+                      v-model="product.quantity"
+                    />
+                  </td>
+                </template>
+                <td>
+                  <base-input
+                    @keypress="isNumber($event)"
+                    @change="onProductCalculate(index, 'unitPrice')"
+                    placeholder="Unit Price"
+                    input-classes="form-control-alternative"
+                    v-model="product.unit_price"
+                  />
+                </td>
+                <td>${{ product.total_price }}</td>
+                <td>
+                  <span @click.prevent="remove(index)" class="delete-icon"
+                    ><i class="fa fa-trash"></i
+                  ></span>
+                </td>
+              </tbody>
+            </table>
+            <div class="row p-3 align-items-baseline justify-content-between">
+              <button
+                @click.prevent="addProduct"
+                :disabled="products.length === 13"
+                type="button"
+                class="btn btn-warning btn-sm ml-2"
+              >
+                Add Product
+              </button>
+              <div class="text-left">
+                <h4>
+                  សរុប/Total :
+                  <span class="px-3 py-1">${{ invoice.total }}</span>
+                </h4>
+                <h4>
+                  ប្រាក់កក់/Deposite :
+                  <span class="px-3 py-1">${{ invoice.due_amount }}</span>
+                </h4>
+                <h4>
+                  នៅខ្វះ/Balance :
+                  <span
+                    class="bg-pink px-3 py-1 text-red"
+                    v-if="invoice.due_amount - invoice.total < 0"
+                    >${{ (invoice.due_amount - invoice.total) * -1 }}</span
+                  >
+                </h4>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="!invoice.business_id" class="text-center pt-3 pb-5">
+            Please select business type
+          </div>
+        </card>
+      </div>
+    </div>
+    <div class="row justify-content-between mb-3">
+      <div class="col-lg-6 form-group">
+        <label class="form-control-label">Invoice Note.</label>
+        <textarea
+          class="form-control form-control-alternative"
+          rows="4"
+          v-model="invoice.invoice_note"
+        ></textarea>
+      </div>
+      <div class="col-lg-1 form-group">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            v-model="invoice.signature"
+            id="signature"
+          />
+          <label class="form-check-label" for="signature">Signature</label>
+        </div>
+      </div>
+      <div class="col-lg-5 text-right">
+        <button
+          @click.prevent="createNewInvoice(true)"
+          :disabled="invalid"
+          type="button"
+          class="btn btn-default"
+        >
+          Create & Print
+        </button>
+        <button
+          @click.prevent="createNewInvoice()"
+          :disabled="invalid"
+          type="button"
+          class="btn btn-default"
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  </template>
 
   <modal v-model:show="warningAlert">
     <template v-slot:header>

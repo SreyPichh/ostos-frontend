@@ -6,52 +6,54 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="row mb-3" v-if="!isLoading">
-    <div class="col-xl-12 order-xl-1">
-      <card shadow type="secondary" bodyClasses="pb-0">
-        <template v-slot:header>
-          <div class="bg-white border-0">
-            <div class="row justify-content-between">
-              <div class="col">
-                <h3 class="mb-0">NoteBook Info</h3>
+  <template v-if="!isLoading">
+    <div class="row mb-3">
+      <div class="col-xl-12 order-xl-1">
+        <card shadow type="secondary" bodyClasses="pb-0">
+          <template v-slot:header>
+            <div class="bg-white border-0">
+              <div class="row justify-content-between">
+                <div class="col">
+                  <h3 class="mb-0">NoteBook Info</h3>
+                </div>
               </div>
             </div>
-          </div>
-        </template>
+          </template>
 
-        <form>
-          <div class="row">
-            <div class="col-lg-6">
-              <base-input
-                label="Title"
-                input-classes="form-control-alternative"
-                v-model="notebook.title"
-              />
+          <form>
+            <div class="row">
+              <div class="col-lg-6">
+                <base-input
+                  label="Title"
+                  input-classes="form-control-alternative"
+                  v-model="notebook.title"
+                />
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12 form-group">
-              <label class="form-control-label">Description</label>
-              <textarea
-                class="form-control form-control-alternative"
-                rows="5"
-                v-model="notebook.description"
-              ></textarea>
+            <div class="row">
+              <div class="col-lg-12 form-group">
+                <label class="form-control-label">Description</label>
+                <textarea
+                  class="form-control form-control-alternative"
+                  rows="5"
+                  v-model="notebook.description"
+                ></textarea>
+              </div>
             </div>
-          </div>
-        </form>
-      </card>
+          </form>
+        </card>
+      </div>
     </div>
-  </div>
-  <div class="float-right">
-    <button
-      @click.prevent="updateNoteBook()"
-      type="button"
-      class="btn btn-default"
-    >
-      Update
-    </button>
-  </div>
+    <div class="float-right">
+      <button
+        @click.prevent="updateNoteBook()"
+        type="button"
+        class="btn btn-default"
+      >
+        Update
+      </button>
+    </div>
+  </template>
 </template>
 
 <script>

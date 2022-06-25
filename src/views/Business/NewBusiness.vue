@@ -1,6 +1,6 @@
 <template>
   <div class="row mb-3">
-    <div class="col-xl-12 pl-0 order-xl-1">
+    <div class="col-xl-12 order-xl-1">
       <card shadow type="secondary">
         <template v-slot:header>
           <div class="bg-white border-0">
@@ -54,7 +54,7 @@
     </div>
   </div>
   <div class="row mb-3">
-    <div class="col-xl-6 pl-0 order-xl-2">
+    <div class="col-xl-6 order-xl-2">
       <card height="100%" shadow type="secondary" bodyClasses="pb-0">
         <template v-slot:header>
           <div class="bg-white border-0">
@@ -213,7 +213,7 @@
     </div>
   </div>
   <div class="row mb-3">
-    <div class="col-xl-12 pl-0 order-xl-1">
+    <div class="col-xl-12 order-xl-1">
       <card shadow type="secondary" class="cardContainer">
         <template v-slot:header>
           <div class="bg-white border-0">
@@ -278,7 +278,7 @@
   </div>
   <div class="float-right mb-3">
     <button @click="createNewBusiness()" type="button" class="btn btn-default">
-      Save
+      Create
     </button>
   </div>
 </template>
