@@ -169,7 +169,7 @@ export default {
     updateProfile() {
       User.updateProfile(this.userProfile.id, this.userProfile).then(
         () => {
-          this.$router.push("/profile");
+          this.$router.push("/dashboard");
         },
         (error) => {
           alert("error to get data", error);

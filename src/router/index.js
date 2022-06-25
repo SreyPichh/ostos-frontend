@@ -6,23 +6,28 @@ import GeneratePDFLayout from "@/layout/GeneratePDFLayout";
 
 import Dashboard from "../views/Dashboard.vue";
 import Business from "../views/Business/Business.vue";
+import BusinessTable from "../views/Business/BusinessTable.vue";
 import NewBusiness from "../views/Business/NewBusiness.vue";
 import EditBusiness from "../views/Business/EditBusiness.vue";
 
 import Invoice from "../views/Invoice/Invoice.vue";
+import InvoiceTable from "../views/Invoice/InvoiceTable.vue";
 import NewInvoice from "../views/Invoice/NewInvoice.vue";
 import PreviewInvoice from "../views/Invoice/PreviewInvoice.vue";
 import EditInvoice from "../views/Invoice/EditInvoice.vue";
 
 import Product from "../views/Product/Product.vue";
+import ProductTable from "../views/Product/ProductTable.vue";
 import NewProduct from "../views/Product/NewProduct.vue";
 import EditProduct from "../views/Product/EditProduct.vue";
 
 import Customer from "../views/Customer/Customer.vue";
+import CustomerTable from "../views/Customer/CustomerTable.vue";
 import NewCustomer from "../views/Customer/NewCustomer.vue";
 import EditCustomer from "../views/Customer/EditCustomer.vue";
 
 import Employee from "../views/Employee/Employee.vue";
+import EmployeeTable from "../views/Employee/EmployeeTable.vue";
 import NewEmployee from "../views/Employee/NewEmployee.vue";
 import EditEmployee from "../views/Employee/EditEmployee.vue";
 
@@ -36,10 +41,12 @@ import Payment from "../views/Payment/Payment.vue";
 import PaymentList from "../views/Payment/PaymentListTable.vue";
 
 import Purchase from "../views/Purchase/Purchase.vue";
+import PurchaseTable from "../views/Purchase/PurchaseTable.vue";
 import NewPurchase from "../views/Purchase/NewPurchase.vue";
 import EditPurchase from "../views/Purchase/EditPurchase.vue";
 
 import NoteBook from "../views/NoteBook/NoteBook.vue";
+import NoteBookTable from "../views/NoteBook/NoteBookTable.vue";
 import NewNoteBook from "../views/NoteBook/NewNoteBook.vue";
 import EditNoteBook from "../views/NoteBook/EditNoteBook.vue";
 
@@ -69,31 +76,37 @@ const routes = [
         path: "/businesses",
         name: "Businesses",
         components: { default: Business },
-      },
-      {
-        path: "/businesses/new",
-        name: "new-business",
-        components: { default: NewBusiness },
-      },
-      {
-        path: "/businesses/:Bid",
-        name: "edit-business",
-        components: { default: EditBusiness },
+        children: [
+          { path: "", name: "business-table", component: BusinessTable },
+          {
+            path: "/businesses/new",
+            name: "new-business",
+            components: { default: NewBusiness },
+          },
+          {
+            path: "/businesses/:Bid",
+            name: "edit-business",
+            components: { default: EditBusiness },
+          },
+        ],
       },
       {
         path: "/invoices",
         name: "invoices",
         components: { default: Invoice },
-      },
-      {
-        path: "/invoices/new",
-        name: "new-invoice",
-        components: { default: NewInvoice },
-      },
-      {
-        path: "/invoices/:invoiceId",
-        name: "edit-invoice",
-        components: { default: EditInvoice },
+        children: [
+          { path: "", name: "invoice-table", component: InvoiceTable },
+          {
+            path: "/invoices/new",
+            name: "new-invoice",
+            components: { default: NewInvoice },
+          },
+          {
+            path: "/invoices/:invoiceId",
+            name: "edit-invoice",
+            components: { default: EditInvoice },
+          },
+        ],
       },
       {
         path: "/quotes",
@@ -119,86 +132,105 @@ const routes = [
         path: "/products",
         name: "products",
         components: { default: Product },
-      },
-      {
-        path: "/products/:Pid",
-        name: "edit-product",
-        components: { default: EditProduct },
-      },
-      {
-        path: "/products/new",
-        name: "new-product",
-        components: { default: NewProduct },
+        children: [
+          { path: "", name: "product-table", component: ProductTable },
+          {
+            path: "/products/new",
+            name: "new-product",
+            components: { default: NewProduct },
+          },
+          {
+            path: "/products/:Pid",
+            name: "edit-product",
+            components: { default: EditProduct },
+          },
+        ],
       },
       {
         path: "/customers",
         name: "customers",
         components: { default: Customer },
-      },
-      {
-        path: "/customers/:customerId",
-        name: "edit-customer",
-        components: { default: EditCustomer },
-      },
-      {
-        path: "/customers/new",
-        name: "new-customer",
-        components: { default: NewCustomer },
+        children: [
+          { path: "", name: "customer-table", component: CustomerTable },
+          {
+            path: "/customers/new",
+            name: "new-customer",
+            components: { default: NewCustomer },
+          },
+          {
+            path: "/customers/:customerId",
+            name: "edit-customer",
+            components: { default: EditCustomer },
+          },
+        ],
       },
       {
         path: "/employees",
         name: "employees",
         components: { default: Employee },
+        children: [
+          { path: "", name: "employee-table", component: EmployeeTable },
+          {
+            path: "/employees/new",
+            name: "new-employee",
+            components: { default: NewEmployee },
+          },
+          {
+            path: "/employees/:employeeId",
+            name: "edit-employee",
+            components: { default: EditEmployee },
+          },
+        ],
       },
-      {
-        path: "/employees/:employeeId",
-        name: "edit-employee",
-        components: { default: EditEmployee },
-      },
-      {
-        path: "/employees/new",
-        name: "new-employee",
-        components: { default: NewEmployee },
-      },
+
       {
         path: "/payments",
         name: "payments",
         components: { default: Payment },
-      },
-      {
-        path: "/payments/:paymentId",
-        name: "payment-list",
-        components: { default: PaymentList },
+        children: [
+          { path: "", name: "payment-table", component: CustomerTable },
+          {
+            path: "/payments/:paymentId",
+            name: "payment-list",
+            components: { default: PaymentList },
+          },
+        ],
       },
       {
         path: "/purchases",
         name: "purchases",
         components: { default: Purchase },
-      },
-      {
-        path: "/purchases/:purchaseId",
-        name: "edit-purchase",
-        components: { default: EditPurchase },
-      },
-      {
-        path: "/purchases/new",
-        name: "new-purchase",
-        components: { default: NewPurchase },
+        children: [
+          { path: "", name: "purchase-table", component: PurchaseTable },
+          {
+            path: "/purchases/new",
+            name: "new-purchase",
+            components: { default: NewPurchase },
+          },
+          {
+            path: "/purchases/:purchaseId",
+            name: "edit-purchase",
+            components: { default: EditPurchase },
+          },
+        ],
       },
       {
         path: "/notebooks",
         name: "notebooks",
         components: { default: NoteBook },
-      },
-      {
-        path: "/notebooks/:notebookId",
-        name: "edit-notebook",
-        components: { default: EditNoteBook },
-      },
-      {
-        path: "/notebooks/new",
-        name: "new-notebook",
-        components: { default: NewNoteBook },
+        children: [
+          { path: "", name: "notebook-table", component: NoteBookTable },
+          {
+            path: "/notebooks/new",
+            name: "new-notebook",
+            components: { default: NewNoteBook },
+          },
+          {
+            path: "/notebooks/:notebookId",
+            name: "edit-notebook",
+            components: { default: EditNoteBook },
+          },
+        ],
       },
       {
         path: "/users",

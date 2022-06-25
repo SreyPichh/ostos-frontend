@@ -21,7 +21,7 @@
     </div>
     <div class="d-flex flex-column min-vh-100">
       <div class="invoice-header">
-        <div class="mb-2 d-flex justify-content-between">
+        <div class="mb-2 d-flex justify-content-between align-items-end">
           <div>
             <img
               class="logo"
@@ -31,8 +31,8 @@
               height="90"
             />
           </div>
-          <div class="text-right w-50 align-self-lg-end">
-            <sapn class="p21-px">
+          <div class="text-right w-75 align-self-lg-end">
+            <sapn class="p21-px" style="white-space: pre-line">
               {{ business.invoice_toptext }}
             </sapn>
           </div>

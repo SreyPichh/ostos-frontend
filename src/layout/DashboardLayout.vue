@@ -28,6 +28,7 @@
           }"
         />
         <sidebar-item
+          :isDisabled="true"
           :link="{
             name: 'Quote',
             icon: 'fa fa-file-invoice text-white',
@@ -35,6 +36,7 @@
           }"
         />
         <sidebar-item
+          :isDisabled="true"
           :link="{
             name: 'Reciept',
             icon: 'fa fa-file-alt text-white',
@@ -85,6 +87,7 @@
           }"
         />
         <sidebar-item
+          :isDisabled="true"
           :link="{
             name: 'User',
             icon: 'fa fa-users text-white',
