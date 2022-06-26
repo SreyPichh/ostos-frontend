@@ -21,7 +21,7 @@
     </div>
     <div class="d-flex flex-column min-vh-100">
       <div class="invoice-header">
-        <div class="mb-2 d-flex justify-content-between align-items-end">
+        <div class="d-flex justify-content-between align-items-end">
           <div>
             <img
               class="logo"
@@ -32,44 +32,52 @@
             />
           </div>
           <div class="text-right w-75 align-self-lg-end">
-            <sapn class="p21-px" style="white-space: pre-line">
+            <sapn class="p21-px space-pre-line">
               {{ business.invoice_toptext }}
             </sapn>
           </div>
         </div>
         <hr class="my-1" />
         <div class="d-flex justify-content-between">
-          <div class="d-flex align-items-baseline">
-            <h2 class="mr-1">Invoce:</h2>
-            <p>#INV-{{ invoice.invoice_number }}</p>
+          <div class="d-flex align-items-baseline p21-px">
+            <span class="mr-1">Invoce:</span>
+            #INV-{{ invoice.invoice_number }}
           </div>
-          <div class="text-right">
-            <p>
-              Date: <span>{{ invoice.date }}</span>
-            </p>
+          <div class="text-right p21-px">
+            Date: <span>{{ invoice.date }}</span>
           </div>
         </div>
       </div>
 
       <div class="customer-info">
         <div class="mb-2 d-flex justify-content-between">
-          <div class="w-75 d-flex align-items-start flex-column">
-            <!-- <h2>AT :</h2> -->
-            <p v-if="invoice.customer_name">To : {{ invoice.customer_name }}</p>
-            <p>
+          <div class="w-50 d-flex align-items-start flex-column">
+            <!-- Customer Info => Att,To,Add,Email, Tel, PO -->
+            <p v-if="customerInfo.customer_company">
+              Att : {{ customerInfo.customer_company }}
+            </p>
+            <p v-if="customerInfo.customer_name">
+              To : {{ customerInfo.customer_name }}
+            </p>
+            <p v-if="customerInfo.customer_address1">
+              Add : {{ customerInfo.customer_address1 }}
+            </p>
+            <p v-if="customerInfo.customer_email">
+              Email : <span class="p">{{ customerInfo.customer_email }}</span>
+            </p>
+            <p v-if="customerInfo.customer_phone_number">
               Tel :
-              <span class="p" v-if="invoice.customer_phone_number">
-                {{ invoice.customer_phone_number }}
+              <span class="p" v-if="customerInfo.customer_phone_number">
+                {{ customerInfo.customer_phone_number }}
               </span>
             </p>
-            <p v-if="invoice.customer_email">
-              Email : <span class="p">{{ invoice.customer_email }}</span>
-            </p>
+            <p v-if="customerInfo.po">PO : {{ customerInfo.po }}</p>
           </div>
+          <!-- Business Info -->
           <div class="text-right">
             <p class="mb-0">
               Address :
-              {{ business.address }}
+              <span class="space-pre-line">{{ business.address }}</span>
             </p>
             <p class="mb-0">
               Email :
@@ -135,22 +143,33 @@
               </div>
             </div>
           </div>
-          <div class="w-50">
+          <div class="w-50 p20-px">
             <div class="d-flex align-items-baseline">
-              <span class="col-sm-8 p20-px text-right">សរុប/Total</span>
-              <span class="col-sm-4 p20-px total-bg-color">
+              <span class="col-sm-8 text-right">សរុប/Total</span>
+              <span
+                class="col-sm-4 font-weight-bold"
+                :class="{
+                  'total-bg-color': invoice.status !== 'Partial Billed',
+                }"
+              >
                 ${{ invoice.total }}{{ invoice.total >= 1 ? ".00" : "" }}
               </span>
             </div>
             <div class="d-flex align-items-baseline">
-              <span class="col-sm-8 p20-px text-right">ប្រាក់កក់/Deposite</span>
-              <span class="col-sm-4 p20-px">
+              <span class="col-sm-8 text-right">ប្រាក់កក់/Deposite</span>
+              <span
+                class="col-sm-4 font-weight-bold"
+                v-if="invoice.status === 'Partial Billed'"
+              >
                 ${{ invoice.due_amount }}{{ invoice.total >= 1 ? ".00" : "" }}
               </span>
             </div>
             <div class="d-flex align-items-baseline">
-              <span class="col-sm-8 p20-px text-right">នៅខ្វះ/Balance</span>
-              <span class="col-sm-4 p20-px total-bg-color">
+              <span class="col-sm-8 text-right">នៅខ្វះ/Balance</span>
+              <span
+                class="col-sm-4 total-bg-color font-weight-bold"
+                v-if="invoice.status === 'Partial Billed'"
+              >
                 <span class="py-1" v-if="invoice.due_amount - invoice.total < 0"
                   >${{ (invoice.due_amount - invoice.total) * -1
                   }}{{ invoice.total >= 1 ? ".00" : "" }}</span
@@ -161,7 +180,7 @@
         </div>
         <br />
 
-        <div class="customer-info">
+        <div class="customer-info mt--2">
           <div class="mb-2 d-flex justify-content-between">
             <div class="w-50">
               <img alt="ostos logo" src="img/invoice/aba_qr.png" width="170" />
@@ -170,13 +189,17 @@
               <div class="d-flex">
                 <p class="mr-1 mb-0">ចំណាំ:</p>
                 <p class="mb-0">
-                  {{ business.invoice_note[0] }}
+                  <span class="space-pre-line">{{
+                    business.invoice_note[0]
+                  }}</span>
                 </p>
               </div>
               <div class="d-flex">
                 <p class="mr-1 mb-0">Note:</p>
                 <p class="mb-0">
-                  {{ business.invoice_note[1] }}
+                  <span class="space-pre-line">{{
+                    business.invoice_note[1]
+                  }}</span>
                 </p>
               </div>
             </div>
@@ -218,6 +241,7 @@
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
+import CustomerService from "../../services/customer.service";
 import moment from "moment";
 
 export default {
@@ -228,6 +252,7 @@ export default {
       isLoading: true,
       invoice: {},
       business: {},
+      customerInfo: {},
       selectedBusiness: "",
     };
   },
@@ -244,6 +269,9 @@ export default {
     this.invoiceId = this.$route.params.invoiceId;
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
       const invoice = item.data.data;
+      CustomerService.getCustomerById(invoice.customer_id).then((customer) => {
+        this.customerInfo = customer.data.data;
+      });
       invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
       invoice.date = moment(invoice.date).format("ddd DD-MM-YYYY");
       this.employees = invoice.employee_data.map((emp) => emp.employee_id);
@@ -274,6 +302,10 @@ html,
   padding: 0;
 }
 
+.space-pre-line {
+  white-space: pre-line;
+}
+
 @font-face {
   font-family: "kh-content";
   src: local("kh-content"), url(../../fonts/kh-content.ttf) format("truetype");
@@ -296,7 +328,7 @@ body {
 }
 
 .invoice-header {
-  padding: 30px 0;
+  padding: 0 0 15px 0;
 }
 
 tr.invoiceListHeading {

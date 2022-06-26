@@ -39,13 +39,13 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-12">
-              <base-input
-                alternative=""
+            <div class="col-lg-12 form-group">
+              <textarea
                 placeholder="Address"
-                input-classes="form-control-alternative"
+                class="form-control form-control-alternative"
+                rows="2"
                 v-model="business.address"
-              />
+              ></textarea>
             </div>
           </div>
         </card>
