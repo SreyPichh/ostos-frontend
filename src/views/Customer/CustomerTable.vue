@@ -33,6 +33,7 @@
           <template v-slot:columns>
             <th class="col-1">ID</th>
             <th>Name</th>
+            <th>Company</th>
             <th class="col-2">Phone Number</th>
             <th class="col-1">Gender</th>
             <th class="col-2">Created Date</th>
@@ -54,6 +55,9 @@
             </th>
             <td>
               {{ row.item.customer_name }}
+            </td>
+            <td>
+              {{ row.item.customer_company }}
             </td>
             <td>
               {{ row.item.customer_phone_number }}

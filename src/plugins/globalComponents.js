@@ -19,11 +19,13 @@ import Tabs from "../components/Tabs/Tabs";
 
 import { ElTooltip, ElPopover } from "element-plus";
 import { ScalingSquaresSpinner } from "epic-spinners";
+import QrcodeVue from "qrcode.vue";
 
 const GlobalComponents = {
   install(app) {
     app.component("scaling-squares-spinner", ScalingSquaresSpinner);
     app.component("badge", Badge);
+    app.component("qrcode-vue", QrcodeVue);
     app.component("base-alert", BaseAlert);
     app.component("base-button", BaseButton);
     app.component("base-checkbox", BaseCheckbox);

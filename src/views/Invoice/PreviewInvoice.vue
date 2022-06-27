@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="d-flex flex-column min-vh-100">
-      <div class="invoice-header">
+      <div class="">
         <div class="d-flex justify-content-between align-items-end">
           <div>
             <img
@@ -32,16 +32,23 @@
             />
           </div>
           <div class="text-right w-75 align-self-lg-end">
-            <sapn class="p21-px space-pre-line">
+            <span class="p21-px space-pre-line">
               {{ business.invoice_toptext }}
-            </sapn>
+            </span>
           </div>
         </div>
         <hr class="my-1" />
         <div class="d-flex justify-content-between">
-          <div class="d-flex align-items-baseline p21-px">
-            <span class="mr-1">Invoce:</span>
-            #INV-{{ invoice.invoice_number }}
+          <div class="d-flex p21-px">
+            <span class="mr-2">Invoce: #INV-{{ invoice.invoice_number }}</span>
+            <qrcode-vue
+              :value="qrLink"
+              :size="60"
+              level="M"
+              render-as="svg"
+              background="white"
+              foreground="#000"
+            />
           </div>
           <div class="text-right p21-px">
             Date: <span>{{ invoice.date }}</span>
@@ -71,7 +78,7 @@
                 {{ customerInfo.customer_phone_number }}
               </span>
             </p>
-            <p v-if="customerInfo.po">PO : {{ customerInfo.po }}</p>
+            <p v-if="invoice.po">PO : {{ invoice.po }}</p>
           </div>
           <!-- Business Info -->
           <div class="text-right">
@@ -111,15 +118,22 @@
               <td scope="row" class="align-middle">{{ index + 1 }}</td>
               <td>{{ product.product_name }}</td>
               <td v-if="selectedBusiness !== 'car'">
-                {{ product.width }} x {{ product.length }}
+                {{
+                  (product.width && product.length) || !product.coverAll
+                    ? `${product.width} X  ${product.length}`
+                    : ""
+                }}
               </td>
               <td v-if="selectedBusiness == 'printing'">
-                <span>{{ (product.width * product.length) / 10000 }}</span>
-                m&sup2;
+                <span>{{
+                  (product.width && product.length) || !product.coverAll
+                    ? (product.width * product.length) / 10000 + "m&sup2;"
+                    : ""
+                }}</span>
               </td>
               <td v-if="selectedBusiness !== 'car'">{{ product.quantity }}</td>
-              <td>${{ product.unit_price }}.00</td>
-              <td>${{ product.total_price }}.00</td>
+              <td>${{ product.unit_price }}</td>
+              <td>${{ product.total_price }}</td>
             </tr>
           </tbody>
         </table>
@@ -152,7 +166,7 @@
                   'total-bg-color': invoice.status !== 'Partial Billed',
                 }"
               >
-                ${{ invoice.total }}{{ invoice.total >= 1 ? ".00" : "" }}
+                ${{ invoice.total }}
               </span>
             </div>
             <div class="d-flex align-items-baseline">
@@ -161,7 +175,7 @@
                 class="col-sm-4 font-weight-bold"
                 v-if="invoice.status === 'Partial Billed'"
               >
-                ${{ invoice.due_amount }}{{ invoice.total >= 1 ? ".00" : "" }}
+                ${{ invoice.due_amount }}
               </span>
             </div>
             <div class="d-flex align-items-baseline">
@@ -241,7 +255,6 @@
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
-import CustomerService from "../../services/customer.service";
 import moment from "moment";
 
 export default {
@@ -254,6 +267,7 @@ export default {
       business: {},
       customerInfo: {},
       selectedBusiness: "",
+      qrLink: "",
     };
   },
   methods: {
@@ -265,13 +279,13 @@ export default {
     },
   },
   mounted() {
+    this.qrLink = `http://167.172.88.106:8080/${this.$route.href}`;
+    console.log(this.qrLink);
     this.isLoading = true;
     this.invoiceId = this.$route.params.invoiceId;
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
       const invoice = item.data.data;
-      CustomerService.getCustomerById(invoice.customer_id).then((customer) => {
-        this.customerInfo = customer.data.data;
-      });
+      this.customerInfo = invoice.customer_info;
       invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
       invoice.date = moment(invoice.date).format("ddd DD-MM-YYYY");
       this.employees = invoice.employee_data.map((emp) => emp.employee_id);
@@ -304,16 +318,6 @@ html,
 
 .space-pre-line {
   white-space: pre-line;
-}
-
-@font-face {
-  font-family: "kh-content";
-  src: local("kh-content"), url(../../fonts/kh-content.ttf) format("truetype");
-}
-@font-face {
-  font-family: "trebuc";
-  src: local("trebuc"), url(../../fonts/trebuc.ttf) format("truetype");
-  unicode-range: U+0B02-CD;
 }
 
 body {

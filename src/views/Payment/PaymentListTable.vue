@@ -1,7 +1,4 @@
 <template>
-  <base-header
-    class="header pt-5 pt-lg-8 d-flex align-items-center"
-  ></base-header>
   <div v-if="isLoading" class="d-flex justify-content-center mt-9">
     <scaling-squares-spinner
       :animation-duration="1250"

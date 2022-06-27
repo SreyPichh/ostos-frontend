@@ -38,7 +38,8 @@ import PreviewQuote from "../views/Quote/PreviewQuote.vue";
 import Receipt from "../views/Receipt/Receipt.vue";
 
 import Payment from "../views/Payment/Payment.vue";
-import PaymentList from "../views/Payment/PaymentListTable.vue";
+import PaymentReportTable from "../views/Payment/PaymentReportTable.vue";
+import PaymentListTable from "../views/Payment/PaymentListTable.vue";
 
 import Purchase from "../views/Purchase/Purchase.vue";
 import PurchaseTable from "../views/Purchase/PurchaseTable.vue";
@@ -97,12 +98,12 @@ const routes = [
         children: [
           { path: "", name: "invoice-table", component: InvoiceTable },
           {
-            path: "/invoices/new",
+            path: "/new",
             name: "new-invoice",
             components: { default: NewInvoice },
           },
           {
-            path: "/invoices/:invoiceId",
+            path: "/:invoiceId",
             name: "edit-invoice",
             components: { default: EditInvoice },
           },
@@ -114,7 +115,7 @@ const routes = [
         components: { default: Quote },
       },
       {
-        path: "/quotes/new",
+        path: "/new",
         name: "new-quote",
         components: { default: NewQuote },
       },
@@ -124,7 +125,7 @@ const routes = [
         components: { default: Receipt },
       },
       {
-        path: "/receipts/new",
+        path: "/new",
         name: "new-receipt",
         components: { default: Receipt },
       },
@@ -135,12 +136,12 @@ const routes = [
         children: [
           { path: "", name: "product-table", component: ProductTable },
           {
-            path: "/products/new",
+            path: "/new",
             name: "new-product",
             components: { default: NewProduct },
           },
           {
-            path: "/products/:Pid",
+            path: "/:Pid",
             name: "edit-product",
             components: { default: EditProduct },
           },
@@ -153,12 +154,12 @@ const routes = [
         children: [
           { path: "", name: "customer-table", component: CustomerTable },
           {
-            path: "/customers/new",
+            path: "/new",
             name: "new-customer",
             components: { default: NewCustomer },
           },
           {
-            path: "/customers/:customerId",
+            path: "/:customerId",
             name: "edit-customer",
             components: { default: EditCustomer },
           },
@@ -171,12 +172,12 @@ const routes = [
         children: [
           { path: "", name: "employee-table", component: EmployeeTable },
           {
-            path: "/employees/new",
+            path: "/new",
             name: "new-employee",
             components: { default: NewEmployee },
           },
           {
-            path: "/employees/:employeeId",
+            path: "/:employeeId",
             name: "edit-employee",
             components: { default: EditEmployee },
           },
@@ -188,11 +189,11 @@ const routes = [
         name: "payments",
         components: { default: Payment },
         children: [
-          { path: "", name: "payment-table", component: CustomerTable },
+          { path: "", name: "payment-table", component: PaymentReportTable },
           {
-            path: "/payments/:paymentId",
+            path: "/:paymentId",
             name: "payment-list",
-            components: { default: PaymentList },
+            components: { default: PaymentListTable },
           },
         ],
       },
@@ -203,12 +204,12 @@ const routes = [
         children: [
           { path: "", name: "purchase-table", component: PurchaseTable },
           {
-            path: "/purchases/new",
+            path: "/new",
             name: "new-purchase",
             components: { default: NewPurchase },
           },
           {
-            path: "/purchases/:purchaseId",
+            path: "/:purchaseId",
             name: "edit-purchase",
             components: { default: EditPurchase },
           },
@@ -221,12 +222,12 @@ const routes = [
         children: [
           { path: "", name: "notebook-table", component: NoteBookTable },
           {
-            path: "/notebooks/new",
+            path: "/new",
             name: "new-notebook",
             components: { default: NewNoteBook },
           },
           {
-            path: "/notebooks/:notebookId",
+            path: "/:notebookId",
             name: "edit-notebook",
             components: { default: EditNoteBook },
           },
@@ -309,7 +310,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/register"];
+  const publicPages = ["/invoices/preview", "/login", "/register"];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
   if (authRequired && !loggedIn) {

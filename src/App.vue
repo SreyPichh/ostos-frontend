@@ -23,6 +23,22 @@ export default {
 };
 </script>
 <style>
+@font-face {
+  font-family: "kh-content";
+  src: local("kh-content"), url(./fonts/kh-content.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "trebuc";
+  src: local("trebuc"), url(./fonts/trebuc.ttf) format("truetype");
+  unicode-range: U+0B02-CD;
+}
+
+body {
+  font-family: "kh-content", sans-serif !important;
+  font-size: 16px !important;
+}
+
 .delete-icon:hover {
   color: red;
   cursor: pointer;

@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <div class="table-responsive" id="printMe">
+    <div class="table-responsive table-sm" id="printMe">
       <base-table
         thead-classes="thead-light"
         :data="items"
@@ -95,7 +95,7 @@
       >
       <textarea
         class="form-control form-control-alternative"
-        rows="3"
+        rows="5"
         readonly="true"
         v-model="selectedNoteBook.description"
       ></textarea>

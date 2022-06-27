@@ -58,9 +58,6 @@
                 v-model="customer.customer_company"
               />
             </div>
-            <div class="col-lg-3">
-              <base-input label="PO" v-model="customer.po" />
-            </div>
           </div>
           <div class="row">
             <div class="col-lg-12 form-group">

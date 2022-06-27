@@ -44,8 +44,8 @@
         </div>
       </div>
 
-      <div class="table-responsive">
-        <base-table class="table-sm" thead-classes="thead-light" :data="items">
+      <div class="table-responsive table-sm">
+        <base-table thead-classes="thead-light" :data="items">
           <template v-slot:columns>
             <th class="col-1">ID</th>
             <th>Name</th>

@@ -26,7 +26,7 @@
                   ></i>
                 </div>
                 <div class="col d-flex justify-content-end">
-                  <lable class="text-green mr-2">Active</lable>
+                  <label class="text-green mr-2">Active</label>
                   <base-switch
                     :value="product.isActive ? true : false"
                     v-model="product.isActive"

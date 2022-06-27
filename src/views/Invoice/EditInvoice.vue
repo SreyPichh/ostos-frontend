@@ -14,14 +14,28 @@
             <div class="bg-white border-0">
               <div class="row align-items-center justify-content-between">
                 <h3 class="mb-0">Customer Information</h3>
-                <div class="col-lg-6">
-                  <label class="form-control-label">Exist Customer</label>
-                  <Multiselect
-                    v-model="invoice.customer_id"
-                    @change="onChangeCustomer"
-                    :searchable="true"
-                    :options="customerOptions"
-                  />
+                <div class="col-lg-9 d-flex align-items-end">
+                  <div class="col d-flex align-items-end">
+                    <label class="col-3 form-control-label"
+                      >Exist Customer</label
+                    >
+                    <Multiselect
+                      v-model="invoice.customer_id"
+                      :disabled="isGeneralCustomer"
+                      :class="'col-11'"
+                      @change="onChangeCustomer"
+                      :searchable="true"
+                      :options="customerOptions"
+                    />
+                  </div>
+                  <div class="col-4 d-flex px-0 justify-content-end">
+                    <label class="text-green mr-2">General Customer</label>
+                    <base-switch
+                      :value="isGeneralCustomer"
+                      v-model="isGeneralCustomer"
+                      @change="onChangeCustomer('general')"
+                    ></base-switch>
+                  </div>
                 </div>
               </div>
             </div>
@@ -78,13 +92,6 @@
                 v-model="customerInfo.company"
               />
             </div>
-            <div class="col-lg-3">
-              <base-input
-                label="PO"
-                :disabled="disableCustomer"
-                v-model="customerInfo.po"
-              />
-            </div>
           </div>
           <div class="row">
             <div class="col-lg-12 form-group">
@@ -116,7 +123,15 @@
                 v-model="invoice.invoice_number"
               />
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
+              <base-input
+                label="PO"
+                label-classes="form-control-range"
+                input-classes="form-control-alternative px-2"
+                v-model="invoice.po"
+              />
+            </div>
+            <div class="col-lg-2">
               <div class="form-group">
                 <label class="form-control-label">Date</label>
                 <v-date-picker
@@ -367,7 +382,7 @@
       </div>
       <div class="col-lg-5 text-right">
         <button
-          @click.prevent="updateInvoice(true)"
+          @click.prevent="prepareUpdateInvoice(true)"
           :disabled="invalid"
           type="button"
           class="btn btn-default"
@@ -375,7 +390,7 @@
           Update & Print
         </button>
         <button
-          @click.prevent="updateInvoice()"
+          @click.prevent="prepareUpdateInvoice()"
           :disabled="invalid"
           type="button"
           class="btn btn-default"
@@ -445,6 +460,7 @@ export default {
       products: [],
       warningAlert: false,
       disableCustomer: false,
+      isGeneralCustomer: false,
     };
   },
   mounted() {
@@ -467,18 +483,29 @@ export default {
 
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
       const invoice = item.data.data;
+      this.isGeneralCustomer = invoice.customer_id === null;
       CustomerService.getCustomers().then((customers) => {
         this.customers = customers.data.data;
         this.customerOptions = customers.data.data.map((item) => {
+          const name = item.customer_name;
           const phoneNumber = item.customer_phone_number;
+          const company = item.customer_company;
           return {
-            label: `${item.customer_name} (${
-              phoneNumber ? phoneNumber : "NO"
-            })`,
+            label: `${name ? name : ""} ${
+              phoneNumber || company
+                ? `${phoneNumber ? `[Tel: ${phoneNumber}]` : ""}${
+                    company ? ` [Company: ${company}]` : ""
+                  }`
+                : ""
+            }`,
             value: item.id,
           };
         });
-        this.onChangeCustomer(invoice.customer_id);
+        if (!this.isGeneralCustomer) {
+          this.onChangeCustomer(invoice.customer_id);
+        } else {
+          this.customerInfo = invoice.customer_info;
+        }
       });
 
       invoice.invoice_number = String(invoice.invoice_number).padStart(6, "0");
@@ -510,25 +537,31 @@ export default {
   },
   methods: {
     onChangeCustomer(customerId) {
-      const customer = this.customers.find((item) => item.id === customerId);
-      console.log(customerId, customer);
-
-      if (customer) {
-        this.disableCustomer = true;
-        this.customerInfo = {
-          customer_name: customer.customer_name,
-          customer_email: customer.customer_email,
-          gender: customer.gender,
-          customer_phone_number: customer.customer_phone_number,
-          company: customer.company,
-          po: customer.po,
-          customer_address1: customer.customer_address1,
-        };
-      } else {
+      if (customerId === "general" && this.isGeneralCustomer) {
         this.disableCustomer = false;
+        this.invoice.customer_id = null;
         this.customerInfo = {
+          customer_name: "General Customer",
           gender: "Male",
         };
+      } else {
+        const customer = this.customers.find((item) => item.id === customerId);
+        if (customer) {
+          this.disableCustomer = true;
+          this.customerInfo = {
+            customer_name: customer.customer_name,
+            customer_email: customer.customer_email,
+            gender: customer.gender,
+            customer_phone_number: customer.customer_phone_number,
+            company: customer.company,
+            customer_address1: customer.customer_address1,
+          };
+        } else {
+          this.disableCustomer = false;
+          this.customerInfo = {
+            gender: "Male",
+          };
+        }
       }
     },
     // On Change Business Type
@@ -636,7 +669,7 @@ export default {
       const length = product.length;
       // Set Total Price
       if (this.selectedBusiness === "car") {
-        product.total_price = unit_price.toFixed(2);
+        product.total_price = unit_price;
       } else if (this.selectedBusiness === "printing") {
         if (!isCoverAll) {
           const m2 = (width * length) / 10000;
@@ -648,7 +681,7 @@ export default {
         if (target !== "unitPrice" && target !== "quantity") {
           product.unit_price = this.ktvPriceM2((width * length) / 10000);
         }
-        product.total_price = (product.unit_price * qty).toFixed(2);
+        product.total_price = product.unit_price * qty;
       }
       this.totalALlProducts();
     },
@@ -733,7 +766,7 @@ export default {
         this.invoice.due_amount = 0;
       }
     },
-    updateInvoice(isPrint) {
+    prepareUpdateInvoice(isPrint) {
       const invoice = this.invoice;
       invoice.invoice_number = invoice.invoice_number.replace(/^0+/, "");
       if (this.employees && this.employeesList.length) {
@@ -747,42 +780,32 @@ export default {
         invoice.employee_data = employee_data;
       }
       invoice.product_data = this.products;
-      if (invoice.customer_id) {
-        InvoiceService.updateInvoice(this.invoiceId, this.invoice).then(
-          (result) => {
-            this.$router.push("/invoices");
-            if (result && isPrint) {
-              let resolvedRoute = this.$router.resolve({
-                name: "preview-invoice",
-                params: { invoiceId: result.data.data.id },
-              });
-              window.open(resolvedRoute.href, "_blank");
-            }
-          },
-          (error) => {
-            alert("error to get data", error);
-          }
-        );
+      invoice.customer_info = this.customerInfo;
+      if (invoice.customer_id || this.isGeneralCustomer) {
+        this.updateInvoice(invoice, isPrint);
       } else {
         CustomerService.createCustomer(this.customerInfo).then((item) => {
           invoice.customer_id = item.data.id;
-          InvoiceService.updateInvoice(this.invoiceId, this.invoice).then(
-            (result) => {
-              this.$router.push("/invoices");
-              if (result && isPrint) {
-                let resolvedRoute = this.$router.resolve({
-                  name: "preview-invoice",
-                  params: { invoiceId: result.data.data.id },
-                });
-                window.open(resolvedRoute.href, "_blank");
-              }
-            },
-            (error) => {
-              alert("error to get data", error);
-            }
-          );
+          this.updateInvoice(invoice, isPrint);
         });
       }
+    },
+    updateInvoice(invoice, isPrint) {
+      InvoiceService.updateInvoice(this.invoiceId, invoice).then(
+        (result) => {
+          this.$router.push("/invoices");
+          if (result && isPrint) {
+            let resolvedRoute = this.$router.resolve({
+              name: "preview-invoice",
+              params: { invoiceId: result.data.data.id },
+            });
+            window.open(resolvedRoute.href, "_blank");
+          }
+        },
+        (error) => {
+          alert("error to get data", error);
+        }
+      );
     },
 
     // Allow only Nubmer

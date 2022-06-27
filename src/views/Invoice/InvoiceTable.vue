@@ -95,7 +95,11 @@
         </div>
       </div>
 
-      <div class="table-responsive" id="printMe" v-if="businesses.length">
+      <div
+        class="table-responsive table-sm"
+        id="printMe"
+        v-if="businesses.length"
+      >
         <base-table
           thead-classes="thead-light"
           :data="items"
@@ -131,7 +135,7 @@
               data-placement="left"
               :title="row.item.invoice_note"
             >
-              {{ getCustomerName(row.item.customer_id) }}
+              {{ row.item.customer_info.customer_name }}
             </td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
@@ -223,7 +227,7 @@
         >
         <textarea
           class="form-control form-control-alternative"
-          rows="3"
+          rows="5"
           readonly="true"
           v-model="itemSelected.invoice_note"
         ></textarea>
@@ -262,7 +266,6 @@
 <script>
 import InvoiceService from "../../services/invoice.service";
 import BusinessService from "../../services/business.service";
-import CustomerService from "../../services/customer.service";
 import moment from "moment";
 import Multiselect from "@vueform/multiselect";
 
@@ -276,7 +279,6 @@ export default {
       deleteAlert: false,
       inputSearch: "",
       businesses: [],
-      customers: [],
       searchParams: {},
       itemSelected: "",
       totalCount: 0,
@@ -293,9 +295,6 @@ export default {
   },
   mounted() {
     this.getAllInvoices();
-    CustomerService.getCustomers().then((items) => {
-      this.customers = items.data.data;
-    });
     BusinessService.getBusinesses().then((items) => {
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
@@ -347,14 +346,6 @@ export default {
         name: "edit-invoice",
         params: { invoiceId: invoiceId },
       });
-    },
-    getCustomerName(customerId) {
-      if (this.customers.length) {
-        const customer = this.customers.find(
-          (customer) => customer.id === customerId
-        );
-        return customer.customer_name;
-      }
     },
     getBusinessesLabel(bId) {
       if (this.businesses.length) {
