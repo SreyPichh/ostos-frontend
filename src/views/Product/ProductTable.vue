@@ -47,7 +47,7 @@
       <div class="table-responsive table-sm">
         <base-table thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th class="col-1">ID</th>
+            <th class="col-1">No.</th>
             <th>Name</th>
             <th class="col-1">Price</th>
             <th class="col-1">Business</th>
@@ -62,7 +62,7 @@
                 :to="{ name: 'edit-product', params: { Pid: row.item.id } }"
               >
                 <span class="font-weight-700">
-                  {{ row.item.id }}
+                  {{ row.item.index }}
                 </span>
               </router-link>
             </th>
@@ -227,9 +227,13 @@ export default {
       this.isLoading = true;
       ProductService.getProducts(options).then(
         (res) => {
-          this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
           this.totalCount = this.pagination.total;
+          const products = res.data.data;
+          this.items = products.map((item, index) => {
+            item.index = index + 1 + (this.pagination.current_page - 1) * 20;
+            return item;
+          });
           this.isLoading = false;
         },
         (error) => {
@@ -262,7 +266,11 @@ export default {
           include: "product",
         }).then((b) => {
           this.isSearcing = false;
-          this.items = b.data.data.product.data;
+          const products = b.data.data.product.data;
+          this.items = products.map((item, index) => {
+            item.index = index + 1;
+            return item;
+          });
           this.totalCount = this.items.length;
         });
       }

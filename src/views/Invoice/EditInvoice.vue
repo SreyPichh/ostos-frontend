@@ -89,7 +89,7 @@
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
                 :disabled="disableCustomer"
-                v-model="customerInfo.company"
+                v-model="customerInfo.customer_company"
               />
             </div>
           </div>

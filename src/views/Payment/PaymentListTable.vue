@@ -6,8 +6,7 @@
       :color="'#ff1d5e'"
     />
   </div>
-
-  <div v-if="!isLoading" class="container-fluid mt--5 mb-5">
+  <template v-if="!isLoading">
     <div class="row mb-3">
       <div class="col-xl-12 order-xl-1">
         <card shadow type="secondary" bodyClasses="p-0">
@@ -24,7 +23,7 @@
           <div class="table-responsive" v-if="businesses.length">
             <base-table thead-classes="thead-light" :data="items">
               <template v-slot:columns>
-                <th>No</th>
+                <th>No.</th>
                 <th>Customer</th>
                 <th>Business</th>
                 <th>Total</th>
@@ -119,7 +118,7 @@
         >${{ items.length != 0 ? totalAmount : 0 }}</span
       >
     </div>
-  </div>
+  </template>
   <modal
     v-model:show="deleteAlert"
     gradient="danger"
@@ -173,7 +172,7 @@ export default {
     this.params = this.$route.params;
     if (
       !(
-        this.params.customer_name &&
+        this.params.customer_id &&
         this.params.business_id &&
         this.params.status
       )
@@ -181,7 +180,7 @@ export default {
       this.$router.push("/payments");
     }
 
-    this.getAllReceipts();
+    this.getPaymentList();
     BusinessService.getBusinesses().then((items) => {
       this.businesses = items.data.data.map((item) => {
         return { label: item.name, value: item.id };
@@ -190,40 +189,32 @@ export default {
     });
   },
   methods: {
-    getAllReceipts() {
+    getPaymentList() {
       this.isLoading = true;
-      InvoiceService.getInvoices().then(
-        (res) => {
-          this.pagination = res.data.meta.pagination;
-          this.items = this.groupByInvoice(res.data.data, function (item) {
-            return [item.customer_name, item.business_id, item.status];
-          });
-          this.totalCalculate(this.items);
-        },
-        (error) => {
-          alert("error to get data", error);
-        }
-      );
+      const searchParams =
+        "?search=" +
+        Object.entries(this.params)
+          // eslint-disable-next-line no-unused-vars
+          .filter(([key, value]) => !!value)
+          .map(([key, value]) => {
+            if (value) {
+              return `${key}:${encodeURIComponent(value)}`;
+            }
+          })
+          .join(";") +
+        "&searchJoin=and";
+      InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
+        this.isLoading = false;
+        this.items = invoices.data.data;
+        this.totalCalculate(this.items);
+        this.totalCount = this.items.length;
+      });
     },
     getBusinessesLabel(bId) {
       if (this.businesses) {
         const business = this.businesses.find((b) => b.value === bId);
         return business.label;
       }
-    },
-    groupByInvoice(items, f) {
-      const groups = {};
-      const params = [
-        this.params.customer_name,
-        Number(this.params.business_id),
-        this.params.status,
-      ];
-      items.forEach((item) => {
-        const group = JSON.stringify(f(item));
-        groups[group] = groups[group] || [];
-        groups[group].push(item);
-      });
-      return groups[JSON.stringify(params)];
     },
     totalCalculate(items) {
       this.isLoading = false;

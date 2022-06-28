@@ -88,7 +88,7 @@
                 label-classes="form-control-range"
                 input-classes="form-control-alternative"
                 :disabled="disableCustomer"
-                v-model="customerInfo.company"
+                v-model="customerInfo.customer_company"
               />
             </div>
           </div>
@@ -531,6 +531,7 @@ export default {
         };
       } else {
         const customer = this.customers.find((item) => item.id === customerId);
+        console.log(customer);
         if (customer) {
           this.disableCustomer = true;
           this.customerInfo = {
@@ -538,7 +539,7 @@ export default {
             customer_email: customer.customer_email,
             gender: customer.gender,
             customer_phone_number: customer.customer_phone_number,
-            company: customer.company,
+            customer_company: customer.customer_company,
             customer_address1: customer.customer_address1,
           };
         } else {

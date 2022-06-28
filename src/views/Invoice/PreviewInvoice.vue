@@ -39,16 +39,16 @@
         </div>
         <hr class="my-1" />
         <div class="d-flex justify-content-between">
-          <div class="d-flex p21-px">
+          <div class="d-flex p21-px mb-3">
             <span class="mr-2">Invoce: #INV-{{ invoice.invoice_number }}</span>
-            <qrcode-vue
+            <!-- <qrcode-vue
               :value="qrLink"
               :size="60"
               level="M"
               render-as="svg"
               background="white"
               foreground="#000"
-            />
+            /> -->
           </div>
           <div class="text-right p21-px">
             Date: <span>{{ invoice.date }}</span>

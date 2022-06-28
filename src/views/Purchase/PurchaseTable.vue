@@ -94,7 +94,7 @@
           @row-click="onItemSelected"
         >
           <template v-slot:columns>
-            <th class="col-1">No</th>
+            <th class="col-1">No.</th>
             <th>Suplier</th>
             <th class="col-1">Total</th>
             <th class="col-1">Status</th>
@@ -111,7 +111,7 @@
                   params: { purchaseId: row.item.id },
                 }"
                 ><span class="font-weight-700">
-                  {{ row.item.id }}
+                  {{ row.item.index }}
                 </span></router-link
               >
             </th>
@@ -275,11 +275,16 @@ export default {
       this.isLoading = true;
       PurchaseService.getPurchases(options).then(
         (res) => {
-          this.items = res.data.data;
-          this.totalCalculate(this.items);
           this.searchParams = {};
           this.pagination = res.data.meta.pagination;
           this.totalCount = this.pagination.total;
+
+          const purchases = res.data.data;
+          this.items = purchases.map((item, index) => {
+            item.index = index + 1 + (this.pagination.current_page - 1) * 20;
+            return item;
+          });
+          this.totalCalculate(this.items);
           this.isLoading = false;
         },
         (error) => {
@@ -320,11 +325,15 @@ export default {
             .join(";") +
           "&searchJoin=and";
         PurchaseService.getPurchasesBySearch(searchParams).then((invoices) => {
-          this.items = invoices.data.data;
-          this.totalCalculate(this.items);
           this.pagination = invoices.data.meta.pagination;
-          console.log(invoices.data.data.length);
           this.totalCount = invoices.data.data.length;
+
+          const purchases = invoices.data.data;
+          this.items = purchases.map((item, index) => {
+            item.index = index + 1;
+            return item;
+          });
+          this.totalCalculate(this.items);
         });
       }
     },

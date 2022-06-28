@@ -30,7 +30,7 @@
         @row-click="onSelectNote"
       >
         <template v-slot:columns>
-          <th class="col-1">No</th>
+          <th class="col-1">No.</th>
           <th>Title</th>
           <th class="col-2">Create Date</th>
           <th class="col-2">Updated Date</th>
@@ -45,7 +45,7 @@
                 params: { notebookId: row.item.id },
               }"
               ><span class="font-weight-700">
-                {{ row.item.id }}
+                {{ row.item.index }}
               </span></router-link
             >
           </th>
@@ -150,8 +150,12 @@ export default {
       this.isLoading = true;
       NoteBookService.getNoteBooks(options).then(
         (res) => {
-          this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          const notebooks = res.data.data;
+          this.items = notebooks.map((item, index) => {
+            item.index = index + 1 + (this.pagination.current_page - 1) * 20;
+            return item;
+          });
           this.isLoading = false;
         },
         (error) => {

@@ -31,7 +31,7 @@
       <div class="table-responsive">
         <base-table class="table-sm" thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th class="col-1">ID</th>
+            <th class="col-1">No.</th>
             <th>Name</th>
             <th>Company</th>
             <th class="col-2">Phone Number</th>
@@ -49,7 +49,7 @@
                   params: { customerId: row.item.id },
                 }"
                 ><span class="font-weight-700">
-                  {{ row.item.id }}
+                  {{ row.item.index }}
                 </span></router-link
               >
             </th>
@@ -162,8 +162,12 @@ export default {
       this.isLoading = true;
       CustomerService.getCustomers(options).then(
         (res) => {
-          this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          const customers = res.data.data;
+          this.items = customers.map((item, index) => {
+            item.index = index + 1 + (this.pagination.current_page - 1) * 20;
+            return item;
+          });
           this.isLoading = false;
         },
         (error) => {

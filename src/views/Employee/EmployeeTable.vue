@@ -31,7 +31,7 @@
       <div class="table-responsive">
         <base-table class="table-sm" thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th class="col-1">ID</th>
+            <th class="col-1">No.</th>
             <th>Name</th>
             <th class="col-1">Gender</th>
             <th class="col-2">Created Date</th>
@@ -47,7 +47,7 @@
                   params: { employeeId: row.item.id },
                 }"
                 ><span class="font-weight-700">
-                  {{ row.item.id }}
+                  {{ row.item.index }}
                 </span></router-link
               >
             </th>
@@ -154,8 +154,12 @@ export default {
       this.isLoading = true;
       EmployeeService.getEmployees(options).then(
         (res) => {
-          this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          const employees = res.data.data;
+          this.items = employees.map((item, index) => {
+            item.index = index + 1 + (this.pagination.current_page - 1) * 20;
+            return item;
+          });
           this.isLoading = false;
         },
         (error) => {

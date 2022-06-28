@@ -28,7 +28,7 @@
     <div class="table-responsive table-sm">
       <base-table thead-classes="thead-light" :data="items">
         <template v-slot:columns>
-          <th class="col-1">ID</th>
+          <th class="col-1">No.</th>
           <th>Name</th>
           <th class="col-1">Logo</th>
           <th class="col-2">Created Date</th>
@@ -41,7 +41,7 @@
             <router-link
               :to="{ name: 'edit-business', params: { Bid: row.item.id } }"
               ><span class="font-weight-700">
-                {{ row.item.id }}
+                {{ row.item.index }}
               </span></router-link
             >
           </th>
@@ -131,8 +131,12 @@ export default {
       this.isLoading = true;
       BusinessService.getBusinesses(options).then(
         (res) => {
-          this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
+          const businesses = res.data.data;
+          this.items = businesses.map((item, index) => {
+            item.index = index + 1 + (this.pagination.current_page - 1) * 20;
+            return item;
+          });
           this.isLoading = false;
         },
         (error) => {

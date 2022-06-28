@@ -59,8 +59,9 @@
       <div class="table-responsive" v-if="businesses.length">
         <base-table thead-classes="thead-light" :data="items">
           <template v-slot:columns>
-            <th>No</th>
+            <th>No.</th>
             <th>Customer</th>
+            <th>Phone Number</th>
             <th>Business</th>
             <th>Total</th>
             <th>Status</th>
@@ -72,8 +73,7 @@
                 :to="{
                   name: 'payment-list',
                   params: {
-                    paymentId: row.item.id,
-                    customer_name: row.item.customer_name,
+                    customer_id: row.item.customer_id,
                     business_id: row.item.business_id,
                     status: row.item.status,
                   },
@@ -85,6 +85,9 @@
             </th>
             <td>
               {{ row.item.customer_name }}
+            </td>
+            <td>
+              {{ row.item.customer_phone_number }}
             </td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
@@ -152,7 +155,7 @@ export default {
         (invoices) => {
           let index = 1;
           this.items = this.groupByInvoice(invoices.data.data, function (item) {
-            return [item.customer_name, item.business_id, item.status];
+            return [item.customer_id, item.business_id, item.status];
           }).filter((item) => {
             if (item.status !== "Paid") {
               item.id = index++;
@@ -194,7 +197,9 @@ export default {
           .map((item) => Number(item.total))
           .reduce((prev, next) => prev + next);
         return {
-          customer_name: invoice.customer_name,
+          customer_id: invoice.customer_id,
+          customer_name: invoice.customer_info.customer_name,
+          customer_phone_number: invoice.customer_info.customer_phone_number,
           business_id: invoice.business_id,
           total: total,
           status: invoice.status,
@@ -221,7 +226,7 @@ export default {
         InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
           let index = 1;
           this.items = this.groupByInvoice(invoices.data.data, function (item) {
-            return [item.customer_name, item.business_id, item.status];
+            return [item.customer_id, item.business_id, item.status];
           }).filter((item) => {
             if (item.status !== "Paid") {
               item.id = index++;

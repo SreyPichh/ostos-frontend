@@ -65,7 +65,6 @@
           }"
         />
         <sidebar-item
-          :isDisabled="true"
           :link="{
             name: 'Payment',
             icon: 'fa fa-cash-register text-white',
@@ -84,7 +83,7 @@
             name: 'Note Book',
             icon: 'fa fa-clipboard text-white',
             path: '/notebooks',
-          }"
+          }" 
         />
         <sidebar-item
           :isDisabled="true"

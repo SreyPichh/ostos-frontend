@@ -98,12 +98,12 @@ const routes = [
         children: [
           { path: "", name: "invoice-table", component: InvoiceTable },
           {
-            path: "/new",
+            path: "/invoices/new",
             name: "new-invoice",
             components: { default: NewInvoice },
           },
           {
-            path: "/:invoiceId",
+            path: "/invoices/:invoiceId",
             name: "edit-invoice",
             components: { default: EditInvoice },
           },
@@ -136,12 +136,12 @@ const routes = [
         children: [
           { path: "", name: "product-table", component: ProductTable },
           {
-            path: "/new",
+            path: "/products/new",
             name: "new-product",
             components: { default: NewProduct },
           },
           {
-            path: "/:Pid",
+            path: "/products/:Pid",
             name: "edit-product",
             components: { default: EditProduct },
           },
@@ -154,12 +154,12 @@ const routes = [
         children: [
           { path: "", name: "customer-table", component: CustomerTable },
           {
-            path: "/new",
+            path: "/customers/new",
             name: "new-customer",
             components: { default: NewCustomer },
           },
           {
-            path: "/:customerId",
+            path: "/customers/:customerId",
             name: "edit-customer",
             components: { default: EditCustomer },
           },
@@ -172,12 +172,12 @@ const routes = [
         children: [
           { path: "", name: "employee-table", component: EmployeeTable },
           {
-            path: "/new",
+            path: "/employees/new",
             name: "new-employee",
             components: { default: NewEmployee },
           },
           {
-            path: "/:employeeId",
+            path: "/employees/:employeeId",
             name: "edit-employee",
             components: { default: EditEmployee },
           },
@@ -191,7 +191,7 @@ const routes = [
         children: [
           { path: "", name: "payment-table", component: PaymentReportTable },
           {
-            path: "/:paymentId",
+            path: "/payments/:customer_id",
             name: "payment-list",
             components: { default: PaymentListTable },
           },
@@ -204,12 +204,12 @@ const routes = [
         children: [
           { path: "", name: "purchase-table", component: PurchaseTable },
           {
-            path: "/new",
+            path: "/purchases/new",
             name: "new-purchase",
             components: { default: NewPurchase },
           },
           {
-            path: "/:purchaseId",
+            path: "/purchases/:purchaseId",
             name: "edit-purchase",
             components: { default: EditPurchase },
           },
@@ -222,12 +222,12 @@ const routes = [
         children: [
           { path: "", name: "notebook-table", component: NoteBookTable },
           {
-            path: "/new",
+            path: "/notebooks/new",
             name: "new-notebook",
             components: { default: NewNoteBook },
           },
           {
-            path: "/:notebookId",
+            path: "/notebooks/:notebookId",
             name: "edit-notebook",
             components: { default: EditNoteBook },
           },
@@ -310,7 +310,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/invoices/preview", "/login", "/register"];
+  const publicPages = ["/login", "/register"];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
   if (authRequired && !loggedIn) {
