@@ -8,7 +8,7 @@
   </div>
 
   <template v-if="!isLoading">
-    <div class="card">
+    <div class="card mb-3">
       <div class="card-header border-0">
         <div class="row align-items-center">
           <div class="col d-flex">

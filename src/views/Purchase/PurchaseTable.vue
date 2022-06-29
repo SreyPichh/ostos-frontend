@@ -176,11 +176,7 @@
         Empty Data
       </div>
     </div>
-    <div
-      v-if="
-        isPagination && !items.length !== 0 && this.pagination.total_pages !== 1
-      "
-    >
+    <div v-if="!items.length !== 0 && this.pagination.total_pages !== 1">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
@@ -256,7 +252,6 @@ export default {
       totalCount: 0,
       totalAmount: 0,
       isSearching: false,
-      isPagination: true,
       inputSearch: "",
       modelConfig: {
         type: "string",
@@ -270,6 +265,9 @@ export default {
   methods: {
     onItemSelected(value) {
       this.itemSelected = value;
+    },
+    onPaginationClicked(value) {
+      this.getAllPurchases({ page: value });
     },
     getAllPurchases(options) {
       this.isLoading = true;

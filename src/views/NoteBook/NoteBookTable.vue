@@ -152,6 +152,7 @@ export default {
       isLoading: true,
       deleteAlert: false,
       selectedNoteBook: "",
+      pagination: {},
     };
   },
   methods: {
