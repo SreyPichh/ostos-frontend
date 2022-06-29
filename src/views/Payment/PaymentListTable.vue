@@ -49,7 +49,7 @@
                   >
                 </th>
                 <td>
-                  {{ row.item.customer_name }}
+                  {{ row.item.customer_info.customer_name }}
                 </td>
                 <td>
                   {{ getBusinessesLabel(row.item.business_id) }}

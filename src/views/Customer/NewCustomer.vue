@@ -101,6 +101,7 @@ export default {
   mounted() {},
   methods: {
     createCustomer() {
+      this.customer.status = "Active";
       CustomerService.createCustomer(this.customer).then(
         () => {
           this.$router.push("/customers");

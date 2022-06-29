@@ -116,6 +116,7 @@ export default {
   },
   methods: {
     updateCustomer() {
+      this.customer.status = "Active";
       CustomerService.updateCustomer(this.customerId, this.customer).then(
         () => {
           this.$router.push("/customers");

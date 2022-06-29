@@ -784,6 +784,7 @@ export default {
       if (invoice.customer_id || this.isGeneralCustomer) {
         this.updateInvoice(invoice, isPrint);
       } else {
+        this.customerInfo.status = "Active";
         CustomerService.createCustomer(this.customerInfo).then((item) => {
           invoice.customer_id = item.data.id;
           this.updateInvoice(invoice, isPrint);

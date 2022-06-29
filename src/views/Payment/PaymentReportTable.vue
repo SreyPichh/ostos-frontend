@@ -22,7 +22,7 @@
               <label class="form-control-label">Status</label>
               <Multiselect
                 v-model="searchParams.status"
-                :options="['Unpaid', 'Partial Billed']"
+                :options="['Paid', 'Unpaid', 'Partial Billed']"
               />
             </div>
             <base-button type="default" @click.prevent="onFilterPayment"
@@ -62,6 +62,7 @@
             <th>No.</th>
             <th>Customer</th>
             <th>Phone Number</th>
+            <th>Invoices</th>
             <th>Business</th>
             <th>Total</th>
             <th>Status</th>
@@ -69,6 +70,11 @@
 
           <template v-slot:default="row">
             <th scope="row" class="align-middle">
+              <span class="font-weight-700">
+                {{ row.item.index }}
+              </span>
+            </th>
+            <td>
               <router-link
                 :to="{
                   name: 'payment-list',
@@ -79,15 +85,15 @@
                   },
                 }"
                 ><span class="font-weight-700">
-                  {{ row.item.id }}
+                  {{ row.item.customer_name }}
                 </span></router-link
               >
-            </th>
-            <td>
-              {{ row.item.customer_name }}
             </td>
             <td>
               {{ row.item.customer_phone_number }}
+            </td>
+            <td>
+              {{ row.item.invoice_count }}
             </td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
@@ -153,14 +159,15 @@ export default {
       this.isLoading = true;
       InvoiceService.getInvoices(options).then(
         (invoices) => {
-          let index = 1;
-          this.items = this.groupByInvoice(invoices.data.data, function (item) {
-            return [item.customer_id, item.business_id, item.status];
-          }).filter((item) => {
-            if (item.status !== "Paid") {
-              item.id = index++;
-              return item;
+          const payments = this.groupByInvoice(
+            invoices.data.data,
+            function (item) {
+              return [item.customer_id, item.business_id, item.status];
             }
+          );
+          this.items = payments.map((item, index) => {
+            item.index = index + 1;
+            return item;
           });
           this.totalCalculate(this.items);
           this.totalCount = this.items.length;
@@ -202,8 +209,8 @@ export default {
           customer_phone_number: invoice.customer_info.customer_phone_number,
           business_id: invoice.business_id,
           total: total,
+          invoice_count: groups[group].length,
           status: invoice.status,
-          items: groups[group],
         };
       });
     },
@@ -224,14 +231,15 @@ export default {
             .join(";") +
           "&searchJoin=and";
         InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
-          let index = 1;
-          this.items = this.groupByInvoice(invoices.data.data, function (item) {
-            return [item.customer_id, item.business_id, item.status];
-          }).filter((item) => {
-            if (item.status !== "Paid") {
-              item.id = index++;
-              return item;
+          const payments = this.groupByInvoice(
+            invoices.data.data,
+            function (item) {
+              return [item.customer_id, item.business_id, item.status];
             }
+          );
+          this.items = payments.map((item, index) => {
+            item.index = index + 1;
+            return item;
           });
           this.totalCalculate(this.items);
           this.isSearching = false;
