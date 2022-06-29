@@ -6,8 +6,10 @@ class CustomerService {
       return response.data;
     });
   }
-  getCustomers() {
-    return api.get(API_URL);
+  getCustomers(params) {
+    return api.get(API_URL, {
+      params: params,
+    });
   }
   getCustomerById(customerId) {
     return api.get(API_URL + `/${customerId}`);

@@ -6,79 +6,90 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card mb-3" v-if="!isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col d-flex">
-          <h4 class="mb-0">
-            All Business : <span class="text-muted">{{ items.length }}</span>
-          </h4>
-        </div>
-        <div class="col text-right">
-          <router-link
-            class="btn btn-sm btn-default"
-            :to="{ name: 'new-business' }"
-          >
-            Create New
-          </router-link>
+  <template v-if="!isLoading">
+    <div class="card mb-3">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col d-flex">
+            <h4 class="mb-0">
+              All Business : <span class="text-muted">{{ items.length }}</span>
+            </h4>
+          </div>
+          <div class="col text-right">
+            <router-link
+              class="btn btn-sm btn-default"
+              :to="{ name: 'new-business' }"
+            >
+              Create New
+            </router-link>
+          </div>
         </div>
       </div>
+
+      <div class="table-responsive table-sm">
+        <base-table thead-classes="thead-light" :data="items">
+          <template v-slot:columns>
+            <th class="col-1">No.</th>
+            <th>Name</th>
+            <th class="col-1">Logo</th>
+            <th class="col-2">Created Date</th>
+            <th class="col-2">Updated Date</th>
+            <th class="col-1">Action</th>
+          </template>
+
+          <template v-slot:default="row">
+            <th scope="row" class="align-middle">
+              <router-link
+                :to="{ name: 'edit-business', params: { Bid: row.item.id } }"
+                ><span class="font-weight-700">
+                  {{ row.item.index }}
+                </span></router-link
+              >
+            </th>
+            <td>
+              {{ row.item.name }}
+            </td>
+            <td>LOGO</td>
+            <td>
+              {{
+                moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              {{
+                moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              <base-button
+                @click="onEditBusiness(row.item.id)"
+                type="default"
+                size="sm"
+                ><i class="fas fa-pencil-alt"></i
+              ></base-button>
+              <base-button
+                @click.prevent="onDeleteClick(row.item.id)"
+                type="danger"
+                size="sm"
+                ><i class="fas fa-trash"></i
+              ></base-button>
+            </td>
+          </template>
+        </base-table>
+      </div>
+      <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
     </div>
-
-    <div class="table-responsive table-sm">
-      <base-table thead-classes="thead-light" :data="items">
-        <template v-slot:columns>
-          <th class="col-1">No.</th>
-          <th>Name</th>
-          <th class="col-1">Logo</th>
-          <th class="col-2">Created Date</th>
-          <th class="col-2">Updated Date</th>
-          <th class="col-1">Action</th>
-        </template>
-
-        <template v-slot:default="row">
-          <th scope="row" class="align-middle">
-            <router-link
-              :to="{ name: 'edit-business', params: { Bid: row.item.id } }"
-              ><span class="font-weight-700">
-                {{ row.item.index }}
-              </span></router-link
-            >
-          </th>
-          <td>
-            {{ row.item.name }}
-          </td>
-          <td>LOGO</td>
-          <td>
-            {{
-              moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            {{
-              moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            <base-button
-              @click="onEditBusiness(row.item.id)"
-              type="default"
-              size="sm"
-              ><i class="fas fa-pencil-alt"></i
-            ></base-button>
-            <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
-              type="danger"
-              size="sm"
-              ><i class="fas fa-trash"></i
-            ></base-button>
-          </td>
-        </template>
-      </base-table>
+    <div v-if="!items.length !== 0 && this.pagination.total_pages !== 1">
+      <base-pagination
+        :total="pagination.total"
+        :perPage="pagination.per_page"
+        :value="pagination.current_page"
+        @input="onPaginationClicked"
+        align="center"
+        size="sm"
+      ></base-pagination>
     </div>
-    <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-  </div>
-
+  </template>
   <modal
     v-model:show="deleteAlert"
     gradient="danger"
@@ -127,6 +138,9 @@ export default {
     this.getAllBusinesses();
   },
   methods: {
+    onPaginationClicked(value) {
+      this.getAllNotebooks({ page: value });
+    },
     getAllBusinesses(options) {
       this.isLoading = true;
       BusinessService.getBusinesses(options).then(

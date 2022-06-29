@@ -1,8 +1,10 @@
 import api from "./api";
 const API_URL = "quotes";
 class QuoteService {
-  getQuotes() {
-    return api.get(API_URL);
+  getQuotes(params) {
+    return api.get(API_URL, {
+      params: params,
+    });
   }
   getQuotesBySearch(searchParams) {
     return api.get(API_URL + searchParams);

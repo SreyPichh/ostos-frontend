@@ -123,11 +123,7 @@
         Empty Data
       </div>
     </div>
-    <div
-      v-if="
-        isPagination && !items.length !== 0 && this.pagination.total_pages !== 1
-      "
-    >
+    <div v-if="!items.length !== 0 && this.pagination.total_pages !== 1">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
@@ -183,7 +179,6 @@ export default {
       isLoading: true,
       isSearcing: false,
       deleteAlert: false,
-      isPagination: true,
       totalCount: 0,
       searchParams: {
         business: "all",

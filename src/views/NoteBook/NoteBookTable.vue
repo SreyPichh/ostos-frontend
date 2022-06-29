@@ -6,88 +6,100 @@
       :color="'#ff1d5e'"
     />
   </div>
-  <div class="card mb-3" v-if="!isLoading">
-    <div class="card-header border-0">
-      <div class="row align-items-center">
-        <div class="col d-flex">
-          <h4 class="mb-0">NoteBook List</h4>
-        </div>
-        <div class="col text-right">
-          <router-link
-            class="btn btn-sm btn-default"
-            :to="{ name: 'new-notebook' }"
-          >
-            Create New
-          </router-link>
+  <template v-if="!isLoading">
+    <div class="card mb-3">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col d-flex">
+            <h4 class="mb-0">NoteBook List</h4>
+          </div>
+          <div class="col text-right">
+            <router-link
+              class="btn btn-sm btn-default"
+              :to="{ name: 'new-notebook' }"
+            >
+              Create New
+            </router-link>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="table-responsive table-sm" id="printMe">
-      <base-table
-        thead-classes="thead-light"
-        :data="items"
-        @row-click="onSelectNote"
-      >
-        <template v-slot:columns>
-          <th class="col-1">No.</th>
-          <th>Title</th>
-          <th class="col-2">Create Date</th>
-          <th class="col-2">Updated Date</th>
-          <th class="col-1">Action</th>
-        </template>
+      <div class="table-responsive table-sm" id="printMe">
+        <base-table
+          thead-classes="thead-light"
+          :data="items"
+          @row-click="onSelectNote"
+        >
+          <template v-slot:columns>
+            <th class="col-1">No.</th>
+            <th>Title</th>
+            <th class="col-2">Create Date</th>
+            <th class="col-2">Updated Date</th>
+            <th class="col-1">Action</th>
+          </template>
 
-        <template v-slot:default="row">
-          <th scope="row" class="align-middle col-1">
-            <router-link
-              :to="{
-                name: 'edit-notebook',
-                params: { notebookId: row.item.id },
-              }"
-              ><span class="font-weight-700">
-                {{ row.item.index }}
-              </span></router-link
+          <template v-slot:default="row">
+            <th scope="row" class="align-middle col-1">
+              <router-link
+                :to="{
+                  name: 'edit-notebook',
+                  params: { notebookId: row.item.id },
+                }"
+                ><span class="font-weight-700">
+                  {{ row.item.index }}
+                </span></router-link
+              >
+            </th>
+            <td
+              class="truncate"
+              data-toggle="tooltip"
+              data-placement="left"
+              :title="row.item.description"
             >
-          </th>
-          <td
-            class="truncate"
-            data-toggle="tooltip"
-            data-placement="left"
-            :title="row.item.description"
-          >
-            {{ row.item.title }}
-          </td>
-          <td>
-            {{
-              moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            {{
-              moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
-            }}
-          </td>
-          <td>
-            <base-button
-              @click="onEditNotebook(row.item.id)"
-              type="default"
-              size="sm"
-            >
-              <i class="fas fa-pencil-alt"></i>
-            </base-button>
-            <base-button
-              @click.prevent="onDeleteClick(row.item.id)"
-              type="danger"
-              size="sm"
-            >
-              <i class="fas fa-trash"></i>
-            </base-button>
-          </td>
-        </template>
-      </base-table>
+              {{ row.item.title }}
+            </td>
+            <td>
+              {{
+                moment(row.item.created_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              {{
+                moment(row.item.updated_at).format("DD/MM/YYYY [&nbsp;] HH:mm")
+              }}
+            </td>
+            <td>
+              <base-button
+                @click="onEditNotebook(row.item.id)"
+                type="default"
+                size="sm"
+              >
+                <i class="fas fa-pencil-alt"></i>
+              </base-button>
+              <base-button
+                @click.prevent="onDeleteClick(row.item.id)"
+                type="danger"
+                size="sm"
+              >
+                <i class="fas fa-trash"></i>
+              </base-button>
+            </td>
+          </template>
+        </base-table>
+      </div>
+      <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
     </div>
-    <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
-  </div>
+    <div v-if="!items.length !== 0 && this.pagination.total_pages !== 1">
+      <base-pagination
+        :total="pagination.total"
+        :perPage="pagination.per_page"
+        :value="pagination.current_page"
+        @input="onPaginationClicked"
+        align="center"
+        size="sm"
+      ></base-pagination>
+    </div>
+  </template>
   <div class="row mt-auto">
     <div class="col-lg-6 form-group">
       <label class="form-control-label"
@@ -145,6 +157,9 @@ export default {
   methods: {
     onSelectNote(value) {
       this.selectedNoteBook = value;
+    },
+    onPaginationClicked(value) {
+      this.getAllNotebooks({ page: value });
     },
     getAllNotebooks(options) {
       this.isLoading = true;

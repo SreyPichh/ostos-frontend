@@ -6,8 +6,10 @@ class EmployeeService {
       return response.data;
     });
   }
-  getEmployees() {
-    return api.get(API_URL);
+  getEmployees(params) {
+    return api.get(API_URL, {
+      params: params,
+    });
   }
   getEmployeeById(employeeId) {
     return api.get(API_URL + `/${employeeId}`);

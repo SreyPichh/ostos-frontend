@@ -33,6 +33,7 @@
           <template v-slot:columns>
             <th class="col-1">No.</th>
             <th>Name</th>
+            <th>Phone Number</th>
             <th class="col-1">Gender</th>
             <th class="col-2">Created Date</th>
             <th class="col-2">Updated Date</th>
@@ -53,6 +54,9 @@
             </th>
             <td>
               {{ row.item.name }}
+            </td>
+            <td>
+              {{ row.item.phone_number }}
             </td>
             <td>
               {{ row.item.gender }}

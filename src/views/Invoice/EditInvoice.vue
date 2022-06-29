@@ -484,7 +484,7 @@ export default {
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {
       const invoice = item.data.data;
       this.isGeneralCustomer = invoice.customer_id === null;
-      CustomerService.getCustomers().then((customers) => {
+      CustomerService.getCustomers({ limit: 0 }).then((customers) => {
         this.customers = customers.data.data;
         this.customerOptions = customers.data.data.map((item) => {
           const name = item.customer_name;
@@ -530,8 +530,7 @@ export default {
         !invoice ||
         !invoice.status ||
         !invoice.business_id ||
-        !invoice.invoice_number ||
-        !this.customerInfo.customer_name
+        !invoice.invoice_number
       );
     },
   },

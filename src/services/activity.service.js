@@ -1,8 +1,10 @@
 import api from "./api";
 const API_URL = "recentactions";
 class ActivityService {
-  getActivities() {
-    return api.get(API_URL);
+  getActivities(params) {
+    return api.get(API_URL, {
+      params: params,
+    });
   }
 }
 export default new ActivityService();

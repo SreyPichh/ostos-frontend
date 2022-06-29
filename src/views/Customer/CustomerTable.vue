@@ -144,7 +144,6 @@ export default {
     return {
       items: [],
       isLoading: true,
-      isPagination: true,
       deleteAlert: false,
     };
   },
