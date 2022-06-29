@@ -75,7 +75,7 @@
       </div>
       <div v-if="items.length == 0" class="text-center p-5">Empty Data</div>
     </div>
-    <div v-if="this.pagination.total_pages !== 1">
+    <div v-if="pagination.total_pages !== 1">
       <base-pagination
         :total="pagination.total"
         :perPage="pagination.per_page"
