@@ -156,8 +156,15 @@ export default {
   },
   methods: {
     getAllInvoices(options) {
+      const req = Object.assign(
+        {
+          orderBy: "status",
+          sortedBy: "DESC",
+        },
+        options
+      );
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      InvoiceService.getInvoices(req).then(
         (invoices) => {
           const payments = this.groupByInvoice(
             invoices.data.data,

@@ -14,7 +14,7 @@
           <div class="col d-flex">
             <h4 class="mb-0">
               All Customers :
-              <span class="text-muted">{{ items.length }}</span>
+              <span class="text-muted">{{ totalCount }} items</span>
             </h4>
           </div>
           <div class="col text-right">
@@ -145,6 +145,7 @@ export default {
       items: [],
       isLoading: true,
       deleteAlert: false,
+      totalCount: 0,
     };
   },
   created: function () {
@@ -162,6 +163,7 @@ export default {
       CustomerService.getCustomers(options).then(
         (res) => {
           this.pagination = res.data.meta.pagination;
+          this.totalCount = this.pagination.total;
           const customers = res.data.data;
           this.items = customers.map((item, index) => {
             item.index = index + 1 + (this.pagination.current_page - 1) * 20;

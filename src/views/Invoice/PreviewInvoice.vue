@@ -116,7 +116,10 @@
           <tbody>
             <tr v-for="(product, index) in invoice.product_data" :key="index">
               <td scope="row" class="align-middle">{{ index + 1 }}</td>
-              <td>{{ product.product_name }}</td>
+              <td>
+                {{ product.product_name }}
+                {{ product.description ? `(${product.description})` : "" }}
+              </td>
               <td v-if="selectedBusiness !== 'car'">
                 {{
                   (product.width && product.length) || !product.coverAll

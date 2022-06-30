@@ -11,7 +11,10 @@
       <div class="card-header border-0">
         <div class="row align-items-center">
           <div class="col d-flex">
-            <h4 class="mb-0">NoteBook List</h4>
+            <h4 class="mb-0">
+              NoteBook List :
+              <span class="text-muted">{{ totalCount }} items</span>
+            </h4>
           </div>
           <div class="col text-right">
             <router-link
@@ -152,6 +155,7 @@ export default {
       isLoading: true,
       deleteAlert: false,
       selectedNoteBook: "",
+      totalCount: 0,
     };
   },
   methods: {
@@ -166,6 +170,7 @@ export default {
       NoteBookService.getNoteBooks(options).then(
         (res) => {
           this.pagination = res.data.meta.pagination;
+          this.totalCount = this.pagination.total;
           const notebooks = res.data.data;
           this.items = notebooks.map((item, index) => {
             item.index = index + 1 + (this.pagination.current_page - 1) * 20;

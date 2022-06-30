@@ -14,7 +14,7 @@
           <div class="col d-flex">
             <h4 class="mb-0">
               All Employees :
-              <span class="text-muted">{{ items.length }}</span>
+              <span class="text-muted">{{ totalCount }} items</span>
             </h4>
           </div>
           <div class="col text-right">
@@ -142,6 +142,7 @@ export default {
       isLoading: true,
       isPagination: true,
       deleteAlert: false,
+      totalCount: 0,
     };
   },
   created: function () {
@@ -159,6 +160,7 @@ export default {
       EmployeeService.getEmployees(options).then(
         (res) => {
           this.pagination = res.data.meta.pagination;
+          this.totalCount = this.pagination.total;
           const employees = res.data.data;
           this.items = employees.map((item, index) => {
             item.index = index + 1 + (this.pagination.current_page - 1) * 20;

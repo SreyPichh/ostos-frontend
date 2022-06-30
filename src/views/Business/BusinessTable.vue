@@ -12,7 +12,8 @@
         <div class="row align-items-center">
           <div class="col d-flex">
             <h4 class="mb-0">
-              All Business : <span class="text-muted">{{ items.length }}</span>
+              All Business :
+              <span class="text-muted">{{ items.length }} items</span>
             </h4>
           </div>
           <div class="col text-right">

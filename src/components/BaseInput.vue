@@ -22,7 +22,7 @@
       v-if="addonLeftIcon || $slots.addonLeft || addonLeftText"
       class="input-group-prepend"
     >
-      <span class="input-group-text addon-disabled rounded-left">
+      <span class="input-group-text addon-disabled rounded-left input-border">
         <slot name="addonLeft">
           <i v-if="addonLeftIcon" :class="addonLeftIcon"></i>
           <span v-if="addonLeftText">{{ addonLeftText }}</span>
@@ -172,5 +172,9 @@ export default {
 .addon-disabled {
   background-color: #e9ecef;
   opacity: 1;
+}
+
+.input-border {
+  border: 1px solid #cad1d7;
 }
 </style>

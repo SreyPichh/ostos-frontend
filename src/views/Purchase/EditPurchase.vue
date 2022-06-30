@@ -341,7 +341,7 @@ export default {
 <style scoped>
 .table td {
   padding: 0.5rem !important;
-  vertical-align: unset !important;
+  vertical-align: unset;
   border-top: 1px solid #e9ecef;
 }
 
@@ -360,5 +360,9 @@ table thead {
 
 .date-control {
   border-radius: 0 0.375rem 0.375rem 0 !important;
+}
+
+.align-middle {
+  vertical-align: middle !important;
 }
 </style>

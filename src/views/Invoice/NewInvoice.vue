@@ -46,7 +46,6 @@
                 label="Name"
                 addonLeftIcon="fa fa-user"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative"
                 :disabled="disableCustomer"
                 v-model="customerInfo.customer_name"
               />
@@ -56,7 +55,6 @@
                 label="Email"
                 addonLeftIcon="fa fa-envelope"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative"
                 :disabled="disableCustomer"
                 v-model="customerInfo.customer_email"
               />
@@ -74,7 +72,6 @@
                 label="Phone Number"
                 addonLeftIcon="fa fa-phone"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative"
                 :disabled="disableCustomer"
                 v-model="customerInfo.customer_phone_number"
               />
@@ -86,7 +83,6 @@
                 label="Customer Company"
                 addonLeftIcon="fa fa-building"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative"
                 :disabled="disableCustomer"
                 v-model="customerInfo.customer_company"
               />
@@ -96,7 +92,7 @@
             <div class="col-lg-12 form-group">
               <label class="form-control-label">Address</label>
               <textarea
-                class="form-control form-control-alternative"
+                class="form-control"
                 rows="2"
                 :disabled="disableCustomer"
                 v-model="customerInfo.customer_address1"
@@ -117,7 +113,7 @@
                 label="Invoice No"
                 @keypress="isNumber($event)"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative px-2"
+                input-classes="px-2"
                 v-model="invoice.invoice_number"
               />
             </div>
@@ -125,7 +121,7 @@
               <base-input
                 label="PO"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative px-2"
+                input-classes="px-2"
                 v-model="invoice.po"
               />
             </div>
@@ -185,7 +181,6 @@
                 @keypress="isNumber($event)"
                 label="Due Amount"
                 label-classes="form-control-range"
-                input-classes="form-control-alternative"
                 v-model="invoice.due_amount"
               />
             </div>
@@ -227,6 +222,7 @@
                 >
                   Product Name
                 </th>
+                <th>Description</th>
                 <template v-if="selectedBusiness == 'printing'">
                   <th>ម៉ៅផ្ដាច់</th>
                 </template>
@@ -242,7 +238,7 @@
               </thead>
 
               <tbody v-for="(product, index) in products" :key="index">
-                <td>
+                <td class="align-middle">
                   <Multiselect
                     v-model="product.product_id"
                     :searchable="true"
@@ -251,6 +247,9 @@
                     @change="onProductChange(index, $event)"
                     :options="productList"
                   />
+                </td>
+                <td>
+                  <base-input v-model="product.description" />
                 </td>
                 <template v-if="selectedBusiness == 'printing'">
                   <td>
@@ -269,7 +268,6 @@
                       :disabled="product.coverAll"
                       @keypress="isNumber($event)"
                       @change="onProductCalculate(index)"
-                      input-classes="form-control-alternative"
                       v-model="product.width"
                     />
                   </td>
@@ -278,7 +276,6 @@
                       :disabled="product.coverAll"
                       @keypress="isNumber($event)"
                       @change="onProductCalculate(index)"
-                      input-classes="form-control-alternative"
                       v-model="product.length"
                     />
                   </td>
@@ -296,7 +293,6 @@
                       @keypress="isNumber($event)"
                       @change="onProductCalculate(index, 'quantity')"
                       :name="`products[${index}][quantity]`"
-                      input-classes="form-control-alternative"
                       v-model="product.quantity"
                     />
                   </td>
@@ -306,7 +302,6 @@
                     @keypress="isNumber($event)"
                     @change="onProductCalculate(index, 'unitPrice')"
                     placeholder="Unit Price"
-                    input-classes="form-control-alternative"
                     v-model="product.unit_price"
                   />
                 </td>
@@ -358,7 +353,7 @@
       <div class="col-lg-6 form-group">
         <label class="form-control-label">Invoice Note.</label>
         <textarea
-          class="form-control form-control-alternative"
+          class="form-control"
           rows="4"
           v-model="invoice.invoice_note"
         ></textarea>
@@ -806,11 +801,10 @@ export default {
   },
 };
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
 .table td {
   padding: 0.5rem !important;
-  vertical-align: unset !important;
+  vertical-align: unset;
   border-top: 1px solid #e9ecef;
 }
 
@@ -829,5 +823,9 @@ table thead {
 
 .date-control {
   border-radius: 0 0.375rem 0.375rem 0 !important;
+}
+
+.align-middle {
+  vertical-align: middle !important;
 }
 </style>

@@ -317,8 +317,15 @@ export default {
       this.getAllInvoices({ page: value });
     },
     getAllInvoices(options) {
+      const req = Object.assign(
+        {
+          orderBy: "updated_at",
+          sortedBy: "DESC",
+        },
+        options
+      );
       this.isLoading = true;
-      InvoiceService.getInvoices(options).then(
+      InvoiceService.getInvoices(req).then(
         (res) => {
           this.items = res.data.data;
           this.pagination = res.data.meta.pagination;
