@@ -7,7 +7,7 @@
     />
   </div>
 
-  <template v-if="!isLoading">
+  <template v-if="!isLoading && businesses.length">
     <div class="row mb-3">
       <div class="col-xl-12">
         <card shadow type="secondary">
@@ -135,7 +135,11 @@
               data-placement="left"
               :title="row.item.invoice_note"
             >
-              {{ row.item.customer_info.customer_name }}
+              {{
+                row.item.customer_info.customer_name
+                  ? row.item.customer_info.customer_name
+                  : "-----"
+              }}
             </td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
@@ -355,9 +359,11 @@ export default {
       });
     },
     getBusinessesLabel(bId) {
-      if (this.businesses.length) {
+      if (this.businesses.length && bId) {
         const business = this.businesses.find((b) => b.value === bId);
         return business.label;
+      } else {
+        return "-----";
       }
     },
     onFilterInvoice() {

@@ -313,9 +313,11 @@ export default {
       });
     },
     getBusinessesLabel(bId) {
-      if (this.businesses) {
+      if (this.businesses && bId) {
         const business = this.businesses.find((b) => b.value === bId);
         return business.label;
+      } else {
+        return "-----";
       }
     },
     onFilterQuote() {
