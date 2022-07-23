@@ -24,6 +24,7 @@
     "epic-spinners": "^1.1.0",
     "google-maps": "4.3.3",
     "nouislider": "14.6.0",
+    "number-to-words": "^1.2.4",
     "qrcode.vue": "^3.3.3",
     "v-calendar": "^3.0.0-alpha.8",
     "vee-validate": "^4.5.11",

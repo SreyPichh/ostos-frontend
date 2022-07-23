@@ -54,7 +54,7 @@
                 <td>
                   {{ getBusinessesLabel(row.item.business_id) }}
                 </td>
-                <td>${{ row.item.total }}</td>
+                <td>${{ row.item.total.toFixed(2) }}</td>
                 <td>
                   <span
                     class="badge"
@@ -115,7 +115,7 @@
     <div class="float-right">
       <span class="h3">Total : </span>
       <span class="bg-gradient-neutral px-4 py-2"
-        >${{ items.length != 0 ? totalAmount : 0 }}</span
+        >${{ items.length != 0 ? totalAmount.toFixed(2) : 0 }}</span
       >
     </div>
   </template>
@@ -191,18 +191,23 @@ export default {
   methods: {
     getPaymentList() {
       this.isLoading = true;
-      const searchParams =
-        "?search=" +
-        Object.entries(this.params)
-          // eslint-disable-next-line no-unused-vars
-          .filter(([key, value]) => !!value)
-          .map(([key, value]) => {
-            if (value) {
-              return `${key}:${encodeURIComponent(value)}`;
-            }
-          })
-          .join(";") +
-        "&searchJoin=and";
+      let searchParams = "";
+      if (this.params.customer_id === "null") {
+        searchParams = "?search=customer_id:null";
+      } else {
+        searchParams =
+          "?search=" +
+          Object.entries(this.params)
+            // eslint-disable-next-line no-unused-vars
+            .filter(([key, value]) => !!value)
+            .map(([key, value]) => {
+              if (value) {
+                return `${key}:${encodeURIComponent(value)}`;
+              }
+            })
+            .join(";") +
+          "&searchJoin=and";
+      }
       InvoiceService.getInvoicesBySearch(searchParams).then((invoices) => {
         this.isLoading = false;
         this.items = invoices.data.data;

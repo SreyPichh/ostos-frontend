@@ -144,7 +144,7 @@
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
             </td>
-            <td>${{ row.item.total }}</td>
+            <td>${{ row.item.total.toFixed(2) }}</td>
             <td>
               <span
                 class="badge"

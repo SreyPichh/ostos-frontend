@@ -90,7 +90,11 @@
               >
             </td>
             <td>
-              {{ row.item.customer_phone_number }}
+              {{
+                row.item.customer_phone_number
+                  ? row.item.customer_phone_number
+                  : "-----"
+              }}
             </td>
             <td>
               {{ row.item.invoice_count }}
@@ -98,7 +102,7 @@
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
             </td>
-            <td>${{ row.item.total }}</td>
+            <td>${{ row.item.total.toFixed(2) }}</td>
             <td>
               <span
                 class="badge"
@@ -121,7 +125,7 @@
   <div class="float-right">
     <span class="h3">Total : </span>
     <span class="bg-gradient-neutral px-4 py-2"
-      >${{ items.length != 0 ? totalAmount : 0 }}</span
+      >${{ items.length != 0 ? totalAmount.toFixed(2) : 0 }}</span
     >
   </div>
 </template>
@@ -203,7 +207,12 @@ export default {
     groupByInvoice(items, f) {
       var groups = {};
       items.forEach((item) => {
-        var group = JSON.stringify(f(item));
+        let group = "";
+        if (f(item)[0] === null) {
+          group = JSON.stringify([null]);
+        } else {
+          group = JSON.stringify(f(item));
+        }
         groups[group] = groups[group] || [];
         groups[group].push(item);
       });
@@ -212,15 +221,25 @@ export default {
         const total = groups[group]
           .map((item) => Number(item.total))
           .reduce((prev, next) => prev + next);
-        return {
-          customer_id: invoice.customer_id,
-          customer_name: invoice.customer_info.customer_name,
-          customer_phone_number: invoice.customer_info.customer_phone_number,
-          business_id: invoice.business_id,
-          total: total,
-          invoice_count: groups[group].length,
-          status: invoice.status,
-        };
+
+        if (invoice.customer_id === null) {
+          return {
+            customer_id: null,
+            customer_name: "General Customer",
+            total: total,
+            invoice_count: groups[group].length,
+          };
+        } else {
+          return {
+            customer_id: invoice.customer_id,
+            customer_name: invoice.customer_info.customer_name,
+            customer_phone_number: invoice.customer_info.customer_phone_number,
+            business_id: invoice.business_id,
+            total: total,
+            invoice_count: groups[group].length,
+            status: invoice.status,
+          };
+        }
       });
     },
     onFilterPayment() {

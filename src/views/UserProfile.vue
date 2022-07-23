@@ -161,7 +161,6 @@ export default {
   mounted() {
     User.getUserProfile().then((item) => {
       this.userProfile = item.data.data;
-      console.log(this.userProfile);
       this.isLoading = false;
     });
   },

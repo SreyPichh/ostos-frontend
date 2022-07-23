@@ -36,7 +36,6 @@
           }"
         />
         <sidebar-item
-          :isDisabled="true"
           :link="{
             name: 'Reciept',
             icon: 'fa fa-file-alt text-white',
@@ -83,7 +82,7 @@
             name: 'Note Book',
             icon: 'fa fa-clipboard text-white',
             path: '/notebooks',
-          }" 
+          }"
         />
         <sidebar-item
           :isDisabled="true"

@@ -122,7 +122,7 @@
             >
               {{ row.item.supplier }}
             </td>
-            <td>${{ row.item.total }}</td>
+            <td>${{ row.item.total.toFixed(2) }}</td>
             <td>
               <span
                 class="badge"

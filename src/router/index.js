@@ -16,6 +16,16 @@ import NewInvoice from "../views/Invoice/NewInvoice.vue";
 import PreviewInvoice from "../views/Invoice/PreviewInvoice.vue";
 import EditInvoice from "../views/Invoice/EditInvoice.vue";
 
+import Quote from "../views/Quote/Quote.vue";
+import NewQuote from "../views/Quote/NewQuote.vue";
+import PreviewQuote from "../views/Quote/PreviewQuote.vue";
+
+import Receipt from "../views/Receipt/Receipt.vue";
+import ReceiptTable from "../views/Receipt/ReceiptTable.vue";
+import NewReceipt from "../views/Receipt/NewReceipt.vue";
+import EditReceipt from "../views/Receipt/EditReceipt.vue";
+import PreviewReceipt from "../views/Receipt/PreviewReceipt.vue";
+
 import Product from "../views/Product/Product.vue";
 import ProductTable from "../views/Product/ProductTable.vue";
 import NewProduct from "../views/Product/NewProduct.vue";
@@ -30,12 +40,6 @@ import Employee from "../views/Employee/Employee.vue";
 import EmployeeTable from "../views/Employee/EmployeeTable.vue";
 import NewEmployee from "../views/Employee/NewEmployee.vue";
 import EditEmployee from "../views/Employee/EditEmployee.vue";
-
-import Quote from "../views/Quote/Quote.vue";
-import NewQuote from "../views/Quote/NewQuote.vue";
-import PreviewQuote from "../views/Quote/PreviewQuote.vue";
-
-import Receipt from "../views/Receipt/Receipt.vue";
 
 import Payment from "../views/Payment/Payment.vue";
 import PaymentReportTable from "../views/Payment/PaymentReportTable.vue";
@@ -123,11 +127,19 @@ const routes = [
         path: "/receipts",
         name: "receipts",
         components: { default: Receipt },
-      },
-      {
-        path: "/new",
-        name: "new-receipt",
-        components: { default: Receipt },
+        children: [
+          { path: "", name: "receipt-table", component: ReceiptTable },
+          {
+            path: "/receipts/new",
+            name: "new-receipt",
+            components: { default: NewReceipt },
+          },
+          {
+            path: "/receipts/:receiptId",
+            name: "edit-receipt",
+            components: { default: EditReceipt },
+          },
+        ],
       },
       {
         path: "/products",
@@ -262,6 +274,21 @@ const routes = [
         path: "/invoices/:invoiceId/generate-pdf/preview",
         name: "preview-invoice",
         components: { default: PreviewInvoice },
+      },
+    ],
+  },
+  {
+    path: "/receipts/preview",
+    redirect: "/receipts/:receiptId/generate-pdf/preview",
+    component: GeneratePDFLayout,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "/receipts/:receiptId/generate-pdf/preview",
+        name: "preview-receipt",
+        components: { default: PreviewReceipt },
       },
     ],
   },

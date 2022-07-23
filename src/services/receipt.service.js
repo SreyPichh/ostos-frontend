@@ -1,8 +1,10 @@
 import api from "./api";
 const API_URL = "receipts";
 class ReceiptService {
-  getReceipts() {
-    return api.get(API_URL);
+  getReceipts(params) {
+    return api.get(API_URL, {
+      params: params,
+    });
   }
   getReceiptById(ReceiptId) {
     return api.get(API_URL + `/${ReceiptId}`);
@@ -17,6 +19,12 @@ class ReceiptService {
   }
   deleteReceipt(ReceiptId) {
     return api.delete(API_URL + `/${ReceiptId}`);
+  }
+  getLastReceiptId() {
+    return api.get("receipts_getlastid");
+  }
+  getReceiptsBySearch(searchParams) {
+    return api.get(API_URL + searchParams);
   }
 }
 export default new ReceiptService();

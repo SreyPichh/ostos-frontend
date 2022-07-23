@@ -283,7 +283,6 @@ export default {
   },
   mounted() {
     this.qrLink = `http://167.172.88.106:8080/${this.$route.href}`;
-    console.log(this.qrLink);
     this.isLoading = true;
     this.invoiceId = this.$route.params.invoiceId;
     InvoiceService.getInvoiceById(this.invoiceId).then((item) => {

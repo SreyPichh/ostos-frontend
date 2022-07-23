@@ -69,7 +69,9 @@
             <td>
               {{ row.item.name }}
             </td>
-            <td>{{ row.item.price > 0 ? `$${row.item.price}` : "-" }}</td>
+            <td>
+              {{ row.item.price > 0 ? `$${row.item.price.toFixed(2)}` : "-" }}
+            </td>
             <td>
               {{ getBusinessesLabel(row.item.business_id) }}
             </td>

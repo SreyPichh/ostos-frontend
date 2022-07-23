@@ -525,7 +525,6 @@ export default {
         };
       } else {
         const customer = this.customers.find((item) => item.id === customerId);
-        console.log(customer);
         if (customer) {
           this.disableCustomer = true;
           this.customerInfo = {
