@@ -37,7 +37,9 @@
         <span>{{ receipt.customer_info.customer_name }}&nbsp;</span>
       </div>
       <div class="receipt-sum-1 text-left p21-px font-weight-bold d-flex">
-        <span>{{ sumOf1 }}&nbsp;</span>
+        <span
+          >{{ sumOf1.charAt(0).toUpperCase() + sumOf1.slice(1) }}&nbsp;</span
+        >
       </div>
       <div class="receipt-amount text-left p21-px font-weight-bold">
         <span>${{ receipt.amount.toFixed(2) }}&nbsp;</span>
@@ -116,7 +118,6 @@ export default {
       this.customerInfo = receipt.customer_info;
       receipt.receipt_number = String(receipt.receipt_number).padStart(6, "0");
       receipt.date = moment(receipt.date).format("YYYY-MM-DD");
-
       const amountConvertToWord = converter
         .toWordsOrdinal(receipt.amount)
         .split(" ");
@@ -171,8 +172,8 @@ export default {
 }
 
 .receipt-sum-2 {
-  padding-left: 3.8rem;
-  padding-top: 3rem;
+  padding-left: 10.8rem;
+  padding-top: 2rem;
 }
 
 .receipt-amount {
@@ -182,7 +183,7 @@ export default {
 
 .receipt-paymentOf {
   padding-left: 13.8rem;
-  padding-top: 1.6rem;
+  padding-top: 2.6rem;
 }
 
 .has-receipt-signature {
@@ -277,8 +278,8 @@ body {
   }
 
   .receipt-sum-2 {
-    padding-left: 3.8rem;
-    padding-top: 2.2rem;
+    padding-left: 8.8rem;
+    padding-top: 1.2rem;
   }
 
   .receipt-amount {
@@ -288,12 +289,12 @@ body {
 
   .receipt-paymentOf {
     padding-left: 11.8rem;
-    padding-top: 1.2rem;
+    padding-top: 2.2rem;
   }
 
   .has-receipt-signature {
     padding-right: 8rem;
-    margin-top: -2rem;
+    margin-top: -3rem;
   }
 
   .no-receipt-signature {
@@ -307,7 +308,7 @@ body {
 
   .cash {
     padding-left: 5.5rem;
-    margin-top: -1.5rem;
+    margin-top: -1rem;
   }
 
   .eBooking {
@@ -317,7 +318,7 @@ body {
 
   .cheque {
     padding-left: 24.5rem;
-    margin-top: -2rem;
+    margin-top: -1.5rem;
   }
 
   .cheque-no {
