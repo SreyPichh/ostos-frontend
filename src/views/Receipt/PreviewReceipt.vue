@@ -231,6 +231,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top;
+  color: #000;
 }
 
 body {
