@@ -397,7 +397,7 @@ export default {
           if (isPrint) {
             let resolvedRoute = this.$router.resolve({
               name: "preview-receipt",
-              params: { receiptId: result.data.id },
+              params: { receiptId: result.data.data.id },
             });
             window.open(resolvedRoute.href, "_blank");
           }

@@ -37,13 +37,13 @@
         <span>{{ receipt.customer_info.customer_name }}&nbsp;</span>
       </div>
       <div class="receipt-sum-1 text-left p21-px font-weight-bold d-flex">
-        <span>{{ receipt.sumOf }}&nbsp;</span>
+        <span>{{ sumOf1 }}&nbsp;</span>
       </div>
       <div class="receipt-amount text-left p21-px font-weight-bold">
         <span>${{ receipt.amount.toFixed(2) }}&nbsp;</span>
       </div>
       <div class="receipt-sum-2 text-left p21-px font-weight-bold d-flex">
-        <span>&nbsp;</span>
+        <span>{{ sumOf2 }}&nbsp;</span>
       </div>
       <div class="receipt-paymentOf text-left p21-px font-weight-bold d-flex">
         <span>{{ receipt.paymentOf }}&nbsp;</span>
@@ -80,7 +80,6 @@
 
 <script>
 import ReceiptService from "../../services/receipt.service";
-// import BusinessService from "../../services/business.service";
 import moment from "moment";
 
 export default {
@@ -96,6 +95,8 @@ export default {
       business: {},
       customerInfo: {},
       selectedBusiness: "",
+      sumOf1: "",
+      sumOf2: "",
     };
   },
   methods: {
@@ -104,22 +105,6 @@ export default {
     },
     onCloseWindow() {
       window.close();
-    },
-    splitString(str, length) {
-      var words = str.split(" ");
-      for (var j = 0; j < words.length; j++) {
-        var l = words[j].length;
-        if (l > length) {
-          var result = [],
-            i = 0;
-          while (i < l) {
-            result.push(words[j].substr(i, length));
-            i += length;
-          }
-          words[j] = result.join(" ");
-        }
-      }
-      return words.join(" ");
     },
   },
   mounted() {
@@ -131,23 +116,22 @@ export default {
       this.customerInfo = receipt.customer_info;
       receipt.receipt_number = String(receipt.receipt_number).padStart(6, "0");
       receipt.date = moment(receipt.date).format("YYYY-MM-DD");
-      receipt.sumOf = converter.toWordsOrdinal(receipt.amount) + " US.Dollar.";
 
-      const input = "This is a long sentence with more than 18 letters.";
-
+      const amountConvertToWord = converter
+        .toWordsOrdinal(receipt.amount)
+        .split(" ");
+      if (
+        amountConvertToWord.length < 5 ||
+        amountConvertToWord.join(" ").length <= 40
+      ) {
+        this.sumOf1 = amountConvertToWord.join(" ") + " US.Dollar.";
+        this.sumOf2 = "";
+      } else if (amountConvertToWord.length >= 5) {
+        this.sumOf1 = amountConvertToWord.slice(0, 5).join(" ");
+        this.sumOf2 = amountConvertToWord.slice(5).join(" ") + " US.Dollar.";
+      }
       this.receipt = receipt;
-      console.log(this.splitString(input, 5));
-
-      // this.businessId = receipt.business_id;
-      // BusinessService.getBusinessById(this.businessId).then((item) => {
-      //   const business = item.data.data;
-      //   if (business && business.name && business.receipt_note) {
-      //     this.selectedBusiness = business.name.toLowerCase().trim();
-      //     business.receipt_note = business.receipt_note.split("\n");
-      //   }
-      //   this.business = business;
       this.isLoading = false;
-      // });
     });
   },
 };
