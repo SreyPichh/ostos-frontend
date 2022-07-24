@@ -20,10 +20,10 @@
       </div>
     </div>
     <div id="receipt-body" class="banner mt-3">
-      <div class="receipt-no text-left p21-px font-weight-bold">
+      <div class="receipt-no text-left p21-px">
         <span>{{ receipt.receipt_number }}&nbsp;</span>
       </div>
-      <div class="receipt-date text-right p21-px font-weight-bold">
+      <div class="receipt-date text-right p21-px">
         <span class="receipt-day"
           >{{ moment(receipt.date).format("DD") }}&nbsp;</span
         >
@@ -33,25 +33,25 @@
         <span>{{ moment(receipt.date).format("YYYY") }}&nbsp;</span>
         &nbsp;
       </div>
-      <div class="receipt-name text-left p21-px font-weight-bold">
+      <div class="receipt-name text-left p21-px">
         <span>{{ receipt.customer_info.customer_name }}&nbsp;</span>
       </div>
-      <div class="receipt-sum-1 text-left p21-px font-weight-bold d-flex">
+      <div class="receipt-sum-1 text-left p21-px d-flex">
         <span
           >{{ sumOf1.charAt(0).toUpperCase() + sumOf1.slice(1) }}&nbsp;</span
         >
       </div>
-      <div class="receipt-amount text-left p21-px font-weight-bold">
+      <div class="receipt-amount text-left p21-px">
         <span>${{ receipt.amount.toFixed(2) }}&nbsp;</span>
       </div>
-      <div class="receipt-sum-2 text-left p21-px font-weight-bold d-flex">
+      <div class="receipt-sum-2 text-left p21-px d-flex">
         <span>{{ sumOf2 }}&nbsp;</span>
       </div>
-      <div class="receipt-paymentOf text-left p21-px font-weight-bold d-flex">
+      <div class="receipt-paymentOf text-left p21-px d-flex">
         <span>{{ receipt.paymentOf }}&nbsp;</span>
       </div>
       <div
-        class="text-right p21-px font-weight-bold"
+        class="text-right p21-px"
         :class="
           receipt.signature ? 'has-receipt-signature' : 'no-receipt-signature'
         "
@@ -61,17 +61,19 @@
         </div>
       </div>
       <div class="receipt-payment-type">
-        <div class="cash text-left p21-px font-weight-bold d-flex">
-          <i class="fa fa-check" v-if="receipt.type === 'Cash'"></i>&nbsp;
+        <div class="cash text-left p21-px d-flex">
+          <i class="fa fa-check" v-if="receipt.type === 'cash'"></i>&nbsp;
         </div>
-        <div class="eBooking text-left p21-px font-weight-bold d-flex">
-          <i class="fa fa-check" v-if="receipt.type === 'eBooking'"></i>&nbsp;
+        <div class="eBooking text-left p21-px d-flex">
+          <i class="fa fa-check" v-if="receipt.type === 'eBanking'"></i>&nbsp;
         </div>
-        <div class="cheque text-left p21-px font-weight-bold d-flex">
-          <i class="fa fa-check" v-if="receipt.type === 'Cheque'"></i>&nbsp;
+        <div class="cheque text-left p21-px d-flex">
+          <i class="fa fa-check" v-if="receipt.type === 'cheque'"></i>&nbsp;
         </div>
-        <div class="cheque-no text-left p21-px font-weight-bold d-flex">
-          <span v-if="receipt.no">{{ receipt.no }}</span
+        <div class="cheque-no text-left p21-px d-flex">
+          <span v-if="receipt.type === 'cheque' && receipt.no">{{
+            receipt.no
+          }}</span
           >&nbsp;
         </div>
         &nbsp;
@@ -299,7 +301,7 @@ body {
 
   .no-receipt-signature {
     padding-right: 8rem;
-    margin-top: 3rem;
+    margin-top: 2rem;
   }
 
   .receipt-payment-type {

@@ -184,20 +184,28 @@
                 v-model="receipt.paymentOf"
               ></textarea>
             </div>
-            <div class="col-lg-2 form-group">
+            <div class="col-lg-3 form-group">
               <label class="form-control-label">Transfer By</label>
               <div class="d-flex mt-2">
                 <base-checkbox
-                  @input="checkTransferType('Cash', $event)"
-                  :disabled="isUseCheque"
+                  @input="checkTransferType('cash', $event)"
+                  :disabled="isUseCheque || isUseEBanking"
                   :checked="isUseCash"
                   :inline="true"
                 >
                   <span class="text-muted ml--4">Cash |</span>
                 </base-checkbox>
                 <base-checkbox
-                  @input="checkTransferType('Cheque', $event)"
-                  :disabled="isUseCash"
+                  @input="checkTransferType('eBanking', $event)"
+                  :disabled="isUseCheque || isUseCash"
+                  :checked="isUseEBanking"
+                  :inline="true"
+                >
+                  <span class="text-muted ml--4">E-Banking |</span>
+                </base-checkbox>
+                <base-checkbox
+                  @input="checkTransferType('cheque', $event)"
+                  :disabled="isUseCash || isUseEBanking"
                   :checked="isUseCheque"
                 >
                   <span class="text-muted ml--4">Cheque</span>
@@ -288,6 +296,7 @@ export default {
       isGeneralCustomer: false,
       isUseCash: false,
       isUseCheque: false,
+      isUseEBanking: false,
     };
   },
   mounted() {
@@ -370,9 +379,12 @@ export default {
       }
     },
     checkTransferType(type, isChecked) {
-      if (type === "Cash" && typeof isChecked === "boolean") {
+      console.log(type, typeof isChecked === "boolean");
+      if (type === "cash" && typeof isChecked === "boolean") {
         this.isUseCash = isChecked;
-      } else if (type === "Cheque" && typeof isChecked === "boolean") {
+      } else if (type === "eBanking" && typeof isChecked === "boolean") {
+        this.isUseEBanking = isChecked;
+      } else if (type === "cheque" && typeof isChecked === "boolean") {
         this.isUseCheque = isChecked;
       }
     },
@@ -380,6 +392,15 @@ export default {
       const receipt = this.receipt;
       receipt.receipt_number = receipt.receipt_number.replace(/^0+/, "");
       receipt.customer_info = this.customerInfo;
+      receipt.type = this.isUseCash
+        ? "cash"
+        : this.isUseEBanking
+        ? "eBanking"
+        : "cheque";
+
+      if (receipt.type !== "cheque") {
+        receipt.no = "";
+      }
       if (receipt.customer_id || this.isGeneralCustomer) {
         this.updateReceipt(receipt, isPrint);
       } else {
