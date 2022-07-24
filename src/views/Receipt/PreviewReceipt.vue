@@ -36,16 +36,13 @@
       <div class="receipt-name text-left p21-px">
         <span>{{ receipt.customer_info.customer_name }}&nbsp;</span>
       </div>
-      <div class="receipt-sum-1 text-left p21-px d-flex">
-        <span
-          >{{ sumOf1.charAt(0).toUpperCase() + sumOf1.slice(1) }}&nbsp;</span
+      <div class="receipt-sum text-left p21-px d-flex">
+        <span ref="sumOf"
+          >{{ sumOf.charAt(0).toUpperCase() + sumOf.slice(1) }}&nbsp;</span
         >
       </div>
       <div class="receipt-amount text-left p21-px">
         <span>${{ receipt.amount.toFixed(2) }}&nbsp;</span>
-      </div>
-      <div class="receipt-sum-2 text-left p21-px d-flex">
-        <span>{{ sumOf2 }}&nbsp;</span>
       </div>
       <div class="receipt-paymentOf text-left p21-px d-flex">
         <span>{{ receipt.paymentOf }}&nbsp;</span>
@@ -99,8 +96,7 @@ export default {
       business: {},
       customerInfo: {},
       selectedBusiness: "",
-      sumOf1: "",
-      sumOf2: "",
+      sumOf: "",
     };
   },
   methods: {
@@ -120,19 +116,20 @@ export default {
       this.customerInfo = receipt.customer_info;
       receipt.receipt_number = String(receipt.receipt_number).padStart(6, "0");
       receipt.date = moment(receipt.date).format("YYYY-MM-DD");
-      const amountConvertToWord = converter
-        .toWordsOrdinal(receipt.amount)
-        .split(" ");
-      if (
-        amountConvertToWord.length < 5 ||
-        amountConvertToWord.join(" ").length <= 40
-      ) {
-        this.sumOf1 = amountConvertToWord.join(" ") + " US.Dollar.";
-        this.sumOf2 = "";
-      } else if (amountConvertToWord.length >= 5) {
-        this.sumOf1 = amountConvertToWord.slice(0, 5).join(" ");
-        this.sumOf2 = amountConvertToWord.slice(5).join(" ") + " US.Dollar.";
+
+      let cent = "";
+      let usd = "";
+      const int_part = Math.trunc(receipt.amount);
+      const float_part = Number((receipt.amount - int_part).toFixed(2)) * 100;
+      if (int_part === 0) {
+        usd = "";
+      } else {
+        usd = converter.toWords(int_part) + " US.Dollar ";
       }
+      if (float_part) {
+        cent = converter.toWords(float_part).split(" ") + " Cents";
+      }
+      this.sumOf = usd + cent;
       this.receipt = receipt;
       this.isLoading = false;
     });
@@ -168,24 +165,24 @@ export default {
   padding-top: 3.8rem;
 }
 
-.receipt-sum-1 {
+.receipt-sum {
   padding-left: 10.8rem;
   padding-top: 2rem;
-}
-
-.receipt-sum-2 {
-  padding-left: 10.8rem;
-  padding-top: 2rem;
+  width: 42rem;
+  height: 7rem;
+  line-height: 2.4rem;
+  white-space: pre-line;
+  word-break: break-word;
 }
 
 .receipt-amount {
   padding-left: 53.8rem;
-  margin-top: -3rem;
+  margin-top: -6rem;
 }
 
 .receipt-paymentOf {
   padding-left: 13.8rem;
-  padding-top: 2.6rem;
+  padding-top: 6.6rem;
 }
 
 .has-receipt-signature {
@@ -275,24 +272,24 @@ body {
     padding-top: 3rem;
   }
 
-  .receipt-sum-1 {
+  .receipt-sum {
     padding-left: 8.8rem;
-    padding-top: 1.6rem;
-  }
-
-  .receipt-sum-2 {
-    padding-left: 8.8rem;
-    padding-top: 1.2rem;
+    padding-top: 1.4rem;
+    width: 37rem;
+    height: 6rem;
+    line-height: 2.2rem;
+    white-space: pre-line;
+    word-break: break-word;
   }
 
   .receipt-amount {
     padding-left: 45rem;
-    margin-top: -3rem;
+    margin-top: -5.5rem;
   }
 
   .receipt-paymentOf {
     padding-left: 11.8rem;
-    padding-top: 2.2rem;
+    padding-top: 5.5rem;
   }
 
   .has-receipt-signature {
